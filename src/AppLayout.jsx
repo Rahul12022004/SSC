@@ -16,7 +16,7 @@ import Feedback from "./pages/Feedback";
 import Student from "./pages/OurStudent";
 import CreateQuiz from "./pages/CreateQuiz";
 import QuizPage from "./pages/QuizPage";
-import OurTeam from "./pages/OurTeam";
+import OurMentors from "./pages/OurMentors";
 
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -46,7 +46,7 @@ function AppLayout() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/feedback" element={<Feedback />} />
-          <Route path="/our-mentors" element={<OurTeam />} />
+          <Route path="/our-mentors" element={<OurMentors />} />
 
           <Route
             path="/students"

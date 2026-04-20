@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import "../styles/ourteam.css";
+import { FaUserTie } from "react-icons/fa";
+import "../styles/ourmentors.css";
 
 import person1 from "../assets/images/images.png";
 import person2 from "../assets/images/images.png";
@@ -14,42 +15,42 @@ const teamData = {
   title: "Our Mentors",
   members: [
     {
-      img: person1,
+      // img: person1,
       name: "Sauryansh Singh",
       description:
         "AIR -95 CGL 2025 | Inspector CBN | AIR -51 CHSL 2023 JSA",
       subject: "GS + English",
     },
     {
-      img: person2,
+      // img: person2,
       name: "Ankur Prasad",
       description:
         "SSC CGL 2023 AIR 1460 | CGST Inspector | Quant Expert 197.5/200",
       subject: "Maths + GS",
     },
     {
-      img: person3,
+      // img: person3,
       name: "Shiv Shankar Pal",
       description:
         "SSC CGL 2021 AIR 748 | ASO CSS | 2025 Income Tax Inspector",
       subject: "Maths + Reasoning",
     },
     {
-      img: person4,
+      // img: person4,
       name: "Anant Jain",
       description:
         "SSC CGL 2022 PA | SSC CGL 2023 GST Inspector",
       subject: "Reasoning + Maths",
     },
     {
-      img: person5,
+      // img: person5,
       name: "Vipin Sharma",
       description:
         "SSC CGL 2022 SAA in MES",
       subject: "Computer + GS",
     },
     {
-      img: person6,
+      // img: person6,
       name: "Monimala Poul",
       description:
         "CHSL 2024 AIR 111 | CGL 2025 AIR 1732",
@@ -61,6 +62,9 @@ const teamData = {
 /* CARD */
 function TeamCard({ src, name, role, desc, delay }) {
   const [loaded, setLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const showImage = src && !imgError;
 
   return (
     <motion.div
@@ -70,14 +74,27 @@ function TeamCard({ src, name, role, desc, delay }) {
       transition={{ duration: 0.6, delay }}
     >
       <div className="imgWrapper">
-        <div className={`skeleton ${loaded ? "hide" : ""}`} />
 
-        <img
-          src={src}
-          alt={name}
-          onLoad={() => setLoaded(true)}
-          className={`img ${loaded ? "show" : ""}`}
-        />
+        {/* ✅ SHOW IMAGE + SKELETON */}
+        {showImage ? (
+          <>
+            <div className={`skeleton ${loaded ? "hide" : ""}`} />
+
+            <img
+              src={src}
+              alt={name}
+              onLoad={() => setLoaded(true)}
+              onError={() => setImgError(true)}
+              className={`img ${loaded ? "show" : ""}`}
+            />
+          </>
+        ) : (
+          /* ✅ FALLBACK ICON */
+          <div className="fallbackIcon">
+            <FaUserTie size={50} />
+          </div>
+        )}
+
       </div>
 
       <div className="cardContent">
@@ -91,7 +108,7 @@ function TeamCard({ src, name, role, desc, delay }) {
 }
 
 /* MAIN */
-function OurTeam() {
+function OurMentors() {
   return (
     <div className="ourteamPage">
       {/* HEADER */}
@@ -119,4 +136,4 @@ function OurTeam() {
   );
 }
 
-export default OurTeam;
+export default OurMentors;

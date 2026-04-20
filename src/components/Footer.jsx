@@ -1,24 +1,45 @@
-import { FaFacebook, FaInstagram, FaYoutube, FaTelegram } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaYoutube,
+  FaTelegram,
+  FaCopyright,
+  FaArrowRight,
+  FaCheckCircle,
+} from "react-icons/fa";
 import "../styles/footer.css";
+import { useNavigate } from "react-router-dom";
+
+import logo from "../assets/img/cut_transperent logo.png";
 
 function Footer() {
+  const navigate = useNavigate();
+
   return (
     <footer className="footerPage">
+      <div className="footerBg">
+        <span></span>
+        <span></span>
+      </div>
+
       <div className="footerContainer">
-        {/* BRAND */}
-        <div className="footerSection brand">
-          <h2>SSC Pathnirman</h2>
+        <div className="footerSection brandCard">
+          <div className="logoBox">
+            <img src={logo} alt="logo" />
+            <h2>SSC Pathnirman</h2>
+          </div>
+
           <p>
-            Building your pathway to success. Join us for SSC preparation with
-            expert guidance and smart learning.
+            Smart preparation, expert guidance, and consistent practice — your
+            complete SSC success system.
           </p>
+
+          <button className="footerCTA" onClick={() => navigate("/tests")}>
+            Start Free Mock Test <FaArrowRight />
+          </button>
         </div>
 
-        {/* LINKS */}
-
-        {/*  Add like of Our mantors and devide this into two sections  */}
-        <div className="footerSection">
-          <h3>Quick Links</h3>
+        <div className="footerSection glassCard">
+          <h3>Explore</h3>
           <ul>
             <li>
               <a href="/">Home</a>
@@ -30,59 +51,60 @@ function Footer() {
               <a href="/batches">Batches</a>
             </li>
             <li>
-              <a href="/tests">Mock Test</a>
+              <a href="/tests">Mock Tests</a>
             </li>
           </ul>
         </div>
 
-        {/* ADDRESS */}
-        {/* <div className="footerSection">
-          <h3>Address</h3>
-          <p>
-            SSC Institute Pathnirman <br />
-            Surat, Gujarat <br />
-            India
-          </p>
-        </div> */}
+        <div className="footerSection glassCard">
+          <h3>Company</h3>
+          <ul>
+            <li>
+              <a href="/about">About</a>
+            </li>
+            <li>
+              <a href="/mentors">Mentors</a>
+            </li>
+            <li>
+              <a href="/contact">Contact</a>
+            </li>
+          </ul>
+        </div>
 
-        {/* SOCIAL */}
-        <div className="footerSection">
-          <h3>Follow Us</h3>
+        <div className="footerSection glassCard socialCard">
+          <h3>Stay Connected</h3>
+
           <div className="socialIcons">
-            {/* <a
-              href="https://www.facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaFacebook />
-            </a> */}
-            <a
-              href="https://www.instagram.com/ssc_pathnirman?igsh=YW5jMW1rbW82d252"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://www.instagram.com/ssc_pathnirman?igsh=YW5jMW1rbW82d252">
               <FaInstagram />
             </a>
-            <a
-              href="https://youtube.com/@sscinstitutepathnirman?si=DMH9hvXPF4L4vReZ"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://youtube.com/@sscinstitutepathnirman?si=DMH9hvXPF4L4vReZ">
               <FaYoutube />
             </a>
-            <a href="https://t.me/SSC_Pathnirman" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/SSC_Pathnirman">
               <FaTelegram />
             </a>
           </div>
+
+          <p className="socialText">
+            {" "}
+            <p>
+              <FaCheckCircle /> Daily Practice
+            </p>
+            <p>
+              <FaCheckCircle /> Updates
+            </p>
+            <p>
+              <FaCheckCircle /> Motivation
+            </p>
+          </p>
         </div>
       </div>
 
-      {/* DIVIDER */}
       <div className="footerDivider"></div>
 
-      {/* BOTTOM */}
       <div className="footerBottom">
-        © {new Date().getFullYear()} SSC Institute Pathnirman. All rights
+        <FaCopyright /> {new Date().getFullYear()} SSC Pathnirman. All rights
         reserved.
       </div>
     </footer>
