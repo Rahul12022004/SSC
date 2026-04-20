@@ -46,7 +46,7 @@ function AppLayout() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/feedback" element={<Feedback />} />
-          <Route path="/our-team" element={<OurTeam />} />
+          <Route path="/our-mentors" element={<OurTeam />} />
 
           <Route
             path="/students"
@@ -75,7 +75,7 @@ function AppLayout() {
             }
           />
 
-           <Route
+          <Route
             path="/recordings"
             element={
               <ProtectedRoute minRole={3}>
@@ -84,7 +84,14 @@ function AppLayout() {
             }
           />
 
-          <Route path="/quiz/:id" element={<QuizPage />} />
+          <Route
+            path="/quiz/:id"
+            element={
+              <ProtectedRoute minRole={1}>
+                <QuizPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

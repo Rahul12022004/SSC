@@ -3,9 +3,9 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 //  Local / Production switch
-// export const BASE_URL = "http://localhost:5000/api";
+export const BASE_URL = "http://localhost:5000/api";
 
-export const BASE_URL = "/api";
+// export const BASE_URL = "/api";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

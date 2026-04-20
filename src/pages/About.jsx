@@ -95,7 +95,7 @@ function About() {
       {/* INTRO */}
       <section className="intro">
         <div className="container" data-aos="fade-up">
-          <h1>About Pathnirman</h1>
+          <h1>About SSC Pathnirman</h1>
           <p>
             We are committed to helping students crack SSC exams with smart
             preparation, expert guidance, and consistent practice.

@@ -7,6 +7,21 @@
   font-family: "Inter", sans-serif;
 }
 
+.quizPage::before {
+  content: "SSC PATHNIMAN QUIZ";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+
+  font-size: 80px;
+  color: rgba(0, 0, 0, 0.03);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  
+}
+
 /* ================= HEADER ================= */
 .quizPage .quizHeader {
   display: flex;
@@ -380,6 +395,26 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.hidden-screen {
+  position: fixed;
+  inset: 0;
+  background: black !important;
+  z-index: 999999;
+}
+
+.violationPopup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #ff4d4f;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  z-index: 9999;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
 }
 
 @keyframes spin {

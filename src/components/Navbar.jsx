@@ -49,24 +49,25 @@ function Navbar() {
             Batches
           </NavLink>
           <NavLink to="/tests" onClick={closeMenu}>
-            Tests
+            Mock Test
+          </NavLink>
+          <NavLink to="/our-mentors" onClick={closeMenu}>
+            Our Mentors
           </NavLink>
           <NavLink to="/about" onClick={closeMenu}>
             About Us
           </NavLink>
-          <NavLink to="/our-team" onClick={closeMenu}>
-            Our Team
-          </NavLink>
+
           <NavLink to="/contact" onClick={closeMenu}>
-            Contact
+            Contact Us
           </NavLink>
 
           {/* ✅ SHOW ONLY IF LOGGED IN */}
-          {user && (
+          {/* {user && (
             <NavLink to="/students" onClick={closeMenu}>
               Our Student
             </NavLink>
-          )}
+          )} */}
         </div>
 
         {/* RIGHT SIDE */}

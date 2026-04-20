@@ -7,7 +7,7 @@ function Footer() {
       <div className="footerContainer">
         {/* BRAND */}
         <div className="footerSection brand">
-          <h2>Pathnirman</h2>
+          <h2>SSC Pathnirman</h2>
           <p>
             Building your pathway to success. Join us for SSC preparation with
             expert guidance and smart learning.
@@ -15,6 +15,8 @@ function Footer() {
         </div>
 
         {/* LINKS */}
+
+        {/*  Add like of Our mantors and devide this into two sections  */}
         <div className="footerSection">
           <h3>Quick Links</h3>
           <ul>
@@ -28,47 +30,47 @@ function Footer() {
               <a href="/batches">Batches</a>
             </li>
             <li>
-              <a href="/tests">Tests</a>
+              <a href="/tests">Mock Test</a>
             </li>
           </ul>
         </div>
 
         {/* ADDRESS */}
-        <div className="footerSection">
+        {/* <div className="footerSection">
           <h3>Address</h3>
           <p>
             SSC Institute Pathnirman <br />
             Surat, Gujarat <br />
             India
           </p>
-        </div>
+        </div> */}
 
         {/* SOCIAL */}
         <div className="footerSection">
           <h3>Follow Us</h3>
           <div className="socialIcons">
-            <a
+            {/* <a
               href="https://www.facebook.com"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaFacebook />
-            </a>
+            </a> */}
             <a
-              href="https://www.instagram.com"
+              href="https://www.instagram.com/ssc_pathnirman?igsh=YW5jMW1rbW82d252"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaInstagram />
             </a>
             <a
-              href="https://www.youtube.com"
+              href="https://youtube.com/@sscinstitutepathnirman?si=DMH9hvXPF4L4vReZ"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaYoutube />
             </a>
-            <a href="https://t.me" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/SSC_Pathnirman" target="_blank" rel="noopener noreferrer">
               <FaTelegram />
             </a>
           </div>

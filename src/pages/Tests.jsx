@@ -8,18 +8,27 @@ function Tests() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [tests, setTests] = useState([
-    { id: 1, title: "Mock Test 1" },
-  ]);
+  const [tests, setTests] = useState([{ id: 1, title: "Mock Test 1" }]);
 
   const openQuiz = (id) => {
     const newWindow = window.open(
       `/quiz/${id}`,
       "_blank",
-      `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`
+      `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`,
     );
 
     if (newWindow) newWindow.focus();
+  };
+
+  const handleStartQuiz = (id) => {
+    if (!user) {
+      // Redirect to login with redirect info
+      navigate("/login", {
+        state: { redirectTo: `/quiz/${id}` },
+      });
+    } else {
+      openQuiz(id);
+    }
   };
 
   return (
@@ -31,10 +40,7 @@ function Tests() {
         {user?.roleLevel >= 3 && (
           <div className="adminActions">
             {/* CREATE QUIZ */}
-            <button
-              className="addBtn"
-              onClick={() => navigate("/create-quiz")}
-            >
+            <button className="addBtn" onClick={() => navigate("/create-quiz")}>
               <FiPlus /> Create Quiz
             </button>
 
@@ -55,10 +61,7 @@ function Tests() {
           <div key={t.id} className="testCard">
             <h3>{t.title}</h3>
 
-            <button
-              className="startBtn"
-              onClick={() => openQuiz(t.id)}
-            >
+            <button className="startBtn" onClick={() => handleStartQuiz(t.id)}>
               <FiPlay /> Start Quiz
             </button>
           </div>

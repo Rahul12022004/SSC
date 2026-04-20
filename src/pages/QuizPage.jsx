@@ -22,6 +22,12 @@ function QuizPage() {
   const [cameraAllowed, setCameraAllowed] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [violationCount, setViolationCount] = useState(0);
+  const [violations, setViolations] = useState([]);
+  const [showViolation, setShowViolation] = useState(false);
+  const quizStartTimeRef = useRef(null);
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
@@ -137,37 +143,52 @@ function QuizPage() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && started) {
         e.preventDefault();
 
-        alert("ESC key is disabled during the quiz!");
+        const now = Date.now();
+        const timeFromStart = Math.floor(
+          (now - (quizStartTimeRef.current || now)) / 1000,
+        );
 
-        // Re-enter fullscreen
-        const el = document.documentElement;
-        if (!document.fullscreenElement) {
-          if (el.requestFullscreen) {
-            el.requestFullscreen();
+        const newCount = violationCount + 1;
+
+        setViolationCount(newCount);
+
+        setViolations((prev) => [
+          ...prev,
+          `Violation detected at ${timeFromStart}s`,
+        ]);
+
+        setShowViolation(true);
+
+        // auto hide popup after 3 sec
+        setTimeout(() => setShowViolation(false), 3000);
+
+        // fullscreen restore
+        setTimeout(() => {
+          const el = document.documentElement;
+          if (!document.fullscreenElement) {
+            el.requestFullscreen().catch(() => {});
           }
+        }, 200);
+
+        // force submit
+        if (newCount >= 4) {
+          setShowSubmit(true);
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [started, violationCount]);
 
   useEffect(() => {
     const disable = (e) => {
       if (e.type === "contextmenu") e.preventDefault();
 
-      if (
-        e.ctrlKey ||
-        e.metaKey ||
-        e.altKey ||
-        e.key.startsWith("F") ||
-        e.key === "Escape"
-      ) {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.key.startsWith("F")) {
         e.preventDefault();
       }
     };
@@ -184,7 +205,8 @@ function QuizPage() {
   useEffect(() => {
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement && started) {
-        alert("Fullscreen mode is required!");
+        setShowViolation(true);
+        setTimeout(() => setShowViolation(false), 2000);
 
         const el = document.documentElement;
         if (el.requestFullscreen) {
@@ -241,6 +263,7 @@ function QuizPage() {
       alert("Camera permission required!");
     }
   };
+
   const handleStart = async () => {
     try {
       await startCamera();
@@ -251,12 +274,12 @@ function QuizPage() {
         await el.requestFullscreen();
       }
 
+      quizStartTimeRef.current = Date.now(); // ✅ FIX
       setStarted(true);
     } catch {
       alert("Camera permission required!");
     }
   };
-
   const formatTime = () => {
     const m = String(Math.floor(timeLeft / 60)).padStart(2, "0");
     const s = String(timeLeft % 60).padStart(2, "0");
@@ -307,6 +330,7 @@ function QuizPage() {
 
         const formData = new FormData();
         formData.append("video", blob, `recording_${Date.now()}.webm`);
+        formData.append("violations", JSON.stringify(violations));
 
         await fetch(`${BASE_URL}/camera/upload-video`, {
           method: "POST",
@@ -363,8 +387,10 @@ function QuizPage() {
           <div className="submitActions">
             <button
               className="cancelBtn"
-              disabled={isSubmitting}
-              onClick={() => setShowSubmit(false)}
+              disabled={isSubmitting || violationCount >= 4}
+              onClick={() => {
+                if (violationCount < 4) setShowSubmit(false);
+              }}
             >
               Go Back
             </button>
@@ -521,6 +547,20 @@ function QuizPage() {
           )}
         </div>
       </div>
+
+      {showViolation && violationCount <= 3 && (
+        <div className="violationPopup">
+          <h3>Violation detected! Alert: {violationCount}</h3>
+          <p>
+            You are given {Math.max(0, 3 - violationCount)} chances left. After
+            that, the quiz will be forcefully terminated!
+          </p>
+          <p>
+            You are given {3 - violationCount} chances. After that, the quiz
+            will be forcefully terminated!
+          </p>
+        </div>
+      )}
     </div>
   );
 }

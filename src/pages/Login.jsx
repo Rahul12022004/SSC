@@ -19,6 +19,8 @@ function Login() {
   const location = useLocation();
   const successMessage = location.state?.message;
 
+  const redirectTo = location.state?.redirectTo;
+
   const refs = {
     email: useRef(),
     password: useRef(),
@@ -102,7 +104,16 @@ function Login() {
       const res = await loginUser(formData);
 
       if (res?.success) {
-        navigate("/");
+        if (redirectTo) {
+          window.open(
+            redirectTo,
+            "_blank",
+            `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`,
+          );
+          navigate("/tests"); // optional fallback page
+        } else {
+          navigate("/");
+        }
       } else {
         setErrors({ password: "Invalid email or password" });
       }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import "../styles/ourteam.css";
 
-import person1 from "../assets/images/person1.png";
+import person1 from "../assets/images/images.png";
 import person2 from "../assets/images/images.png";
 import person3 from "../assets/images/images.png";
 import person4 from "../assets/images/images.png";
@@ -11,7 +11,7 @@ import person6 from "../assets/images/images.png";
 
 /* TEAM DATA */
 const teamData = {
-  title: "Our Expert Team",
+  title: "Our Mentors",
   members: [
     {
       img: person1,

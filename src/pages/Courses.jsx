@@ -123,7 +123,8 @@ function Courses() {
       {/* GRID */}
       <div className="courseGrid">
         {courses.map((c, i) => (
-          <CourseCard key={i} title={c.title} desc={c.desc} />
+          // <CourseCard key={i} title={c.title} desc={c.desc} />
+          <CourseCard key={i} title={c.title}/>
         ))}
       </div>
     </div>

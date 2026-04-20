@@ -154,18 +154,18 @@ function Contact() {
 
           <div className="infoItem">
             <FaPhoneAlt />
-            <span>+91 9876543210</span>
+            <span>+91 97995 00688</span>
           </div>
 
           <div className="infoItem">
             <FaEnvelope />
-            <span>support@pathnirman.com</span>
+            <span>sscinstitutepathnirman@gmail.com</span>
           </div>
 
-          <div className="infoItem">
+          {/* <div className="infoItem">
             <FaMapMarkerAlt />
             <span>Surat, Gujarat, India</span>
-          </div>
+          </div> */}
         </div>
 
         {/* RIGHT SIDE */}
