@@ -63,7 +63,7 @@ function Footer() {
               <a href="/about">About</a>
             </li>
             <li>
-              <a href="/mentors">Mentors</a>
+              <a href="/our-mentors">Mentors</a>
             </li>
             <li>
               <a href="/contact">Contact</a>
