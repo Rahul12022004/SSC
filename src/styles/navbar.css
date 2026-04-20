@@ -1,0 +1,185 @@
+/* ================= ROOT NAVBAR ================= */
+.navbarPage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* SCROLL EFFECT */
+.navbarPage.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+/* ================= CONTAINER ================= */
+.navbarPage .navContainer {
+  max-width: 1200px;
+  margin: auto;
+  padding: 10px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ================= LOGO ================= */
+.navbarPage .logo img {
+  width: 65px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* ================= NAV LINKS ================= */
+.navbarPage .navLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  flex: 1;
+  margin-left: 30px;
+}
+
+/* LINKS */
+/* NAV LINKS */
+.navbarPage .navLinks a {
+  color: #0B2545;
+  font-size: 15px;
+  text-decoration: none;
+  position: relative;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* 🔥 UNDERLINE BASE */
+.navbarPage .navLinks a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: #F77F00;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navbarPage .navLinks a:hover::after {
+  width: 100%;
+}
+
+.navbarPage .navLinks a:hover::after {
+  width: 100%;
+}
+
+/* 🔥 ACTIVE LINK */
+.navbarPage .navLinks a.active {
+  color: #F77F00;
+  font-weight: 600;
+}
+
+/* ACTIVE UNDERLINE ALWAYS VISIBLE */
+.navbarPage .navLinks a.active::after {
+  width: 100%;
+}
+
+/* ================= RIGHT SECTION ================= */
+.navbarPage .rightSection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ================= AUTH BUTTONS ================= */
+.navbarPage .authButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* LOGIN */
+.navbarPage .loginBtn {
+  color: #0B2545;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none; /* ✅ add this */
+}
+
+/* REGISTER */
+.navbarPage .registerBtn {
+  background: #F77F00;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: 0.3s;
+  text-decoration: none; /* ✅ add this */
+}
+
+.navbarPage .registerBtn:hover {
+  background: #d96c00;
+}
+
+/* LOGOUT BUTTON */
+.navbarPage .logoutBtn {
+  background: #F77F00;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.navbarPage .logoutBtn:hover {
+  background: #d96c00;
+}
+
+/* ================= MENU ICON ================= */
+.navbarPage .menuIcon {
+  display: none;
+  cursor: pointer;
+}
+
+.navbarPage .menuIcon svg {
+  font-size: 26px;
+  color: #0B2545;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 900px) {
+
+  .navbarPage .navLinks {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+
+    display: none;
+  }
+
+  .navbarPage .navLinks.active {
+    display: flex;
+  }
+
+  .navbarPage .authButtons {
+    display: none;
+  }
+
+  .navbarPage .menuIcon {
+    display: block;
+  }
+
+  .navbarPage .navLinks {
+    margin-left: 0;
+  }
+}

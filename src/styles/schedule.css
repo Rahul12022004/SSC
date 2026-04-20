@@ -1,0 +1,84 @@
+.schedulePage {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 100px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.schedulePage h1 {
+  color: #0b2545;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+/* CARD */
+.schedulePage .card {
+  width: 100%;
+  max-width: 420px;
+
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 14px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* FIELD */
+.schedulePage .field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.schedulePage label {
+  font-weight: 600;
+  color: #0b2545;
+  margin-bottom: 6px;
+}
+
+/* INPUT */
+.schedulePage input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.schedulePage input:focus {
+  border-color: #0b2545;
+  box-shadow: 0 0 0 2px rgba(11, 37, 69, 0.1);
+}
+
+/* BUTTON */
+.schedulePage button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+
+  background: #f77f00;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.schedulePage button:hover {
+  background: #d96c00;
+}
+
+.schedulePage button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+} 

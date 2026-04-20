@@ -1,0 +1,56 @@
+/* 🌍 PAGE WRAPPER */
+.studentPage {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #0b2545, #1e3a5f);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 📦 CONTAINER CARD */
+.studentContainer {
+  text-align: center;
+  padding: 60px 40px;
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+  max-width: 500px;
+  width: 100%;
+
+  animation: fadeIn 0.8s ease;
+}
+
+/* 🏷️ TITLE */
+.studentContainer h1 {
+  font-size: 32px;
+  color: #0B2545;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+/* 📝 TEXT */
+.studentContainer p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ✨ SUBTLE ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

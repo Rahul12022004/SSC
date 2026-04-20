@@ -1,0 +1,116 @@
+/* PAGE */
+.loginPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc, #eef2f7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  padding-top: 80px;
+}
+
+/* CONTAINER */
+.loginContainer {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 18px;
+  width: 400px;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  border-top: 5px solid #f77f00;
+}
+
+/* TITLE */
+.loginContainer h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #0b2545;
+  font-weight: 600;
+}
+
+/* FORM */
+.loginContainer form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* INPUT */
+.loginContainer input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  background: #f9fafb;
+
+  font-size: 14px;
+  transition: all 0.25s ease;
+  color: #0b2545;
+  font-weight: 500;
+}
+
+/* PLACEHOLDER */
+.loginContainer input::placeholder {
+  color: #9ca3af;
+}
+
+/* FOCUS */
+.loginContainer input:focus {
+  border-color: #f77f00;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(247, 127, 0, 0.15);
+  outline: none;
+}
+
+/* ERROR */
+.error {
+  color: #e63946;
+  font-size: 12px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+}
+
+/* BUTTON */
+.loginContainer button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 15px;
+
+  background: linear-gradient(135deg, #f77f00, #ff8c00);
+  color: white;
+
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+
+  transition: 0.25s ease;
+}
+
+.loginContainer button:hover {
+  background: linear-gradient(135deg, #e76f00, #d96c00);
+}
+
+.loginContainer button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* EXTRA TEXT */
+.loginContainer .extraText {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.loginContainer .extraText a {
+  color: #0b2545;
+  font-weight: 500;
+}
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+  .loginContainer {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}

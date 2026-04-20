@@ -1,0 +1,91 @@
+/* 🔁 RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🌍 FULL SCREEN BASE */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+/* 🧠 BODY DEFAULT */
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* 📦 APP LAYOUT */
+.appLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 📄 MAIN CONTENT AREA */
+.mainContent {
+  flex: 1;
+  width: 100%;
+}
+
+/* 🔘 BUTTON DEFAULT */
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* 🔗 LINKS */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 📦 COMMON CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* 🎯 SECTIONS FULL WIDTH */
+section {
+  width: 100%;
+}
+
+/* ✅ FIX INPUT DEFAULT (prevents white text issue globally) */
+input,
+textarea {
+  color: #0B2545;         /* force readable text */
+  caret-color: #0B2545;   /* visible cursor */
+  background-color: transparent;
+}
+
+/* ✅ REMOVE ANY BROWSER WEIRD HOVER EFFECT */
+input:hover,
+textarea:hover {
+  color: #0B2545;
+  caret-color: #0B2545;
+}
+
+/* ✅ AUTOFILL FIX (cleaned) */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #f9fafb inset !important;
+  -webkit-text-fill-color: #0B2545 !important;
+}
+
+/* AUTOFILL FOCUS */
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0B2545 !important;
+}
+
+/* 📱 RESPONSIVE BASE */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+}

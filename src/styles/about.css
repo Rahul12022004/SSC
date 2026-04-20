@@ -1,0 +1,223 @@
+/* PAGE */
+.aboutPage {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding-top: 80px;
+}
+
+/* SECTION */
+.aboutPage section {
+  padding: 60px 20px;
+}
+
+/* CONTAINER */
+.aboutPage .container {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+}
+
+/* INTRO */
+.aboutPage .intro h1 {
+  font-size: 36px;
+  color: #0b2545;
+  margin-bottom: 10px;
+}
+
+.aboutPage .intro p {
+  font-size: 16px;
+  color: #555;
+}
+
+/* STATS */
+.aboutPage .statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.aboutPage .statCard {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+
+.aboutPage .statCard:hover {
+  transform: translateY(-5px);
+}
+
+.aboutPage .statCard h2 {
+  color: #f77f00;
+  font-size: 28px;
+}
+
+.aboutPage .statCard p {
+  color: #555;
+  font-size: 14px;
+}
+
+/* FEATURES */
+.aboutPage .features {
+  text-align: center;
+}
+
+.aboutPage .features h2 {
+  margin-bottom: 30px;
+  color: #0b2545;
+}
+
+/* GRID */
+.aboutPage .featureGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* CARD */
+.aboutPage .featureCard {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  min-height: 160px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+
+.aboutPage .featureCard:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+.aboutPage .featureCard h3 {
+  margin-bottom: 8px;
+  color: #0b2545;
+}
+
+.aboutPage .featureCard p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* MISSION VISION */
+.aboutPage .mvGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.aboutPage .mvCard {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.aboutPage .mvCard h3 {
+  color: #0b2545;
+  margin-bottom: 10px;
+}
+
+.aboutPage .mvCard p {
+  color: #555;
+}
+
+/*  COUNTER FIX */
+.digitContainer {
+  height: 32px;
+  width: 18px;   
+  overflow: hidden;
+}
+
+.digit {
+  height: 32px;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f77f00;              
+  font-weight: 700;
+  font-size: 28px;
+
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.digits {
+  display: flex;
+  align-items: center;
+  gap: 0px;   
+}
+
+.suffixDigit {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+  font-weight: 700;
+  color: #f77f00;
+
+  margin-left: 1px;
+}
+
+.digitStrip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+.digit {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suffix {
+  margin-left: 4px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .aboutPage .featureGrid,
+  .aboutPage .statGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aboutPage .mvGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .aboutPage .featureGrid,
+  .aboutPage .statGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutPage .intro h1 {
+    font-size: 26px;
+  }
+}

@@ -1,0 +1,205 @@
+/* PAGE */
+.testsPage {
+  min-height: 100vh;
+  background: #F8FAFC;
+  padding: 90px 20px 40px;
+}
+
+/* HEADER */
+.testsPage .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.testsPage h1 {
+  color: #0B2545;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* BUTTON GROUP */
+.testsPage .header > div {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ADD BUTTON */
+.testsPage .addBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #F77F00;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.testsPage .addBtn:hover {
+  background: #d96f00;
+  transform: translateY(-2px);
+}
+
+/* TEST LIST */
+.testsPage .testList {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* TEST CARD */
+.testsPage .testCard {
+  background: white;
+  padding: 18px 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 5px 12px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+}
+
+.testsPage .testCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+/* TEST TITLE */
+.testsPage .testCard h3 {
+  font-size: 18px;
+  color: #0B2545;
+  font-weight: 600;
+}
+
+/* START BUTTON */
+.testsPage .startBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: #0B2545;
+  color: white;
+
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.testsPage .startBtn:hover {
+  background: #13315c;
+  transform: scale(1.05);
+}
+
+/* FORM BOX */
+.testsPage .formBox {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.testsPage .formBox input {
+  flex: 1;
+  min-width: 200px;
+
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+
+  transition: all 0.3s ease;
+}
+
+.testsPage .formBox input:focus {
+  border-color: #F77F00;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(247, 127, 0, 0.2);
+}
+
+.testsPage .formBox button {
+  background: #F77F00;
+  color: white;
+
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.testsPage .formBox button:hover {
+  background: #d96f00;
+}
+
+/* EMPTY STATE (optional future use) */
+.testsPage .empty {
+  text-align: center;
+  margin-top: 40px;
+  color: #777;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .testsPage .testCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .testsPage .startBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ADMIN BUTTON GROUP */
+.testsPage .adminActions {
+  display: flex;
+  gap: 10px;
+}
+
+/* RECORD BUTTON */
+.testsPage .recordBtn {
+  background: #0b2545;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.testsPage .recordBtn:hover {
+  background: #f77f00;
+}
+
+@media (max-width: 480px) {
+  .testsPage {
+    padding: 80px 15px 30px;
+  }
+
+  .testsPage h1 {
+    font-size: 22px;
+  }
+}
