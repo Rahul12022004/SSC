@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import "../styles/home.css";
 
@@ -10,7 +11,6 @@ import gkImg from "../assets/images/General-Awareness.jpg";
 import hero1 from "../assets/images/home1.jpeg";
 import hero2 from "../assets/images/home2.jpeg";
 
-/* 🔥 CARD COMPONENT WITH MOTION */
 function ImageCard({ src, title, desc, delay }) {
   const [loaded, setLoaded] = useState(false);
 
@@ -45,8 +45,8 @@ function ImageCard({ src, title, desc, delay }) {
 function Home() {
   const heroImages = [hero1, hero2];
   const [heroIndex, setHeroIndex] = useState(0);
+  const navigate = useNavigate();
 
-  /* 🔥 HERO AUTO SLIDE */
   useEffect(() => {
     const interval = setInterval(() => {
       setHeroIndex((prev) => (prev + 1) % heroImages.length);
@@ -57,31 +57,56 @@ function Home() {
 
   return (
     <div className="homePage">
-      {/* 🔥 HERO */}
       <section className="hero">
-        <div className="heroBgAnimation">
-          <span></span>
-          <span></span>
-          <span></span>
+        <div className="heroSlider">
+          <motion.div
+            key={heroIndex}
+            className="heroSlide"
+            style={{ backgroundImage: `url(${heroImages[heroIndex]})` }}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1 }}
+          />
         </div>
 
-        <motion.div
-          key={heroIndex}
-          className="heroSlide active"
-          style={{ backgroundImage: `url(${heroImages[heroIndex]})` }}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-        />
+        <div className="heroOverlay"></div>
 
-        <div className="heroContent">
-          <h1>SSC Institute Pathnirman</h1>
-          <p>Building Your Pathway to Success</p>
+        <div className="heroContainer">
+          {/* LEFT CONTENT */}
+          <div className="heroContent">
+            <span className="heroBadge">
+              {" "}
+              SSC Preparation {new Date().getFullYear()}
+            </span>
+
+            <h1>
+              Crack SSC Exams with <span>Confidence</span>
+            </h1>
+
+            <p>
+              Join Pathnirman and master Math, Reasoning, English & GK with
+              expert guidance.
+            </p>
+
+            <div className="heroButtons">
+              <button
+                className="primaryBtn"
+                onClick={() => navigate("/register")}
+              >
+                Get Started
+              </button>
+
+              <button
+                className="secondaryBtn"
+                onClick={() => navigate("/courses")}
+              >
+                Explore Courses
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 🔥 SUBJECT GRID */}
       <section className="subjects">
         <h2>Subjects</h2>
 

@@ -1,133 +1,175 @@
-/* RESET */
+/* ================= RESET ================= */
 .homePage * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* PAGE */
+/* ================= PAGE ================= */
 .homePage {
   min-height: 100vh;
   background: #f8fafc;
 }
 
-/* 🔥 HERO */
+/* ================= HERO ================= */
 .homePage .hero {
-  height: 85vh;
-  min-height: 500px;
+  height: 90vh;
+  min-height: 520px;
   position: relative;
   overflow: hidden;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* 🔥 SLIDER */
-.heroSlider {
+/* SLIDER */
+.homePage .heroSlider {
   position: absolute;
   inset: 0;
   z-index: 1;
 }
 
-/* 🔥 SLIDES */
-.heroSlide {
-  position: absolute;
-  inset: 0;
-
+.homePage .heroSlide {
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 
-  opacity: 0;
-  transform: scale(1.1);
-
-  transition: 
-    opacity 1s ease,
-    transform 6s ease;
-
-  filter: brightness(0.7);
+  filter: brightness(0.6);
 }
 
-.heroSlide.active {
-  opacity: 1;
-  transform: scale(1); /* smooth zoom-in effect */
-}
-
-/* 🔥 OVERLAY */
-.homePage .hero::after {
-  content: "";
+/* OVERLAY (MORE DEPTH) */
+.homePage .heroOverlay {
   position: absolute;
   inset: 0;
-
-  background: linear-gradient(
-    135deg,
-    rgba(11, 37, 69, 0.8),
-    rgba(19, 49, 92, 0.6)
-  );
-
   z-index: 2;
+
+  background:
+    radial-gradient(circle at 20% 40%, rgba(247,127,0,0.25), transparent 50%),
+    linear-gradient(to right, rgba(11,37,69,0.95) 30%, rgba(11,37,69,0.6) 60%, transparent 100%);
 }
 
-/* 🔥 HERO CONTENT */
-.homePage .heroContent {
+/* CONTAINER */
+.homePage .heroContainer {
   position: relative;
   z-index: 3;
+  max-width: 1200px;
+  margin: auto;
+  height: 100%;
 
-  text-align: center;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+/* CONTENT */
+.homePage .heroContent {
+  max-width: 550px;
   color: white;
+}
 
-  padding: 30px 40px;
+/* BADGE */
+.homePage .heroBadge {
+  display: inline-block;
+  margin-bottom: 15px;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  font-size: 13px;
+  backdrop-filter: blur(6px);
+}
 
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.08);
+/* TITLE */
+.homePage .heroContent h1 {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
 
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-
-  animation: fadeUp 0.8s ease;
+.homePage .heroContent h1 span {
+  color: #F77F00;
 }
 
 /* TEXT */
-.homePage .heroContent h1 {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
 .homePage .heroContent p {
   font-size: 18px;
   opacity: 0.9;
+  margin-bottom: 26px;
 }
 
-/* 🔥 HERO ANIMATION */
-@keyframes fadeUp {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
+/* BUTTONS */
+.homePage .heroButtons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.homePage .primaryBtn {
+  background: #F77F00;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.homePage .primaryBtn:hover {
+  background: #d96c00;
+  transform: translateY(-2px);
+}
+
+.homePage .secondaryBtn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.6);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.homePage .secondaryBtn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+/* TABLET */
+@media (max-width: 900px) {
+  .homePage .hero {
+    height: 75vh;
   }
-  to {
-    transform: translateY(0);
-    opacity: 1;
+
+  .homePage .heroContent {
+    padding: 30px;
+  }
+
+  .homePage .heroContent h1 {
+    font-size: 34px;
+  }
+
+  .homePage .heroContent p {
+    font-size: 16px;
   }
 }
 
 
-/* SECTION */
+/* ================= SECTION ================= */
 .homePage section {
   padding: 60px 20px;
 }
 
-/* 🔥 GRID */
+/* ================= GRID ================= */
 .homePage .subjectGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 22px;
   max-width: 1100px;
   margin: auto;
 }
 
-/* CARD */
+/* ================= CARD ================= */
 .homePage .subjectCard {
   background: #fff;
   border-radius: 12px;
@@ -155,7 +197,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 
   opacity: 0;
   transition: opacity 0.4s ease, transform 0.5s ease;
@@ -189,7 +230,7 @@
 
 /* CONTENT */
 .homePage .cardContent {
-  padding: 15px;
+  padding: 16px;
 }
 
 .homePage .cardContent h3 {
@@ -202,6 +243,7 @@
   font-size: 14px;
   color: #555;
   margin-bottom: 12px;
+  line-height: 1.4;
 }
 
 /* BUTTON */
@@ -212,26 +254,60 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .homePage .cardContent button:hover {
   background: #13315c;
 }
 
-.heroSlide {
-  will-change: opacity, transform;
-}
+/* ================= RESPONSIVE ================= */
 
-/* RESPONSIVE */
-@media (max-width: 992px) {
-  .homePage .subjectGrid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 900px) {
+  .homePage .heroContent h1 {
+    font-size: 36px;
+  }
+
+  .homePage .heroContent p {
+    font-size: 16px;
   }
 }
 
-@media (max-width: 576px) {
-  .homePage .subjectGrid {
-    grid-template-columns: 1fr;
+@media (max-width: 600px) {
+  .homePage .hero {
+    height: 70vh;
+  }
+
+  .homePage .heroContainer {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .homePage .heroContent {
+    max-width: 100%;
+  }
+
+  .homePage .heroButtons {
+    flex-direction: column;
+  }
+
+  .homePage .primaryBtn,
+  .homePage .secondaryBtn {
+    width: 100%;
+  }
+}
+
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .homePage .hero {
+    height: 65vh;
+    min-height: 420px;
+  }
+
+  .homePage .heroContent {
+    padding: 22px;
+    border-radius: 14px;
   }
 
   .homePage .heroContent h1 {
@@ -240,5 +316,85 @@
 
   .homePage .heroContent p {
     font-size: 14px;
+  }
+
+  .homePage .heroButtons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .homePage .primaryBtn,
+  .homePage .secondaryBtn {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 400px) {
+  .homePage .heroContent h1 {
+    font-size: 22px;
+  }
+
+  .homePage .heroContent p {
+    font-size: 13px;
+  }
+}
+
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .homePage .hero {
+    height: 60vh;
+    min-height: 420px;
+  }
+
+  .homePage .heroContent {
+    padding: 20px;
+  }
+
+  .homePage .heroContent h1 {
+    font-size: 26px;
+  }
+
+  .homePage .heroContent p {
+    font-size: 14px;
+  }
+
+  .homePage section {
+    padding: 40px 15px;
+  }
+
+  .homePage .subjectGrid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .homePage .cardContent {
+    padding: 14px;
+  }
+
+  .homePage .cardContent h3 {
+    font-size: 16px;
+  }
+
+  .homePage .cardContent p {
+    font-size: 13px;
+  }
+
+  .homePage .cardContent button {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 400px) {
+  .homePage .heroContent h1 {
+    font-size: 22px;
+  }
+
+  .homePage .heroContent p {
+    font-size: 13px;
   }
 }
