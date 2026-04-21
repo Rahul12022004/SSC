@@ -52,7 +52,7 @@ function CourseCard({ title, desc, image }) {
       <div className="courseContent">
         <h3>{title}</h3>
         <p>{desc}</p>
-        <button>Comming Soon..</button>
+        <button>Coming Soon..</button>
       </div>
     </div>
   );
@@ -71,7 +71,7 @@ function Courses() {
     },
     {
       title: "SSC CHSL",
-      desc: "For LDC, DEO, and Postal Assistant posts (12th pass).",
+      desc: "For LDC, DEO  (12th pass).",
       image: img2,
     },
     {
