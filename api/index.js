@@ -4,6 +4,16 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 
+import authRoutes from "./routes/auth.js";
+import couponRoutes from "./routes/coupon.js";
+import quizRoutes from "./routes/quiz.js";
+
+const app = express();
+
+// -----------------------------
+// ✅ CORS (FIXED PROPERLY)
+// -----------------------------
+
 // ✅ Load dotenv ONLY locally
 if (process.env.NODE_ENV !== "production") {
   const dotenv = await import("dotenv");
@@ -12,16 +22,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 
-import authRoutes from "./routes/auth.js";
-import couponRoutes from "./routes/coupon.js";
-import cameraRoutes from "./routes/camera.js";
-import quizRoutes from "./routes/quiz.js";
-
-const app = express();
-
-// -----------------------------
-// ✅ CORS (FIXED PROPERLY)
-// -----------------------------
 app.use(cors({
   origin: [
     "http://localhost:5173", // or 3000 (your local frontend)
@@ -36,6 +36,7 @@ app.use(cors({
 // -----------------------------
 app.use(express.json());
 app.use(cookieParser());
+
 
 // -----------------------------
 // 🔐 SESSION (IMPROVED)
@@ -60,7 +61,6 @@ await connectDB();
 // -----------------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/coupon", couponRoutes);
-app.use("/api/camera", cameraRoutes);
 app.use("/api/quiz", quizRoutes);
 
 // -----------------------------

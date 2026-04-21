@@ -5,6 +5,27 @@
   box-sizing: border-box;
 }
 
+.homePage .hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center */
+  position: relative;
+}
+
+.homePage .heroContainer {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+
+  display: flex;
+  justify-content: center; /* center */
+  align-items: center;
+  text-align: center;
+  z-index: 9;
+}
+
+
 /* ================= PAGE ================= */
 .homePage {
   min-height: 100vh;
@@ -13,8 +34,8 @@
 
 /* ================= HERO ================= */
 .homePage .hero {
-  height: 90vh;
-  min-height: 520px;
+  width: 100%;
+  min-height: 100vh; /* always full screen */
   position: relative;
   overflow: hidden;
 }
@@ -26,43 +47,50 @@
   z-index: 1;
 }
 
+/* IMAGE */
 .homePage .heroSlide {
   width: 100%;
   height: 100%;
   background-size: cover;
   background-position: center;
-
-  filter: brightness(0.6);
 }
 
-/* OVERLAY (MORE DEPTH) */
+/* OVERLAY */
 .homePage .heroOverlay {
   position: absolute;
   inset: 0;
   z-index: 2;
 
   background:
-    radial-gradient(circle at 20% 40%, rgba(247,127,0,0.25), transparent 50%),
-    linear-gradient(to right, rgba(11,37,69,0.95) 30%, rgba(11,37,69,0.6) 60%, transparent 100%);
+    linear-gradient(to bottom, rgba(11,37,69,0.7), rgba(11,37,69,0.9));
 }
 
 /* CONTAINER */
-.homePage .heroContainer {
-  position: relative;
-  z-index: 3;
-  max-width: 1200px;
-  margin: auto;
-  height: 100%;
+.homePage .heroContent {
+  width: 100%;
+  max-width: 750px;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 0 20px;
 }
+
 
 /* CONTENT */
 .homePage .heroContent {
-  max-width: 550px;
+  max-width: 800px;
+  width: 100%;
   color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* center everything */
+}
+
+.homePage .heroBadge {
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
 }
 
 /* BADGE */
@@ -70,7 +98,7 @@
   display: inline-block;
   margin-bottom: 15px;
   padding: 6px 12px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   font-size: 13px;
   backdrop-filter: blur(6px);
@@ -78,32 +106,34 @@
 
 /* TITLE */
 .homePage .heroContent h1 {
-  font-size: 52px;
+  font-size: 56px;
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
+
 .homePage .heroContent h1 span {
-  color: #F77F00;
+  color: #f77f00;
 }
 
 /* TEXT */
 .homePage .heroContent p {
   font-size: 18px;
-  opacity: 0.9;
-  margin-bottom: 26px;
+  max-width: 650px;  /* prevents stretching */
+  margin-bottom: 28px;
 }
+
 
 /* BUTTONS */
 .homePage .heroButtons {
   display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center; /* CENTER BUTTONS */
 }
 
 .homePage .primaryBtn {
-  background: #F77F00;
+  background: #f77f00;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -120,7 +150,7 @@
 
 .homePage .secondaryBtn {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -129,31 +159,8 @@
 }
 
 .homePage .secondaryBtn:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
-
-
-/* ================= RESPONSIVE ================= */
-
-/* TABLET */
-@media (max-width: 900px) {
-  .homePage .hero {
-    height: 75vh;
-  }
-
-  .homePage .heroContent {
-    padding: 30px;
-  }
-
-  .homePage .heroContent h1 {
-    font-size: 34px;
-  }
-
-  .homePage .heroContent p {
-    font-size: 16px;
-  }
-}
-
 
 /* ================= SECTION ================= */
 .homePage section {
@@ -187,7 +194,6 @@
 /* IMAGE */
 .homePage .imgWrapper {
   width: 100%;
-  /* aspect-ratio: 16 / 9; */
   overflow: hidden;
   position: relative;
   background: #f1f5f9;
@@ -197,9 +203,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-
   opacity: 0;
-  transition: opacity 0.4s ease, transform 0.5s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s ease;
 }
 
 .homePage .img.show {
@@ -224,8 +231,12 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 /* CONTENT */
@@ -263,6 +274,7 @@
 
 /* ================= RESPONSIVE ================= */
 
+/* TABLET */
 @media (max-width: 900px) {
   .homePage .heroContent h1 {
     font-size: 36px;
@@ -271,11 +283,30 @@
   .homePage .heroContent p {
     font-size: 16px;
   }
+
+  .homePage .subjectGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+/* MOBILE */
 @media (max-width: 600px) {
   .homePage .hero {
-    height: 70vh;
+    min-height: 100vh;
+    padding: 40px 0;
+  }
+
+  .homePage .heroOverlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(11, 37, 69, 0.85),
+      rgba(11, 37, 69, 0.85)
+    );
+  }
+
+   .homePage .hero {
+    padding: 40px 0;
+    justify-content: center; /* horizontal center */
   }
 
   .homePage .heroContainer {
@@ -284,81 +315,28 @@
   }
 
   .homePage .heroContent {
-    max-width: 100%;
-  }
-
-  .homePage .heroButtons {
-    flex-direction: column;
-  }
-
-  .homePage .primaryBtn,
-  .homePage .secondaryBtn {
     width: 100%;
-  }
-}
-
-
-/* MOBILE */
-@media (max-width: 600px) {
-  .homePage .hero {
-    height: 65vh;
-    min-height: 420px;
-  }
-
-  .homePage .heroContent {
-    padding: 22px;
-    border-radius: 14px;
-  }
-
-  .homePage .heroContent h1 {
-    font-size: 26px;
-  }
-
-  .homePage .heroContent p {
-    font-size: 14px;
-  }
-
-  .homePage .heroButtons {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .homePage .primaryBtn,
-  .homePage .secondaryBtn {
-    width: 100%;
-    padding: 10px;
-  }
-}
-
-/* SMALL MOBILE */
-@media (max-width: 400px) {
-  .homePage .heroContent h1 {
-    font-size: 22px;
-  }
-
-  .homePage .heroContent p {
-    font-size: 13px;
-  }
-}
-
-
-/* MOBILE */
-@media (max-width: 600px) {
-  .homePage .hero {
-    height: 60vh;
-    min-height: 420px;
-  }
-
-  .homePage .heroContent {
     padding: 20px;
   }
 
   .homePage .heroContent h1 {
-    font-size: 26px;
+    font-size: 32px;
+    line-height: 1.3;
   }
 
   .homePage .heroContent p {
-    font-size: 14px;
+    font-size: 15px;
+  }
+
+  .homePage .heroButtons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .homePage .primaryBtn,
+  .homePage .secondaryBtn {
+    width: 100%;
+    padding: 12px;
   }
 
   .homePage section {
@@ -367,31 +345,13 @@
 
   .homePage .subjectGrid {
     grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .homePage .cardContent {
-    padding: 14px;
-  }
-
-  .homePage .cardContent h3 {
-    font-size: 16px;
-  }
-
-  .homePage .cardContent p {
-    font-size: 13px;
-  }
-
-  .homePage .cardContent button {
-    width: 100%;
-    padding: 10px;
   }
 }
 
 /* SMALL MOBILE */
 @media (max-width: 400px) {
   .homePage .heroContent h1 {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .homePage .heroContent p {

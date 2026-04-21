@@ -8,8 +8,8 @@ import reasoningImg from "../assets/images/Reasoning.jpg";
 import englishImg from "../assets/images/English.jpg";
 import gkImg from "../assets/images/General-Awareness.jpg";
 
-import hero1 from "../assets/images/home1.jpeg";
-import hero2 from "../assets/images/home2.jpeg";
+import hero1 from "../assets/images/home3.jpeg";
+import hero2 from "../assets/images/home4.jpeg";
 
 function ImageCard({ src, title, desc, delay }) {
   const [loaded, setLoaded] = useState(false);

@@ -8,26 +8,28 @@ function Tests() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [tests, setTests] = useState([{ id: 1, title: "Mock Test 1" }]);
+  const [tests] = useState([
+    { id: 1, title: "Mock Test 1" }
+  ]);
 
-  const openQuiz = (id) => {
+  // ✅ open full exam (dashboard)
+  const openExam = () => {
     const newWindow = window.open(
-      `/quiz/${id}`,
+      `/exam`,
       "_blank",
-      `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`,
+      `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`
     );
 
     if (newWindow) newWindow.focus();
   };
 
-  const handleStartQuiz = (id) => {
+  const handleStartQuiz = () => {
     if (!user) {
-      // Redirect to login with redirect info
       navigate("/login", {
-        state: { redirectTo: `/quiz/${id}` },
+        state: { redirectTo: "/exam" }
       });
     } else {
-      openQuiz(id);
+      openExam();
     }
   };
 
@@ -36,20 +38,11 @@ function Tests() {
       <div className="header">
         <h1>Tests</h1>
 
-        {/* ✅ ADMIN BUTTONS */}
+        {/* ADMIN ACTIONS */}
         {user?.roleLevel >= 3 && (
           <div className="adminActions">
-            {/* CREATE QUIZ */}
             <button className="addBtn" onClick={() => navigate("/create-quiz")}>
               <FiPlus /> Create Quiz
-            </button>
-
-            {/* 🎥 RECORDINGS */}
-            <button
-              className="recordBtn"
-              onClick={() => navigate("/recordings")}
-            >
-              <FiVideo /> Recordings
             </button>
           </div>
         )}
@@ -61,8 +54,8 @@ function Tests() {
           <div key={t.id} className="testCard">
             <h3>{t.title}</h3>
 
-            <button className="startBtn" onClick={() => handleStartQuiz(t.id)}>
-              <FiPlay /> Start Quiz
+            <button className="startBtn" onClick={handleStartQuiz}>
+              <FiPlay /> Start Exam
             </button>
           </div>
         ))}

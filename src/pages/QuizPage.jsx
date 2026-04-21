@@ -9,17 +9,19 @@ import {
 import { BASE_URL } from "../context/AuthContext.jsx";
 import "../styles/quiz.css";
 import { FiLoader } from "react-icons/fi";
+import { useParams } from "react-router-dom";
+import { sectionsData } from "../data/sections.js";
 
 function QuizPage() {
+  const { id } = useParams();
+  const section = sectionsData.find((s) => s.id === id);
+
   const [started, setStarted] = useState(false);
   const [agree, setAgree] = useState(false);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [status, setStatus] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(300);
   const [showSubmit, setShowSubmit] = useState(false);
-
-  const [cameraAllowed, setCameraAllowed] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,118 +30,19 @@ function QuizPage() {
   const [showViolation, setShowViolation] = useState(false);
   const quizStartTimeRef = useRef(null);
 
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const streamRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
-  const quiz = {
-    title: "General Aptitude Quiz",
-    questions: [
-      // MATH
-      {
-        question: "5 + 7 = ?",
-        options: ["10", "11", "12", "13"],
-      },
-      {
-        question: "15 × 2 = ?",
-        options: ["20", "25", "30", "35"],
-      },
-      {
-        question: "Square root of 81?",
-        options: ["7", "8", "9", "10"],
-      },
-      {
-        question: "12 ÷ 4 = ?",
-        options: ["2", "3", "4", "5"],
-      },
-      {
-        question: "What is 10% of 200?",
-        options: ["10", "20", "30", "40"],
-      },
+  const [flagged, setFlagged] = useState([]);
 
-      // ENGLISH
-      {
-        question: "Synonym of 'Happy'?",
-        options: ["Sad", "Joyful", "Angry", "Tired"],
-      },
-      {
-        question: "Antonym of 'Big'?",
-        options: ["Large", "Huge", "Small", "Wide"],
-      },
-      {
-        question: "Choose correct spelling:",
-        options: ["Recieve", "Receive", "Recive", "Receve"],
-      },
-      {
-        question: "Fill in the blank: She ___ going to school.",
-        options: ["is", "are", "am", "be"],
-      },
-      {
-        question: "Plural of 'Child'?",
-        options: ["Childs", "Children", "Childes", "Childer"],
-      },
+  if (!section) return <h2>Section Not Found</h2>;
 
-      // SCIENCE
-      {
-        question: "Water freezes at?",
-        options: ["0°C", "10°C", "50°C", "100°C"],
-      },
-      {
-        question: "Sun is a?",
-        options: ["Planet", "Star", "Satellite", "Asteroid"],
-      },
-      {
-        question: "Human body has how many lungs?",
-        options: ["1", "2", "3", "4"],
-      },
-      {
-        question: "Which gas do plants take in?",
-        options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
-      },
-      {
-        question: "Earth revolves around?",
-        options: ["Moon", "Mars", "Sun", "Venus"],
-      },
-
-      // MIXED
-      {
-        question: "Which is a vowel?",
-        options: ["B", "C", "A", "D"],
-      },
-      {
-        question: "What is 9 x 9?",
-        options: ["72", "81", "90", "99"],
-      },
-      {
-        question: "Which part of plant makes food?",
-        options: ["Root", "Stem", "Leaf", "Flower"],
-      },
-      {
-        question: "Opposite of 'Fast'?",
-        options: ["Quick", "Slow", "Rapid", "Speed"],
-      },
-      {
-        question: "What is H2O?",
-        options: ["Oxygen", "Hydrogen", "Water", "Salt"],
-      },
-    ],
-  };
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    const askCamera = async () => {
-      try {
-        await navigator.mediaDevices.getUserMedia({ video: true });
-        setCameraAllowed(true);
-      } catch (err) {
-        alert("Camera permission is required to continue!");
-        setTimeout(askCamera, 1000);
-      }
-    };
-
-    askCamera();
-  }, []);
+    if (section) {
+      setTimeLeft(section.time);
+    }
+  }, [section]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -232,54 +135,21 @@ function QuizPage() {
     return () => clearInterval(t);
   }, [started]);
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
-
-      // 🔥 remove audio tracks if any (extra safety)
-      stream.getAudioTracks().forEach((track) => track.stop());
-
-      streamRef.current = stream;
-      // 🎥 MediaRecorder setup
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "video/webm; codecs=vp9",
-      });
-      chunksRef.current = []; // 🔥 important fix
-      mediaRecorderRef.current = mediaRecorder;
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.start(1000); // 🔥 record in chunks every 1 sec
-
-      setCameraAllowed(true);
-    } catch {
-      alert("Camera permission required!");
-    }
-  };
-
   const handleStart = async () => {
     try {
-      await startCamera();
-
       const el = document.documentElement;
 
       if (el.requestFullscreen) {
         await el.requestFullscreen();
       }
 
-      quizStartTimeRef.current = Date.now(); // ✅ FIX
+      quizStartTimeRef.current = Date.now();
       setStarted(true);
     } catch {
-      alert("Camera permission required!");
+      alert("Failed to start quiz!");
     }
   };
+
   const formatTime = () => {
     const m = String(Math.floor(timeLeft / 60)).padStart(2, "0");
     const s = String(timeLeft % 60).padStart(2, "0");
@@ -302,7 +172,7 @@ function QuizPage() {
       stat[current] = "skipped";
       setStatus(stat);
     }
-    setCurrent((c) => Math.min(c + 1, quiz.questions.length - 1));
+    setCurrent((c) => Math.min(c + 1, section.questions.length - 1));
   };
 
   const handlePrev = () => {
@@ -310,51 +180,39 @@ function QuizPage() {
   };
 
   const handleLast = () => {
-    setCurrent(quiz.questions.length - 1);
+    setCurrent(section.questions.length - 1);
   };
 
-  const total = quiz.questions.length;
+  const total = section.questions.length;
 
-  const handleSubmitQuiz = () => {
-    if (!mediaRecorderRef.current || isSubmitting) return;
+  const handleSubmitQuiz = async () => {
+    if (isSubmitting) return;
 
-    setIsSubmitting(true); // 🔥 start loading
+    setIsSubmitting(true);
 
-    const recorder = mediaRecorderRef.current;
+    try {
+      await fetch(`${BASE_URL}/quiz/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          answers,
+          violations,
+        }),
+      });
 
-    recorder.onstop = async () => {
-      try {
-        const blob = new Blob(chunksRef.current, {
-          type: "video/webm",
-        });
-
-        const formData = new FormData();
-        formData.append("video", blob, `recording_${Date.now()}.webm`);
-        formData.append("violations", JSON.stringify(violations));
-
-        await fetch(`${BASE_URL}/camera/upload-video`, {
-          method: "POST",
-          body: formData,
-        });
-
-        alert("Quiz Submitted!");
-        window.close();
-      } catch (err) {
-        console.error("Upload failed:", err);
-        setIsSubmitting(false); // ❗ reset if failed
-      }
-    };
-
-    recorder.stop();
-
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
+      alert("Quiz Submitted!");
+      window.close();
+    } catch (err) {
+      console.error(err);
+      setIsSubmitting(false);
     }
   };
 
   // ✅ SUBMIT SCREEN
   if (showSubmit) {
-    const total = quiz.questions.length;
+    const total = section.questions.length;
     const attempted = answers.filter((a) => a !== undefined).length;
     const skipped = total - attempted;
 
@@ -423,7 +281,6 @@ function QuizPage() {
           <h2>Quiz Instructions</h2>
 
           <ul>
-            <li>Camera access is required</li>
             <li>Do not switch tabs</li>
             <li>Timer will auto submit</li>
             <li>Each question must be answered carefully</li>
@@ -441,12 +298,6 @@ function QuizPage() {
             </div>
           </div>
 
-          <p style={{ color: cameraAllowed ? "green" : "red" }}>
-            {cameraAllowed
-              ? "Camera access granted"
-              : " Waiting for camera permission..."}
-          </p>
-
           <div className="agreeBox">
             <input
               type="checkbox"
@@ -463,20 +314,20 @@ function QuizPage() {
     );
   }
 
-  const q = quiz.questions[current];
+  const q = section.questions[current];
 
   return (
     <div className="quizPage">
       {/* HEADER */}
       <div className="quizHeader">
-        <h1>{quiz.title}</h1>
+        <h1>{section.title}</h1>
         <div className="timerBox">
           <div className="timer">
             <FiClock /> {formatTime()}
           </div>
 
           <div className="negativeMarking">
-            Negative Marking: <span>OFF</span>
+            Negative Marking: <span>{section.negative}</span>
           </div>
         </div>
       </div>
@@ -484,36 +335,84 @@ function QuizPage() {
       <div className="divider"></div>
 
       {/* TRACKER */}
-      <div className="tracker">
-        {quiz.questions.map((_, i) => (
-          <div
-            key={i}
-            className={`box 
-            ${status[i] === "answered" ? "green" : ""}
-            ${status[i] === "skipped" ? "yellow" : ""}
-            ${i === current ? "active" : ""}`}
-          />
-        ))}
-      </div>
-
-      {/* QUESTION */}
-
-      <div className="questionCard">
-        <h2>
-          Q{current + 1}. {q.question}
-        </h2>
-
-        <div className="optionsGrid">
-          {q.options.map((opt, i) => (
-            <label key={i} className="optionItem">
-              <input
-                type="radio"
-                checked={answers[current] === i}
-                onChange={() => handleAnswer(i)}
-              />
-              {opt}
-            </label>
+      <div className="examLayout">
+        {/* SIDE PANEL */}
+        <div className="sidePanel">
+          {section.questions.map((_, i) => (
+            <div
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`qBox
+          ${status[i] === "answered" ? "green" : ""}
+          ${status[i] === "skipped" ? "yellow" : ""}
+          ${flagged[i] ? "red" : ""}
+          ${i === current ? "active" : ""}
+        `}
+            >
+              {i + 1}
+            </div>
           ))}
+        </div>
+
+        {/* MAIN CONTENT */}
+        <div className="quizContent">
+          <div className="questionCard">
+            <h2>
+              Q{current + 1}. {q.question}
+            </h2>
+
+            <div className="optionsGrid">
+              {q.options.map((opt, i) => (
+                <label key={i} className="optionItem">
+                  <input
+                    type="radio"
+                    checked={answers[current] === i}
+                    onChange={() => handleAnswer(i)}
+                  />
+                  {opt}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* NAV */}
+          <div className="navBar">
+            <div className="navLeft">
+              <button onClick={handlePrev}>
+                <FiArrowLeft /> Previous
+              </button>
+
+              <button onClick={() => setCurrent(0)}>
+                <FiSkipBack /> First
+              </button>
+
+              <button onClick={handleLast}>
+                <FiSkipForward /> Last
+              </button>
+            </div>
+
+            {/* FLAG BUTTON */}
+            <button
+              className="flagBtn"
+              onClick={() => {
+                const f = [...flagged];
+                f[current] = !f[current];
+                setFlagged(f);
+              }}
+            >
+              🚩 {flagged[current] ? "Unflag" : "Flag"}
+            </button>
+
+            <div className="navRight">
+              {current === total - 1 ? (
+                <button onClick={() => setShowSubmit(true)}>Submit</button>
+              ) : (
+                <button onClick={handleNext}>
+                  Next <FiArrowRight />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -536,6 +435,16 @@ function QuizPage() {
             </button>
           )}
         </div>
+
+        <button
+          onClick={() => {
+            const f = [...flagged];
+            f[current] = !f[current];
+            setFlagged(f);
+          }}
+        >
+          {flagged[current] ? "Unflag" : "Flag"}
+        </button>
 
         <div className="navRight">
           {current === total - 1 ? (

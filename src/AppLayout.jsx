@@ -17,17 +17,20 @@ import Student from "./pages/OurStudent";
 import CreateQuiz from "./pages/CreateQuiz";
 import QuizPage from "./pages/QuizPage";
 import OurMentors from "./pages/OurMentors";
-
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ScheduleQuiz from "./pages/ScheduleQuiz";
-import RecordingPage from "./pages/RecordingPage";
+
+// ✅ NEW
+import ExamDashboard from "./pages/ExamDashboard";
 
 function AppLayout() {
   const location = useLocation();
 
-  // ✅ Hide Navbar/Footer on quiz page
-  const hideLayout = location.pathname.startsWith("/quiz");
+  // ✅ hide layout on ALL exam pages
+  const hideLayout =
+    location.pathname.startsWith("/quiz") ||
+    location.pathname.startsWith("/exam");
 
   return (
     <div className="appLayout">
@@ -61,7 +64,7 @@ function AppLayout() {
             path="/create-quiz"
             element={
               <ProtectedRoute minRole={3}>
-                <CreateQuiz />{" "}
+                <CreateQuiz />
               </ProtectedRoute>
             }
           />
@@ -70,20 +73,32 @@ function AppLayout() {
             path="/schedule/:id"
             element={
               <ProtectedRoute minRole={3}>
-                <ScheduleQuiz />{" "}
+                <ScheduleQuiz />
               </ProtectedRoute>
             }
           />
 
+          {/* ✅ NEW: EXAM DASHBOARD */}
           <Route
-            path="/recordings"
+            path="/exam"
             element={
-              <ProtectedRoute minRole={3}>
-                <RecordingPage />{" "}
+              <ProtectedRoute minRole={1}>
+                <ExamDashboard />
               </ProtectedRoute>
             }
           />
 
+          {/* ✅ SECTION QUIZ */}
+          <Route
+            path="/exam/:id"
+            element={
+              <ProtectedRoute minRole={1}>
+                <QuizPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ❗ OPTIONAL: keep old route (if needed) */}
           <Route
             path="/quiz/:id"
             element={

@@ -417,6 +417,85 @@
   animation: fadeIn 0.3s ease;
 }
 
+/* ====== MAIN LAYOUT ====== */
+.examLayout {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* ====== SIDE PANEL ====== */
+.sidePanel {
+  width: 260px;
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  height: fit-content;
+}
+
+/* QUESTION BOX */
+.qBox {
+  width: 45px;
+  height: 45px;
+  background: #334155;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* STATES */
+.qBox.green {
+  background: #22c55e;
+}
+
+.qBox.yellow {
+  background: #eab308;
+}
+
+.qBox.red {
+  background: #ef4444;
+}
+
+.qBox.active {
+  border: 3px solid #fff;
+  transform: scale(1.05);
+}
+
+/* ====== RIGHT CONTENT ====== */
+.quizContent {
+  flex: 1;
+}
+
+/* FLAG BUTTON */
+.flagBtn {
+  background: #f97316;
+  color: white;
+}
+
+.flagBtn:hover {
+  background: #ea580c;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 900px) {
+  .examLayout {
+    flex-direction: column;
+  }
+
+  .sidePanel {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
