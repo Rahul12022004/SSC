@@ -52,7 +52,7 @@ function CourseCard({ title, desc, image }) {
       <div className="courseContent">
         <h3>{title}</h3>
         <p>{desc}</p>
-        <button>Start</button>
+        <button>Comming Soon..</button>
       </div>
     </div>
   );
