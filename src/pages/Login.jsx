@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 import "../styles/login.css";
 
@@ -21,10 +23,13 @@ function Login() {
 
   const redirectTo = location.state?.redirectTo;
 
-  const refs = {
-    email: useRef(),
-    password: useRef(),
-  };
+ const emailRef = useRef();
+const passwordRef = useRef();
+
+const refs = {
+  email: emailRef,
+  password: passwordRef,
+};
 
   useEffect(() => {
     if (Object.keys(errors).length === 0) return;
@@ -183,7 +188,7 @@ function Login() {
         </form>
 
         <div className="extraText">
-          Don't have an account? <a href="/register">Register</a>
+          Don't have an account? <Link to="/register">Register</Link>
         </div>
       </div>
     </div>
