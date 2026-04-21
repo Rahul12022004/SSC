@@ -43,10 +43,12 @@
 
   border-radius: 10px;
   border: 1px solid #e0e0e0;
-  background: #f9fafb; /* 🔥 light input */
+  background: #f9fafb;
 
   font-size: 14px;
   transition: all 0.25s ease;
+
+  box-sizing: border-box; /* ✅ ADD THIS */
 }
 
 /* FOCUS */
@@ -173,6 +175,30 @@
 
 .registerContainer .extraText a:hover {
   color: #1d4ed8; /* darker blue */
+}
+
+.registerContainer .passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.registerContainer .passwordWrapper input {
+  padding-right: 40px; /* only difference */
+}
+
+.registerContainer .eyeIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  display: flex;           
+  align-items: center;     
+  justify-content: center; 
+
+  height: 100%;           
+  cursor: pointer;
+  color: #555;
 }
 
 /* RESPONSIVE */

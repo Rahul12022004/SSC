@@ -1,7 +1,8 @@
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { BsCircle } from "react-icons/bs";
 import "../styles/register.css";
 
@@ -9,6 +10,9 @@ function Register() {
   const navigate = useNavigate();
   const { registerUser } = useAuth();
   const [errors, setErrors] = useState({});
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (Object.keys(errors).length === 0) return;
@@ -254,14 +258,25 @@ function Register() {
           />
           {errors.email && <p className="error">{errors.email}</p>}
 
-          <input
-            ref={refs.password}
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            maxLength={15}
-          />
+          <div className="passwordWrapper">
+            <input
+              ref={refs.password}
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              maxLength={15}
+            />
+
+            <span
+              className="eyeIcon"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
           {errors.password && <p className="error">{errors.password}</p>}
 
           <div className="passwordRules">
@@ -299,14 +314,25 @@ function Register() {
             </div>
           </div>
 
-          <input
-            ref={refs.confirmPassword}
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            onChange={handleChange}
-            maxLength={15}
-          />
+          <div className="passwordWrapper">
+            <input
+              ref={refs.confirmPassword}
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              maxLength={15}
+            />
+
+            <span
+              className="eyeIcon"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
           {errors.confirmPassword && (
             <p className="error">{errors.confirmPassword}</p>
           )}

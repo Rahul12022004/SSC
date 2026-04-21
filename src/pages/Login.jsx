@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -18,18 +19,18 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
-
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
 
   const redirectTo = location.state?.redirectTo;
 
- const emailRef = useRef();
-const passwordRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
-const refs = {
-  email: emailRef,
-  password: passwordRef,
-};
+  const refs = {
+    email: emailRef,
+    password: passwordRef,
+  };
 
   useEffect(() => {
     if (Object.keys(errors).length === 0) return;
@@ -171,14 +172,25 @@ const refs = {
           {errors.email && <p className="error">{errors.email}</p>}
 
           {/* PASSWORD */}
-          <input
-            ref={refs.password}
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          {/* PASSWORD */}
+          <div className="passwordWrapper">
+            <input
+              ref={refs.password}
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+
+            <span
+              className="eyeIcon"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
           {errors.password && <p className="error">{errors.password}</p>}
 
           {/* BUTTON */}
