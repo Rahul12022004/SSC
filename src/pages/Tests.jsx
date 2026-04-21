@@ -12,25 +12,28 @@ function Tests() {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [message, setMessage] = useState("");
+
   // 🔥 FETCH QUIZZES
-  useEffect(() => {
-    const fetchTests = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/quiz/all`);
-        const data = await res.json();
+  const fetchTests = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/quiz/all`);
+      const data = await res.json();
 
-        if (data.success) {
-          setTests(data.quizzes || []);
+      if (data.success) {
+        if (data.quizzes && data.quizzes.length > 0) {
+          setTests(data.quizzes);
+        } else {
+          setTests([]);
+          setMessage(data.message || "No quiz data found");
         }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchTests();
-  }, []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 🔥 countdown refresh
   const [, setTick] = useState(0);
