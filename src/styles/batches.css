@@ -1,59 +1,214 @@
 .batchesPage {
+  background: #f1f5f9;
   min-height: 100vh;
-  background: #F8FAFC;
-  padding: 90px 20px 40px;
+  padding: 90px 0;
 }
 
-.batchesPage .header {
+/* MAIN WRAPPER */
+.batchesPage .batchesContainer {
+  width: 92%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* SUBJECT WRAPPER (OUTER CARD) */
+.batchesPage .subjectWrapper {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* TOP SECTION */
+.batchesPage .subjectTop {
+  background: linear-gradient(to right, #eef4ff, #e8f7ef);
+  border-radius: 12px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  cursor: pointer;
 }
 
-.batchesPage h1 {
-  color: #0B2545;
+/* TITLE */
+.batchesPage .subjectTop h2 {
+  font-size: 22px;
+  color: #0b2545;
+  margin-bottom: 5px;
 }
 
-.batchesPage .addBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #F77F00;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
+/* TEXT */
+.batchesPage .subjectTop p {
+  font-size: 14px;
+  color: #64748b;
 }
 
-.batchesPage .batchCard {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-}
-
-/* FORM BOX */
-.batchesPage .batchesPage .formBox {
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+/* BADGES */
+.batchesPage .badges {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  margin: 8px 0;
 }
 
-.batchesPage .formBox input {
-  flex: 1;
+.batchesPage .badges span {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.batchesPage .blue {
+  background: #e0ecff;
+  color: #2563eb;
+}
+
+.batchesPage .green {
+  background: #d1fae5;
+  color: #059669;
+}
+
+/* RIGHT INFO BOXES */
+.batchesPage .rightInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.batchesPage .infoBox {
+  background: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  min-width: 80px;
+}
+
+.batchesPage .infoBox span {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.batchesPage .infoBox strong {
+  display: block;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* ROTATE */
+.batchesPage .rotate {
+  transform: rotate(180deg);
+  transition: 0.3s;
+}
+
+/* ========================= */
+/* BATCH LIST (INNER AREA) */
+/* ========================= */
+
+.batchesPage .batchList {
+  margin-top: 15px;
   padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
 }
 
-.batchesPage .formBox button {
-  background: #F77F00;
+/* EACH BATCH CARD */
+.batchesPage .batchItem {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* HEADER */
+.batchesPage .batchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.batchesPage .batchHeader h3 {
+  color: #0b2545;
+  font-size: 18px;
+}
+
+.batchesPage .batchHeader p {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+/* ACTION ICONS */
+.batchesPage .actions {
+  display: flex;
+  gap: 14px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.batchesPage .actions svg:hover {
+  color: #f77f00;
+}
+
+/* ========================= */
+/* DETAIL BOXES */
+/* ========================= */
+
+.batchesPage .batchDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 18px;
+}
+
+.batchesPage .detailBox {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.batchesPage .detailBox span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.batchesPage .detailBox strong {
+  display: block;
+  margin-top: 4px;
+  color: #0b2545;
+  font-size: 15px;
+}
+
+/* FOOTER */
+.batchesPage .batchFooter {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+/* ENROLL BUTTON */
+.batchesPage .enrollBtn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: not-allowed;
+
+  /* Disabled look */
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+
+/* (Future Active State) */
+.batchesPage .enrollBtn.active {
+  background: #f77f00;
   color: white;
-  padding: 10px 15px;
-  border-radius: 6px;
+  cursor: pointer;
+}
+
+.batchesPage .enrollBtn.active:hover {
+  background: #d96c00;
 }
