@@ -9,7 +9,9 @@ import {
   FiCheckCircle,
   FiPlay,
   FiSend,
+  FiSave, // ✅ ADD THIS
 } from "react-icons/fi";
+
 import { BASE_URL } from "../context/AuthContext.jsx";
 import "../styles/quiz.css";
 import { FiLoader } from "react-icons/fi";
@@ -141,6 +143,31 @@ function QuizPage() {
     }
   };
 
+  const handleSaveAndExit = () => {
+    console.log("💾 Saving progress...");
+
+    // ✅ Save to localStorage
+    localStorage.setItem(
+      `quiz_${id}`,
+      JSON.stringify({
+        answers,
+        current,
+        timeLeft,
+        flagged,
+        status,
+      }),
+    );
+
+    // ✅ Navigate to dashboard as in-progress
+    navigate("/exam", {
+      state: {
+        sectionId: id,
+        status: "in-progress",
+        spent: Math.floor((section.time * 60 - timeLeft) / 60),
+      },
+    });
+  };
+
   // ✅ SUBMIT SCREEN
   if (showSubmit) {
     const total = section.questions.length;
@@ -207,76 +234,78 @@ function QuizPage() {
   }
 
   // ✅ INSTRUCTION PAGE
-if (!started) {
-  return (
-    <div className="quizPage">
-      <div className="instructionWrapper">
+  if (!started) {
+    return (
+      <div className="quizPage">
+        <div className="instructionWrapper">
+          <div className="instructionCard">
+            <h2> Quiz Instructions</h2>
 
-        <div className="instructionCard">
-          <h2> Quiz Instructions</h2>
+            <div className="instructionSection">
+              <h3> General Rules</h3>
+              <ul>
+                <li>This is a timed quiz. Timer will start once you begin.</li>
+                <li>Each question has only one correct answer.</li>
+                <li>You can navigate between questions freely.</li>
+                <li>Make sure to review your answers before submitting.</li>
+              </ul>
+            </div>
 
-          <div className="instructionSection">
-            <h3> General Rules</h3>
-            <ul>
-              <li>This is a timed quiz. Timer will start once you begin.</li>
-              <li>Each question has only one correct answer.</li>
-              <li>You can navigate between questions freely.</li>
-              <li>Make sure to review your answers before submitting.</li>
-            </ul>
-          </div>
+            <div className="instructionSection warning">
+              <h3> Important Guidelines</h3>
+              <ul>
+                <li>
+                  Do not press <strong>ESC</strong> or exit fullscreen.
+                </li>
+                <li>Switching tabs or minimizing may count as violation.</li>
+                <li>
+                  After <strong>4 violations</strong>, quiz will auto-submit.
+                </li>
+                <li>Ensure stable internet and device before starting.</li>
+              </ul>
+            </div>
 
-          <div className="instructionSection warning">
-            <h3> Important Guidelines</h3>
-            <ul>
-              <li>Do not press <strong>ESC</strong> or exit fullscreen.</li>
-              <li>Switching tabs or minimizing may count as violation.</li>
-              <li>After <strong>4 violations</strong>, quiz will auto-submit.</li>
-              <li>Ensure stable internet and device before starting.</li>
-            </ul>
-          </div>
-
-          <div className="instructionSection legend">
-            <h3> Question Status</h3>
-            <div className="legendRow">
-              <div className="legendItem">
-                <span className="box gray"></span> Not Visited
-              </div>
-              <div className="legendItem">
-                <span className="box green"></span> Answered
-              </div>
-              <div className="legendItem">
-                <span className="box yellow"></span> Skipped
-              </div>
-              <div className="legendItem">
-                <span className="box red"></span> Flagged
+            <div className="instructionSection legend">
+              <h3> Question Status</h3>
+              <div className="legendRow">
+                <div className="legendItem">
+                  <span className="box gray"></span> Not Visited
+                </div>
+                <div className="legendItem">
+                  <span className="box green"></span> Answered
+                </div>
+                <div className="legendItem">
+                  <span className="box yellow"></span> Skipped
+                </div>
+                <div className="legendItem">
+                  <span className="box red"></span> Flagged
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="agreeBox">
-            <input
-              type="checkbox"
-              id="agree"
-              onChange={(e) => setAgree(e.target.checked)}
-            />
-            <label htmlFor="agree">
-              I have read all instructions and agree to follow them.
-            </label>
-          </div>
+            <div className="agreeBox">
+              <input
+                type="checkbox"
+                id="agree"
+                onChange={(e) => setAgree(e.target.checked)}
+              />
+              <label htmlFor="agree">
+                I have read all instructions and agree to follow them.
+              </label>
+            </div>
 
-          <button
-            className="startBtn"
-            disabled={!agree}
-            onClick={handleStart}
-          >
-            <FiPlay /> Start Quiz
-          </button>
+            <button
+              className="startBtn"
+              disabled={!agree}
+              onClick={handleStart}
+            >
+              <FiPlay /> Start Quiz
+            </button>
+          </div>
         </div>
-
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   const q = section.questions[current];
 
@@ -372,6 +401,11 @@ if (!started) {
 
             {/* RIGHT */}
             <div className="navRight">
+              {/* SAVE & EXIT */}
+              <button className="saveExitBtn" onClick={handleSaveAndExit}>
+                <FiSave /> Save & Exit
+              </button>
+
               {current === total - 1 ? (
                 <button
                   className="submitMainBtn"

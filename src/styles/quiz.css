@@ -676,6 +676,22 @@
   cursor: not-allowed;
 }
 
+/* SAVE & EXIT BUTTON */
+.saveExitBtn {
+  background: #64748b; /* gray */
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: 0.2s;
+}
+
+.saveExitBtn:hover {
+  background: #475569;
+}
+
 /* ================= LARGE TABLETS (≤1024px) ================= */
 @media (max-width: 1024px) {
   .quizPage {
