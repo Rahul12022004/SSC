@@ -16,12 +16,12 @@ function CreateQuiz() {
 
   const [showRefreshModal, setShowRefreshModal] = useState(false);
 
-    const [quiz, setQuiz] = useState({
+  const [quiz, setQuiz] = useState({
     title: "",
     duration: 5,
     questions: [],
   });
-  
+
   const confirmRefresh = () => {
     window.location.reload();
   };
@@ -86,7 +86,7 @@ function CreateQuiz() {
   const [showSaveModal, setShowSaveModal] = useState(false);
 
   const [negativeMarking, setNegativeMarking] = useState(false);
-  const [negativeValue, setNegativeValue] = useState(-1);
+  const [negativeValue, setNegativeValue] = useState(-0.5);
 
   const [eachMarks, setEachMarks] = useState(1);
   useEffect(() => {
@@ -120,8 +120,6 @@ function CreateQuiz() {
       addQuestion(false);
     }
   }, []);
-
-
 
   const addQuestion = (shouldScroll = true) => {
     setQuiz((prev) => {
@@ -476,7 +474,14 @@ function CreateQuiz() {
               <input
                 type="checkbox"
                 checked={negativeMarking}
-                onChange={() => setNegativeMarking(!negativeMarking)}
+                onChange={() => {
+                  const newState = !negativeMarking;
+                  setNegativeMarking(newState);
+
+                  if (newState) {
+                    setNegativeValue(-0.5); // ✅ always reset to 0.5
+                  }
+                }}
               />
               <span className="slider"></span>
             </label>
@@ -484,30 +489,31 @@ function CreateQuiz() {
             {negativeMarking && (
               <input
                 type="number"
+                step="0.01"
                 className="negInput"
-                value={Math.abs(negativeValue) || ""}
-                min="1"
+                value={negativeValue ? Math.abs(negativeValue) : 0.5}
+                min="0.5"
                 max="10"
                 onChange={(e) => {
                   const val = e.target.value;
 
-                  if (val === "") {
-                    setNegativeValue("");
-                    return;
-                  }
+                  if (val === "") return; 
 
                   let num = Number(val);
                   if (isNaN(num)) return;
 
-                  // 🔥 clamp
-                  if (num < 1) num = 1;
+                  // clamp
+                  if (num < 0.5) num = 0.5;
                   if (num > 10) num = 10;
+
+                  // limit to 2 decimal places
+                  num = Math.round(num * 100) / 100;
 
                   setNegativeValue(-num);
                 }}
                 onBlur={() => {
                   if (!negativeValue || negativeValue >= 0) {
-                    setNegativeValue(-1);
+                    setNegativeValue(-0.5);
                   }
                 }}
               />

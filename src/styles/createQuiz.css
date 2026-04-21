@@ -766,6 +766,27 @@
   animation: shake 0.2s ease;
 }
 
+.createQuiz .sectionBox {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.createQuiz .sectionSettings {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.createQuiz .sectionSettings input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-3px); }
