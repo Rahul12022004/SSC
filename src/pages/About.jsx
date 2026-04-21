@@ -133,7 +133,7 @@ function About() {
         <h2>Why Choose Us</h2>
 
         <div className="featureGrid">
-          <FeatureCard title="Expert Guidance" desc="Learn from experts." />
+          <FeatureCard title="Expert Guidance" desc="Learn from the selected aspirants." />
           <FeatureCard title="Smart Practice" desc="Mock tests & quizzes." />
           <FeatureCard title="Updated Content" desc="Latest syllabus." />
           <FeatureCard title="Performance Tracking" desc="Track progress." />

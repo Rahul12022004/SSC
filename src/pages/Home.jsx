@@ -132,7 +132,7 @@ function Home() {
           <ImageCard
             src={gkImg}
             title="General Awareness"
-            desc="Stay updated with current affairs & static GK."
+            desc="Stay updated with Core GS subjects, Current Affairs & Static Gk"
             delay={0.4}
           />
         </div>
