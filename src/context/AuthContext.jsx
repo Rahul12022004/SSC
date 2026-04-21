@@ -71,6 +71,7 @@ export const AuthProvider = ({ children }) => {
         });
 
         setUser({
+          email: result.email, // ✅ ADD THIS
           role: result.role,
           roleLevel: result.roleLevel,
         });

@@ -834,6 +834,49 @@
   background: #b91c1c;
 }
 
+.createQuiz .typeSelector label {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
+
+
+
+
+/* ************************         After Cloduinry added remover the bellow line ***********************  */
+/* TOOLTIP WRAPPER */
+.createQuiz .tooltipWrapper {
+  position: relative;
+}
+
+/* TOOLTIP TEXT */
+.createQuiz .tooltipText {
+  position: absolute;
+  top: 110%; /* 👇 below arrows */
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #0b2545;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s ease;
+  z-index: 10;
+}
+
+/* SHOW ON HOVER */
+.createQuiz .tooltipWrapper:hover .tooltipText {
+  opacity: 1;
+}
+
+/* **************************** Up uniill now ********************************************** */
 /* =========================
    RESPONSIVE
 ========================= */

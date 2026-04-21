@@ -1,192 +1,246 @@
 import express from "express";
-import { Readable } from "stream";
-import axios from "axios";
-
-import cloudinary from "../utils/cloudinary.js";
+import Quiz from "../models/Quiz.js";
+import QuizSubmission from "../models/QuizSubmission.js";
 
 const router = express.Router();
 
-// ===============================
-// 🔥 Upload JSON to Cloudinary
-// ===============================
-const uploadToCloudinary = (buffer, public_id) => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "raw",
-        public_id: `quizzes/${public_id}`,
-        format: "json",
-        overwrite: true,
-      },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
-      }
-    );
+const generateQuizCode = () => {
+  const part = (len) =>
+    Math.floor(Math.random() * Math.pow(10, len))
+      .toString()
+      .padStart(len, "0");
 
-    Readable.from(buffer).pipe(stream);
-  });
+  return `${part(4)}-${part(5)}-${part(4)}`;
 };
 
-// ===============================
-// ✅ CREATE QUIZ
-// ===============================
+
 router.post("/create-quiz", async (req, res) => {
   try {
     const {
       title,
       duration,
-      eachMarks,
       negativeMarking,
       negativeValue,
+      eachMarks,
       questions,
     } = req.body;
 
-    // 🔐 AUTH CHECK
-    if (!req.session?.user || req.session.user.roleLevel < 3) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    // 🧪 VALIDATION
     if (!title || !questions || questions.length === 0) {
-      return res.json({ success: false, message: "Invalid data" });
-    }
-
-    if (!duration || duration < 1) {
-      return res.json({ success: false, message: "Invalid duration" });
-    }
-
-    if (!eachMarks || eachMarks < 1) {
-      return res.json({ success: false, message: "Invalid marks" });
-    }
-
-    if (negativeMarking && (!negativeValue || negativeValue >= 0)) {
-      return res.json({ success: false, message: "Invalid negative marking" });
-    }
-
-    for (const q of questions) {
-      if (!q.question && !q.questionImage) {
-        return res.status(400).json({ success: false, message: "Empty question" });
-      }
-
-      if (!q.options || q.options.length !== 4) {
-        return res.status(400).json({ success: false, message: "Invalid options" });
-      }
-
-      if (q.correctAnswer === "") {
-        return res.status(400).json({ success: false, message: "Correct answer missing" });
-      }
-    }
-
-    // 📊 CALCULATIONS
-    const totalQuestions = questions.length;
-    const totalMarks = totalQuestions * eachMarks;
-
-    const timestamp = Date.now();
-    const safeTitle = title.replace(/\s+/g, "-").toLowerCase();
-    const fileName = `${safeTitle}-${timestamp}`;
-
-    const quizData = {
-      title,
-      duration,
-      eachMarks,
-      totalMarks,
-      totalQuestions,
-      negativeMarking,
-      negativeValue: negativeMarking ? negativeValue : 0,
-      createdAt: timestamp,
-      scheduled: null,
-      questions,
-    };
-
-    // ☁️ Upload to Cloudinary
-    const buffer = Buffer.from(JSON.stringify(quizData));
-
-    const result = await uploadToCloudinary(buffer, fileName);
-
-    res.json({
-      success: true,
-      fileName,
-      url: result.secure_url,
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Failed to create quiz" });
-  }
-});
-
-// ===============================
-// 📥 GET QUIZ
-// ===============================
-router.get("/quiz/:fileName", async (req, res) => {
-  try {
-    const { fileName } = req.params;
-
-    const url = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/raw/upload/quizzes/${fileName}.json`;
-
-    const response = await axios.get(url);
-
-    res.json({
-      success: true,
-      quiz: response.data,
-    });
-
-  } catch (err) {
-    res.status(404).json({ success: false, message: "Quiz not found" });
-  }
-});
-
-// ===============================
-// ⏰ SCHEDULE QUIZ
-// ===============================
-router.post("/schedule-quiz", async (req, res) => {
-  try {
-    const { fileName } = req.body;
-
-    if (!req.session?.user || req.session.user.roleLevel < 3) {
-      return res.status(401).json({ success: false });
-    }
-
-    if (!fileName) {
-      return res.status(400).json({
+      return res.json({
         success: false,
-        message: "fileName is required",
+        message: "Invalid data",
       });
     }
 
-    const url = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/raw/upload/quizzes/${fileName}.json`;
+    let quizCode;
+    let exists = true;
 
-    const response = await axios.get(url);
-    const quiz = response.data;
+    // 🔥 ensure unique code
+    while (exists) {
+      quizCode = generateQuizCode();
+      const existing = await Quiz.findOne({ quizCode });
+      if (!existing) exists = false;
+    }
 
-    // 🇮🇳 IST TIME
-    const now = new Date();
-    const istTime = new Date(
-      now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    );
+    const newQuiz = new Quiz({
+      title,
+      duration,
+      negativeMarking,
+      negativeValue,
+      eachMarks,
+      questions,
+      quizCode, // 🔥 save code
+    });
 
-    const date = istTime.toISOString().split("T")[0];
-    const time = istTime.toTimeString().slice(0, 5);
-
-    quiz.scheduled = {
-      date,
-      time,
-      timestamp: istTime.getTime(),
-    };
-
-    // 🔁 Re-upload updated quiz
-    const buffer = Buffer.from(JSON.stringify(quiz));
-    await uploadToCloudinary(buffer, fileName);
+    await newQuiz.save();
 
     res.json({
       success: true,
-      scheduled: quiz.scheduled,
+      fileName: newQuiz._id,
+      quizCode, // 🔥 optional return
     });
-
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Schedule failed" });
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+
+router.post("/schedule-quiz", async (req, res) => {
+  try {
+    const { fileName, scheduledAt } = req.body;
+
+    if (!fileName || !scheduledAt) {
+      return res.json({
+        success: false,
+        message: "Missing data",
+      });
+    }
+
+    // 🔥 convert to Date object
+    const scheduleDate = new Date(scheduledAt);
+
+    // ❗ prevent past scheduling
+    if (scheduleDate < new Date()) {
+      return res.json({
+        success: false,
+        message: "Cannot schedule in the past",
+      });
+    }
+
+    const updatedQuiz = await Quiz.findByIdAndUpdate(
+      fileName,
+      { scheduledAt: scheduleDate },
+      { new: true }
+    );
+
+    if (!updatedQuiz) {
+      return res.json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Quiz scheduled successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+
+router.get("/all", async (req, res) => {
+  try {
+    const quizzes = await Quiz.find().sort({ scheduledAt: 1 });
+
+    res.json({
+      success: true,
+      quizzes,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id);
+
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    // 🔥 BLOCK BEFORE SCHEDULE TIME
+    if (quiz.scheduledAt && new Date() < quiz.scheduledAt) {
+      return res.status(403).json({
+        success: false,
+        message: "Quiz not started yet",
+        scheduledAt: quiz.scheduledAt,
+      });
+    }
+
+    // 🔥 OPTIONAL: REMOVE CORRECT ANSWERS (anti-cheat)
+    const safeQuestions = quiz.questions.map((q) => ({
+      type: q.type,
+      question: q.question,
+      questionImage: q.questionImage,
+      options: q.options,
+      // ❌ DO NOT SEND correctAnswer
+    }));
+
+    res.json({
+      success: true,
+      quiz: {
+        _id: quiz._id,
+        title: quiz.title,
+        duration: quiz.duration,
+        eachMarks: quiz.eachMarks,
+        negativeMarking: quiz.negativeMarking,
+        negativeValue: quiz.negativeValue,
+        questions: safeQuestions,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+router.post("/submit", async (req, res) => {
+  try {
+    const { quizId, answers, email } = req.body;
+
+    if (!quizId || !answers || !email) {
+      return res.json({
+        success: false,
+        message: "Missing data",
+      });
+    }
+
+    const quiz = await Quiz.findById(quizId);
+
+    if (!quiz) {
+      return res.json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    // 🔥 CALCULATE SCORE
+    let score = 0;
+
+    answers.forEach((ans, i) => {
+      const correct = quiz.questions[i]?.correctAnswer;
+
+      if (ans === correct) {
+        score += quiz.eachMarks;
+      } else if (
+        ans !== undefined &&
+        quiz.negativeMarking
+      ) {
+        score -= quiz.negativeValue;
+      }
+    });
+
+    // 🔥 SAVE SUBMISSION
+    const submission = new QuizSubmission({
+      quizId,
+      email,
+      answers,
+      score,
+    });
+
+    await submission.save();
+
+    res.json({
+      success: true,
+      message: "Quiz submitted successfully",
+      score,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 });
 

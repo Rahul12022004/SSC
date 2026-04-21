@@ -23,6 +23,7 @@ import ScheduleQuiz from "./pages/ScheduleQuiz";
 
 // ✅ NEW
 import ExamDashboard from "./pages/ExamDashboard";
+import TestQuiz from "./pages/TestQuiz";
 
 function AppLayout() {
   const location = useLocation();
@@ -30,7 +31,8 @@ function AppLayout() {
   // ✅ hide layout on ALL exam pages
   const hideLayout =
     location.pathname.startsWith("/quiz") ||
-    location.pathname.startsWith("/exam");
+    location.pathname.startsWith("/exam") ||
+    location.pathname.startsWith("/testQuiz");
 
   return (
     <div className="appLayout">
@@ -93,7 +95,16 @@ function AppLayout() {
             path="/exam/:id"
             element={
               <ProtectedRoute minRole={1}>
-                <QuizPage />
+                <TestQuiz />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/testQuiz/:id"
+            element={
+              <ProtectedRoute minRole={1}>
+                <TestQuiz />
               </ProtectedRoute>
             }
           />

@@ -81,17 +81,19 @@ router.post("/login", async (req, res) => {
         roleLevel: user.roleLevel,
       },
       process.env.JWT_SECRET || "secret",
-      { expiresIn: "1d" },
+      { expiresIn: "4h" } // ✅ FIXED
     );
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 4 * 60 * 60 * 1000, // ✅ FIXED
     });
 
     res.json({
       success: true,
+      email: user.email, // ✅ FIXED
       role: user.role,
       roleLevel: user.roleLevel,
     });

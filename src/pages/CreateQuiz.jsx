@@ -497,7 +497,7 @@ function CreateQuiz() {
                 onChange={(e) => {
                   const val = e.target.value;
 
-                  if (val === "") return; 
+                  if (val === "") return;
 
                   let num = Number(val);
                   if (isNaN(num)) return;
@@ -543,20 +543,36 @@ function CreateQuiz() {
               <div className="rightControls">
                 <div className="typeSelector">
                   {["text", "image", "mixed"].map((type) => (
+                    // <label
+                    //   key={type}
+                    //   className={q.type === type ? "active" : ""}
+                    // >
+                    //   <input
+                    //     type="radio"
+                    //     name={`type-${qIndex}`}
+                    //     value={type}
+                    //     checked={q.type === type}
+                    //     onChange={(e) =>
+                    //       updateQuestion(qIndex, "type", e.target.value)
+                    //     }
+                    //   />
+                    //   {type}
+                    // </label>
                     <label
                       key={type}
-                      className={q.type === type ? "active" : ""}
+                      className={`tooltipWrapper ${q.type === type ? "active" : ""}`}
                     >
                       <input
                         type="radio"
                         name={`type-${qIndex}`}
                         value={type}
                         checked={q.type === type}
-                        onChange={(e) =>
-                          updateQuestion(qIndex, "type", e.target.value)
-                        }
+                        disabled
                       />
+
                       {type}
+
+                      <span className="tooltipText">Work is in progress</span>
                     </label>
                   ))}
                 </div>
