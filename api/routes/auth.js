@@ -7,14 +7,8 @@ import bcrypt from "bcrypt";
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
-  const {
-    firstName,
-    middleName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-  } = req.body;
+  const { firstName, middleName, lastName, email, password, confirmPassword } =
+    req.body;
 
   const nameRegex = /^[A-Za-z ]+$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,7 +57,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
 // ================= LOGIN =================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -88,13 +81,13 @@ router.post("/login", async (req, res) => {
         roleLevel: user.roleLevel,
       },
       process.env.JWT_SECRET || "secret",
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
-    res.cookie("token", token, {
+    res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // ✅ fix
-      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
     res.json({
@@ -102,22 +95,20 @@ router.post("/login", async (req, res) => {
       role: user.role,
       roleLevel: user.roleLevel,
     });
-
   } catch (err) {
     res.status(500).json({ success: false });
   }
 });
 
-
 // ================= VALIDATE =================
 router.get("/validate", (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.json({ success: false });
-  }
-
   try {
+    const token = req.cookies?.token;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "No token" });
+    }
+
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "secret"
@@ -127,11 +118,13 @@ router.get("/validate", (req, res) => {
       success: true,
       user: decoded,
     });
-  } catch {
-    return res.json({ success: false });
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
   }
 });
-
 
 // ================= LOGOUT =================
 router.post("/logout", (req, res) => {
@@ -143,6 +136,5 @@ router.post("/logout", (req, res) => {
 
   res.json({ success: true });
 });
-
 
 export default router;
