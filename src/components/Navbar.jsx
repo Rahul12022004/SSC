@@ -39,6 +39,21 @@ function Navbar() {
 
         {/* NAV LINKS */}
         <div className={`navLinks ${menuOpen ? "active" : ""}`}>
+          <div className="mobileAuth">
+            {!user ? (
+              <>
+                <NavLink to="/login" className="loginBtn">
+                  Login
+                </NavLink>
+                <NavLink to="/register" className="registerBtn">
+                  Register
+                </NavLink>
+              </>
+            ) : (
+              <button className="logoutBtn">Logout</button>
+            )}
+          </div>
+
           <NavLink to="/" end onClick={closeMenu}>
             Home
           </NavLink>

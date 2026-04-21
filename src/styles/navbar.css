@@ -12,15 +12,14 @@
 /* SCROLL EFFECT */
 .navbarPage.scrolled {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(10px);
 }
 
 /* ================= CONTAINER ================= */
 .navbarPage .navContainer {
   max-width: 1200px;
   margin: auto;
-  padding: 10px 24px;
-
+  padding: 10px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,8 +43,6 @@
   margin-left: 30px;
 }
 
-/* LINKS */
-/* NAV LINKS */
 .navbarPage .navLinks a {
   color: #0B2545;
   font-size: 15px;
@@ -53,9 +50,10 @@
   position: relative;
   font-weight: 500;
   transition: color 0.3s ease;
+  padding: 6px 0;
 }
 
-/* 🔥 UNDERLINE BASE */
+/* UNDERLINE */
 .navbarPage .navLinks a::after {
   content: "";
   position: absolute;
@@ -72,17 +70,12 @@
   width: 100%;
 }
 
-.navbarPage .navLinks a:hover::after {
-  width: 100%;
-}
-
-/* 🔥 ACTIVE LINK */
+/* ACTIVE */
 .navbarPage .navLinks a.active {
   color: #F77F00;
   font-weight: 600;
 }
 
-/* ACTIVE UNDERLINE ALWAYS VISIBLE */
 .navbarPage .navLinks a.active::after {
   width: 100%;
 }
@@ -94,22 +87,20 @@
   gap: 15px;
 }
 
-/* ================= AUTH BUTTONS ================= */
+/* ================= AUTH BUTTONS (DESKTOP) ================= */
 .navbarPage .authButtons {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* LOGIN */
 .navbarPage .loginBtn {
   color: #0B2545;
   font-size: 15px;
   font-weight: 500;
-  text-decoration: none; /* ✅ add this */
+  text-decoration: none;
 }
 
-/* REGISTER */
 .navbarPage .registerBtn {
   background: #F77F00;
   color: white;
@@ -117,14 +108,13 @@
   border-radius: 6px;
   font-weight: 500;
   transition: 0.3s;
-  text-decoration: none; /* ✅ add this */
+  text-decoration: none;
 }
 
 .navbarPage .registerBtn:hover {
   background: #d96c00;
 }
 
-/* LOGOUT BUTTON */
 .navbarPage .logoutBtn {
   background: #F77F00;
   color: white;
@@ -149,9 +139,36 @@
   color: #0B2545;
 }
 
+/* ================= MOBILE AUTH ================= */
+.navbarPage .mobileAuth {
+  display: none;
+}
+
+/* ================= TABLET ================= */
+@media (max-width: 1100px) {
+  .navbarPage .navLinks {
+    gap: 18px;
+  }
+
+  .navbarPage .navLinks a {
+    font-size: 14px;
+  }
+}
+
 /* ================= MOBILE ================= */
 @media (max-width: 900px) {
 
+  /* MENU ICON */
+  .navbarPage .menuIcon {
+    display: block;
+  }
+
+  /* HIDE DESKTOP BUTTONS */
+  .navbarPage .authButtons {
+    display: none;
+  }
+
+  /* NAV LINKS DROPDOWN */
   .navbarPage .navLinks {
     position: absolute;
     top: 70px;
@@ -161,25 +178,75 @@
 
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
     padding: 20px 0;
 
-    display: none;
+    margin-left: 0;
+
+    /* animation */
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
   }
 
   .navbarPage .navLinks.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* MOBILE LINKS */
+  .navbarPage .navLinks a {
+    font-size: 16px;
+  }
+
+  /* MOBILE AUTH SECTION */
+  .navbarPage .mobileAuth {
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 80%;
+    margin-top: 10px;
   }
 
-  .navbarPage .authButtons {
-    display: none;
+  /* LOGIN BUTTON (MOBILE) */
+  .navbarPage .mobileAuth .loginBtn {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #F77F00;
+    border-radius: 6px;
+    color: #F77F00;
+    font-weight: 500;
+    text-decoration: none;
   }
 
-  .navbarPage .menuIcon {
-    display: block;
+  /* REGISTER BUTTON (MOBILE) */
+  .navbarPage .mobileAuth .registerBtn {
+    text-align: center;
+    padding: 10px;
+    background: #F77F00;
+    color: #fff;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
   }
 
-  .navbarPage .navLinks {
-    margin-left: 0;
+  /* LOGOUT BUTTON (MOBILE) */
+  .navbarPage .mobileAuth .logoutBtn {
+    padding: 10px;
+    background: #F77F00;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+@media (max-width: 500px) {
+  .navbarPage .logo img {
+    width: 45px;
+    height: 38px;
   }
 }
