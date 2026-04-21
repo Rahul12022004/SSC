@@ -5,11 +5,12 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 
 // ✅ Load dotenv ONLY locally
-if (!process.env.VERCEL && process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production") {
   const dotenv = await import("dotenv");
   dotenv.config();
   console.log("✅ dotenv loaded (local)");
 }
+
 
 import authRoutes from "./routes/auth.js";
 import couponRoutes from "./routes/coupon.js";
@@ -21,7 +22,14 @@ const app = express();
 // -----------------------------
 // ✅ CORS (FIXED PROPERLY)
 // -----------------------------
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173", // or 3000 (your local frontend)
+    "https://sscpathnirman.com", 
+    "ssc-59f96g8me-nexavise-consultings-projects.vercel.app"
+  ],
+  credentials: true
+}));
 
 // -----------------------------
 // ✅ MIDDLEWARE

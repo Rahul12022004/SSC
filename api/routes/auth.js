@@ -84,7 +84,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1d" },
     );
 
-    res.clearCookie("token", {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
@@ -109,10 +109,7 @@ router.get("/validate", (req, res) => {
       return res.status(401).json({ success: false, message: "No token" });
     }
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "secret"
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
 
     return res.json({
       success: true,
