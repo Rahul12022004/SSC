@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
 
       return result;
     } catch (error) {
-      console.error("❌ [LOGIN] Error:", error.message);
+      console.error("[LOGIN] Error:", error.message);
 
       return {
         success: false,

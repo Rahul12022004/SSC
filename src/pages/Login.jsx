@@ -149,7 +149,7 @@ function Login() {
               marginBottom: "10px",
             }}
           >
-            {successMessage}
+            {successMsg}
           </p>
         )}
 
