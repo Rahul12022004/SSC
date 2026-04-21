@@ -8,16 +8,17 @@ function Tests() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [tests] = useState([
-    { id: 1, title: "Mock Test 1" }
-  ]);
+  const [tests] = useState([{ id: 1, title: "Mock Test 1" }]);
 
   // ✅ open full exam (dashboard)
   const openExam = () => {
+    // ✅ CLEAR OLD EXAM STATE
+    localStorage.removeItem("examSections");
+
     const newWindow = window.open(
       `/exam`,
       "_blank",
-      `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`
+      `toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.availWidth},height=${window.screen.availHeight}`,
     );
 
     if (newWindow) newWindow.focus();
@@ -26,7 +27,7 @@ function Tests() {
   const handleStartQuiz = () => {
     if (!user) {
       navigate("/login", {
-        state: { redirectTo: "/exam" }
+        state: { redirectTo: "/exam" },
       });
     } else {
       openExam();

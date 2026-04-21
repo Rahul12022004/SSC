@@ -5,16 +5,24 @@ import {
   FiSkipBack,
   FiSkipForward,
   FiClock,
+  FiFlag,
+  FiCheckCircle,
+  FiPlay,
+  FiSend,
 } from "react-icons/fi";
 import { BASE_URL } from "../context/AuthContext.jsx";
 import "../styles/quiz.css";
 import { FiLoader } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import { sectionsData } from "../data/sections.js";
+import { useNavigate } from "react-router-dom";
+
+import useAntiCheat from "./hooks/useAntiCheat.js";
 
 function QuizPage() {
   const { id } = useParams();
   const section = sectionsData.find((s) => s.id === id);
+  const navigate = useNavigate();
 
   const [started, setStarted] = useState(false);
   const [agree, setAgree] = useState(false);
@@ -25,9 +33,11 @@ function QuizPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [violationCount, setViolationCount] = useState(0);
-  const [violations, setViolations] = useState([]);
-  const [showViolation, setShowViolation] = useState(false);
+  const { violationCount, showViolation } = useAntiCheat(
+    started,
+    setShowSubmit,
+  );
+
   const quizStartTimeRef = useRef(null);
 
   const chunksRef = useRef([]);
@@ -44,87 +54,6 @@ function QuizPage() {
     }
   }, [section]);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape" && started) {
-        e.preventDefault();
-
-        const now = Date.now();
-        const timeFromStart = Math.floor(
-          (now - (quizStartTimeRef.current || now)) / 1000,
-        );
-
-        const newCount = violationCount + 1;
-
-        setViolationCount(newCount);
-
-        setViolations((prev) => [
-          ...prev,
-          `Violation detected at ${timeFromStart}s`,
-        ]);
-
-        setShowViolation(true);
-
-        // auto hide popup after 3 sec
-        setTimeout(() => setShowViolation(false), 3000);
-
-        // fullscreen restore
-        setTimeout(() => {
-          const el = document.documentElement;
-          if (!document.fullscreenElement) {
-            el.requestFullscreen().catch(() => {});
-          }
-        }, 200);
-
-        // force submit
-        if (newCount >= 4) {
-          setShowSubmit(true);
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [started, violationCount]);
-
-  useEffect(() => {
-    const disable = (e) => {
-      if (e.type === "contextmenu") e.preventDefault();
-
-      if (e.ctrlKey || e.metaKey || e.altKey || e.key.startsWith("F")) {
-        e.preventDefault();
-      }
-    };
-
-    document.addEventListener("contextmenu", disable);
-    document.addEventListener("keydown", disable);
-
-    return () => {
-      document.removeEventListener("contextmenu", disable);
-      document.removeEventListener("keydown", disable);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && started) {
-        setShowViolation(true);
-        setTimeout(() => setShowViolation(false), 2000);
-
-        const el = document.documentElement;
-        if (el.requestFullscreen) {
-          el.requestFullscreen();
-        }
-      }
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-
-    return () =>
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, [started]);
-
-  // TIMER
   useEffect(() => {
     if (!started) return;
 
@@ -191,19 +120,21 @@ function QuizPage() {
     setIsSubmitting(true);
 
     try {
-      await fetch(`${BASE_URL}/quiz/submit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          answers,
-          violations,
-        }),
-      });
+      // ✅ SIMULATE DELAY (like real API)
+      await new Promise((res) => setTimeout(res, 1000));
 
-      alert("Quiz Submitted!");
-      window.close();
+      console.log("✅ Quiz Submitted");
+      console.log("Answers:", answers);
+      console.log("Violations:", violationCount);
+
+      // ✅ NAVIGATE BACK TO DASHBOARD
+      navigate("/exam", {
+        state: {
+          sectionId: id,
+          status: "submitted",
+          spent: Math.floor((section.time * 60 - timeLeft) / 60),
+        },
+      });
     } catch (err) {
       console.error(err);
       setIsSubmitting(false);
@@ -264,7 +195,9 @@ function QuizPage() {
                   Submitting...
                 </span>
               ) : (
-                "Submit Quiz"
+                <>
+                  <FiSend /> Submit Quiz
+                </>
               )}
             </button>
           </div>
@@ -274,45 +207,76 @@ function QuizPage() {
   }
 
   // ✅ INSTRUCTION PAGE
-  if (!started) {
-    return (
-      <div className="quizPage">
+if (!started) {
+  return (
+    <div className="quizPage">
+      <div className="instructionWrapper">
+
         <div className="instructionCard">
-          <h2>Quiz Instructions</h2>
+          <h2> Quiz Instructions</h2>
 
-          <ul>
-            <li>Do not switch tabs</li>
-            <li>Timer will auto submit</li>
-            <li>Each question must be answered carefully</li>
-          </ul>
+          <div className="instructionSection">
+            <h3> General Rules</h3>
+            <ul>
+              <li>This is a timed quiz. Timer will start once you begin.</li>
+              <li>Each question has only one correct answer.</li>
+              <li>You can navigate between questions freely.</li>
+              <li>Make sure to review your answers before submitting.</li>
+            </ul>
+          </div>
 
-          <div className="legendRow">
-            <div className="legendItem">
-              <span className="box gray"></span> Not Visited
-            </div>
-            <div className="legendItem">
-              <span className="box green"></span> Answered
-            </div>
-            <div className="legendItem">
-              <span className="box yellow"></span> Skipped
+          <div className="instructionSection warning">
+            <h3> Important Guidelines</h3>
+            <ul>
+              <li>Do not press <strong>ESC</strong> or exit fullscreen.</li>
+              <li>Switching tabs or minimizing may count as violation.</li>
+              <li>After <strong>4 violations</strong>, quiz will auto-submit.</li>
+              <li>Ensure stable internet and device before starting.</li>
+            </ul>
+          </div>
+
+          <div className="instructionSection legend">
+            <h3> Question Status</h3>
+            <div className="legendRow">
+              <div className="legendItem">
+                <span className="box gray"></span> Not Visited
+              </div>
+              <div className="legendItem">
+                <span className="box green"></span> Answered
+              </div>
+              <div className="legendItem">
+                <span className="box yellow"></span> Skipped
+              </div>
+              <div className="legendItem">
+                <span className="box red"></span> Flagged
+              </div>
             </div>
           </div>
 
           <div className="agreeBox">
             <input
               type="checkbox"
+              id="agree"
               onChange={(e) => setAgree(e.target.checked)}
             />
-            <label>I agree to all instructions</label>
+            <label htmlFor="agree">
+              I have read all instructions and agree to follow them.
+            </label>
           </div>
 
-          <button disabled={!agree} onClick={handleStart}>
-            Start Quiz
+          <button
+            className="startBtn"
+            disabled={!agree}
+            onClick={handleStart}
+          >
+            <FiPlay /> Start Quiz
           </button>
         </div>
+
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const q = section.questions[current];
 
@@ -377,6 +341,7 @@ function QuizPage() {
 
           {/* NAV */}
           <div className="navBar">
+            {/* LEFT */}
             <div className="navLeft">
               <button onClick={handlePrev}>
                 <FiArrowLeft /> Previous
@@ -391,21 +356,29 @@ function QuizPage() {
               </button>
             </div>
 
-            {/* FLAG BUTTON */}
-            <button
-              className="flagBtn"
-              onClick={() => {
-                const f = [...flagged];
-                f[current] = !f[current];
-                setFlagged(f);
-              }}
-            >
-              🚩 {flagged[current] ? "Unflag" : "Flag"}
-            </button>
+            {/* CENTER */}
+            <div className="navCenter">
+              <button
+                className="flagBtn"
+                onClick={() => {
+                  const f = [...flagged];
+                  f[current] = !f[current];
+                  setFlagged(f);
+                }}
+              >
+                <FiFlag /> {flagged[current] ? "Unflag" : "Flag"}
+              </button>
+            </div>
 
+            {/* RIGHT */}
             <div className="navRight">
               {current === total - 1 ? (
-                <button onClick={() => setShowSubmit(true)}>Submit</button>
+                <button
+                  className="submitMainBtn"
+                  onClick={() => setShowSubmit(true)}
+                >
+                  <FiCheckCircle /> Submit
+                </button>
               ) : (
                 <button onClick={handleNext}>
                   Next <FiArrowRight />
@@ -416,58 +389,10 @@ function QuizPage() {
         </div>
       </div>
 
-      {/* NAVIGATION */}
-      <div className="navBar">
-        <div className="navLeft">
-          <button onClick={handlePrev}>
-            <FiArrowLeft /> Previous
-          </button>
-
-          {current > 0 && (
-            <button onClick={() => setCurrent(0)}>
-              <FiSkipBack /> First
-            </button>
-          )}
-
-          {current > 0 && (
-            <button onClick={handleLast}>
-              <FiSkipForward /> Last
-            </button>
-          )}
-        </div>
-
-        <button
-          onClick={() => {
-            const f = [...flagged];
-            f[current] = !f[current];
-            setFlagged(f);
-          }}
-        >
-          {flagged[current] ? "Unflag" : "Flag"}
-        </button>
-
-        <div className="navRight">
-          {current === total - 1 ? (
-            <button onClick={() => setShowSubmit(true)}>Submit</button>
-          ) : (
-            <button onClick={handleNext}>
-              Next <FiArrowRight />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {showViolation && violationCount <= 3 && (
+      {showViolation && (
         <div className="violationPopup">
-          <h3>Violation detected! Alert: {violationCount}</h3>
-          <p>
-            You are given {Math.max(0, 3 - violationCount)} chances left. After
-            that, the quiz will be forcefully terminated!
-          </p>
-          <p>
-            You are given {3 - violationCount} chances. After that, the quiz
-            will be forcefully terminated!
-          </p>
+          <h3>⚠️ Violation ({violationCount}/4)</h3>
+          <p>Remaining chances: {Math.max(0, 4 - violationCount)}</p>
         </div>
       )}
     </div>
