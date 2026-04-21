@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import connectDB from "./config/db.js";
 
 // ✅ Load dotenv ONLY locally
 if (!process.env.VERCEL && process.env.NODE_ENV !== "production") {
@@ -46,6 +47,8 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24
   }
 }));
+
+await connectDB();
 
 // -----------------------------
 // ✅ ROUTES

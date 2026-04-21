@@ -187,7 +187,7 @@
 /* IMAGE */
 .homePage .imgWrapper {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  /* aspect-ratio: 16 / 9; */
   overflow: hidden;
   position: relative;
   background: #f1f5f9;

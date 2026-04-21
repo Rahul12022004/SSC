@@ -15,9 +15,9 @@ function Login() {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
 
   const location = useLocation();
-  const successMessage = location.state?.message;
 
   const redirectTo = location.state?.redirectTo;
 
@@ -35,6 +35,18 @@ function Login() {
 
     return () => clearTimeout(timer);
   }, [errors]);
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMsg(location.state.message);
+
+      const timer = setTimeout(() => {
+        setSuccessMsg("");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   const validate = () => {
     let newErrors = {};
@@ -129,7 +141,7 @@ function Login() {
       <div className="loginContainer">
         <h2>Welcome Back</h2>
 
-        {successMessage && (
+        {successMsg && (
           <p
             style={{
               color: "#2ecc71",

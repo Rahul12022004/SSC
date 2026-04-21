@@ -19,7 +19,7 @@ const teamData = {
       name: "Sauryansh Singh",
       description:
         "AIR -95 CGL 2025 | Inspector CBN | AIR -51 CHSL 2023 JSA",
-      subject: "GS + English",
+      subject: "GK + Math",
     },
     {
       // img: person2,
@@ -33,7 +33,7 @@ const teamData = {
       name: "Shiv Shankar Pal",
       description:
         "SSC CGL 2021 AIR 748 | ASO CSS | 2025 Income Tax Inspector",
-      subject: "Maths + Reasoning",
+      subject: "Maths + English",
     },
     {
       // img: person4,

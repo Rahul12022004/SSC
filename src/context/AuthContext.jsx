@@ -3,16 +3,18 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 //  Local / Production switch
-// export const BASE_URL = "http://localhost:5000/api";
+export const BASE_URL = "http://localhost:5000/api";
 
-export const BASE_URL = "/api";
+// export const BASE_URL = "/api";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
-  // REGISTER
+  // ================= REGISTER =================
   const registerUser = async (data) => {
+    console.log("📌 [REGISTER] Request Data:", data);
+
     try {
       const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
@@ -21,11 +23,19 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(data),
       });
 
-      const result = await res.json();
+      console.log("📌 [REGISTER] Response Status:", res.status);
 
-      
+      const result = await res.json();
+      console.log("📌 [REGISTER] Response Data:", result);
+
+      if (!res.ok) {
+        throw new Error(result.message || "Server error");
+      }
+
       return result;
     } catch (error) {
+      console.error("❌ [REGISTER] Error:", error.message);
+
       return {
         success: false,
         message: "Network error. Please try again.",
@@ -33,8 +43,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // LOGIN 
+  // ================= LOGIN =================
   const loginUser = async (data) => {
+    console.log("📌 [LOGIN] Request Data:", data);
+
     try {
       const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
@@ -43,18 +55,31 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(data),
       });
 
+      console.log("📌 [LOGIN] Response Status:", res.status);
+
       const result = await res.json();
+      console.log("📌 [LOGIN] Response Data:", result);
+
+      if (!res.ok) {
+        throw new Error(result.message || "Server error");
+      }
 
       if (result.success) {
+        console.log("✅ [LOGIN] Setting user:", {
+          role: result.role,
+          roleLevel: result.roleLevel,
+        });
+
         setUser({
           role: result.role,
           roleLevel: result.roleLevel,
-          email: result.email, // optional if backend sends
         });
       }
 
       return result;
     } catch (error) {
+      console.error("❌ [LOGIN] Error:", error.message);
+
       return {
         success: false,
         message: "Network error. Please try again.",
@@ -62,47 +87,72 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //  VALIDATE SESSION 
+  // ================= VALIDATE =================
   const validateUser = async () => {
+    console.log("📌 [VALIDATE] Checking user session...");
+
     try {
       const res = await fetch(`${BASE_URL}/auth/validate`, {
         credentials: "include",
       });
 
-      const result = await res.json();
+      console.log("📌 [VALIDATE] Response Status:", res.status);
 
-      if (result.success) {
-        setUser(result.user);
-      } else {
-        setUser(null);
+      const result = await res.json();
+      console.log("📌 [VALIDATE] Response Data:", result);
+
+      if (!res.ok) {
+        throw new Error(result.message || "Server error");
       }
 
-      return result.success;
+      if (result.success) {
+        console.log("✅ [VALIDATE] User valid:", result.user);
+        setUser(result.user);
+        return true;
+      } else {
+        console.log("⚠️ [VALIDATE] Invalid user");
+        setUser(null);
+        return false;
+      }
     } catch (error) {
+      console.error("❌ [VALIDATE] Error:", error.message);
       setUser(null);
       return false;
     }
   };
 
-  // LOGOUT
+  // ================= LOGOUT =================
   const logoutUser = async () => {
+    console.log("📌 [LOGOUT] Logging out user...");
+
     try {
-      await fetch(`${BASE_URL}/auth/logout`, {
+      const res = await fetch(`${BASE_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
-    } catch {
-      // ignore network error on logout
+
+      console.log("📌 [LOGOUT] Response Status:", res.status);
+    } catch (error) {
+      console.error("❌ [LOGOUT] Error:", error.message);
     }
 
     setUser(null);
-    window.location.href = "/";
+    console.log("✅ [LOGOUT] User cleared from state");
+
+    // better than full reload
+    window.location.replace("/");
   };
 
+  // ================= INIT =================
   useEffect(() => {
+    console.log("📌 [INIT] Initializing auth...");
+
     const initAuth = async () => {
-      await validateUser();
+      const isValid = await validateUser();
+      console.log("📌 [INIT] Validation result:", isValid);
+
       setLoading(false);
+      console.log("📌 [INIT] Loading set to false");
     };
 
     initAuth();
@@ -124,5 +174,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// 🔗 Hook
+// ================= HOOK =================
 export const useAuth = () => useContext(AuthContext);
