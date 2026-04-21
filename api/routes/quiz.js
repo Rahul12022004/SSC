@@ -122,6 +122,16 @@ router.get("/all", async (req, res) => {
   try {
     const quizzes = await Quiz.find().sort({ scheduledAt: 1 });
 
+    // ❌ No quizzes found
+    if (!quizzes || quizzes.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No quiz data found",
+        quizzes: [],
+      });
+    }
+
+    // ✅ Data exists
     res.json({
       success: true,
       quizzes,

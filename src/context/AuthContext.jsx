@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   // ================= REGISTER =================
   const registerUser = async (data) => {
-    console.log("📌 [REGISTER] Request Data:", data);
+    // console.log("📌 [REGISTER] Request Data:", data);
 
     try {
       const res = await fetch(`${BASE_URL}/auth/register`, {
@@ -23,10 +23,10 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(data),
       });
 
-      console.log("📌 [REGISTER] Response Status:", res.status);
+      // console.log("📌 [REGISTER] Response Status:", res.status);
 
       const result = await res.json();
-      console.log("📌 [REGISTER] Response Data:", result);
+      // console.log("📌 [REGISTER] Response Data:", result);
 
       if (!res.ok) {
         throw new Error(result.message || "Server error");
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
       return result;
     } catch (error) {
-      console.error("❌ [REGISTER] Error:", error.message);
+      // console.error("❌ [REGISTER] Error:", error.message);
 
       return {
         success: false,
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
 
   // ================= LOGIN =================
   const loginUser = async (data) => {
-    console.log("📌 [LOGIN] Request Data:", data);
+    // console.log("📌 [LOGIN] Request Data:", data);
 
     try {
       const res = await fetch(`${BASE_URL}/auth/login`, {
@@ -55,17 +55,17 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(data),
       });
 
-      console.log("📌 [LOGIN] Response Status:", res.status);
+      // console.log("📌 [LOGIN] Response Status:", res.status);
 
       const result = await res.json();
-      console.log("📌 [LOGIN] Response Data:", result);
+      // console.log("📌 [LOGIN] Response Data:", result);
 
       if (!res.ok) {
         throw new Error(result.message || "Server error");
       }
 
       if (result.success) {
-        console.log("✅ [LOGIN] Setting user:", {
+        // console.log("✅ [LOGIN] Setting user:", {
           role: result.role,
           roleLevel: result.roleLevel,
         });
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
 
       return result;
     } catch (error) {
-      console.error("[LOGIN] Error:", error.message);
+      // console.error("[LOGIN] Error:", error.message);
 
       return {
         success: false,
@@ -90,33 +90,33 @@ export const AuthProvider = ({ children }) => {
 
   // ================= VALIDATE =================
   const validateUser = async () => {
-    console.log("📌 [VALIDATE] Checking user session...");
+    // console.log("📌 [VALIDATE] Checking user session...");
 
     try {
       const res = await fetch(`${BASE_URL}/auth/validate`, {
         credentials: "include",
       });
 
-      console.log("📌 [VALIDATE] Response Status:", res.status);
+      // console.log("📌 [VALIDATE] Response Status:", res.status);
 
       const result = await res.json();
-      console.log("📌 [VALIDATE] Response Data:", result);
+      // console.log("📌 [VALIDATE] Response Data:", result);
 
       if (!res.ok) {
         throw new Error(result.message || "Server error");
       }
 
       if (result.success) {
-        console.log("✅ [VALIDATE] User valid:", result.user);
+        // console.log("✅ [VALIDATE] User valid:", result.user);
         setUser(result.user);
         return true;
       } else {
-        console.log("⚠️ [VALIDATE] Invalid user");
+        // console.log("⚠️ [VALIDATE] Invalid user");
         setUser(null);
         return false;
       }
     } catch (error) {
-      console.error("❌ [VALIDATE] Error:", error.message);
+      // console.error("❌ [VALIDATE] Error:", error.message);
       setUser(null);
       return false;
     }
@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }) => {
 
   // ================= LOGOUT =================
   const logoutUser = async () => {
-    console.log("📌 [LOGOUT] Logging out user...");
+    // console.log("📌 [LOGOUT] Logging out user...");
 
     try {
       const res = await fetch(`${BASE_URL}/auth/logout`, {
@@ -132,13 +132,13 @@ export const AuthProvider = ({ children }) => {
         credentials: "include",
       });
 
-      console.log("📌 [LOGOUT] Response Status:", res.status);
+      // console.log("📌 [LOGOUT] Response Status:", res.status);
     } catch (error) {
-      console.error("❌ [LOGOUT] Error:", error.message);
+      // console.error("❌ [LOGOUT] Error:", error.message);
     }
 
     setUser(null);
-    console.log("✅ [LOGOUT] User cleared from state");
+    // console.log("✅ [LOGOUT] User cleared from state");
 
     // better than full reload
     window.location.replace("/");
@@ -146,14 +146,14 @@ export const AuthProvider = ({ children }) => {
 
   // ================= INIT =================
   useEffect(() => {
-    console.log("📌 [INIT] Initializing auth...");
+    // console.log("📌 [INIT] Initializing auth...");
 
     const initAuth = async () => {
       const isValid = await validateUser();
-      console.log("📌 [INIT] Validation result:", isValid);
+      // console.log("📌 [INIT] Validation result:", isValid);
 
       setLoading(false);
-      console.log("📌 [INIT] Loading set to false");
+      // console.log("📌 [INIT] Loading set to false");
     };
 
     initAuth();
