@@ -107,7 +107,7 @@ function About() {
       <section className="stats">
         <div className="statGrid">
           <div className="statCard" data-aos="zoom-in">
-            <CountUp end={100} duration={2000} suffix="+" />
+            <CountUp end={500} duration={2000} suffix="+" />
             <p>Students Enrolled</p>
           </div>
 
@@ -122,7 +122,7 @@ function About() {
           </div>
 
           <div className="statCard" data-aos="zoom-in">
-            <h2>24/7</h2>
+            <h2>24 x 7</h2>
             <p>Student Support</p>
           </div>
         </div>

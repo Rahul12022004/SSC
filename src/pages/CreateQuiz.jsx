@@ -85,7 +85,7 @@ function CreateQuiz() {
   const [errorIndex, setErrorIndex] = useState(null);
   const [showSaveModal, setShowSaveModal] = useState(false);
 
-  const [negativeMarking, setNegativeMarking] = useState(false);
+  const [negativeMarking, setNegativeMarking] = useState(true);
   const [negativeValue, setNegativeValue] = useState(-0.5);
 
   const [eachMarks, setEachMarks] = useState(1);
@@ -491,25 +491,28 @@ function CreateQuiz() {
                 type="number"
                 step="0.01"
                 className="negInput"
-                value={negativeValue ? Math.abs(negativeValue) : 0.5}
-                min="0.5"
-                max="10"
+                value={negativeValue ?? ""}
+                min="-10"
+                max="-0.5"
                 onChange={(e) => {
                   const val = e.target.value;
 
-                  if (val === "") return;
+                  if (val === "") {
+                    setNegativeValue("");
+                    return;
+                  }
 
                   let num = Number(val);
                   if (isNaN(num)) return;
 
-                  // clamp
-                  if (num < 0.5) num = 0.5;
-                  if (num > 10) num = 10;
+                  if (num > 0) num = -num;
+                  if (num > -0.5) num = -0.5;
+                  if (num < -10) num = -10;
 
                   // limit to 2 decimal places
                   num = Math.round(num * 100) / 100;
 
-                  setNegativeValue(-num);
+                  setNegativeValue(num);
                 }}
                 onBlur={() => {
                   if (!negativeValue || negativeValue >= 0) {

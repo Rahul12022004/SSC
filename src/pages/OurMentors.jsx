@@ -19,7 +19,7 @@ const teamData = {
       name: "Sauryansh Singh",
       description:
         "AIR -95 CGL 2025 | Inspector CBN | AIR -51 CHSL 2023 JSA",
-      subject: "GK + Math",
+      subject: "General Awareness + Math",
     },
     {
       // img: person2,

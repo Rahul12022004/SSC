@@ -1,10 +1,46 @@
+/* global process */
 import express from "express";
+import { readFileSync } from "fs";
 import jwt from "jsonwebtoken";
-
-import User from "../models/User.js";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
+import User from "../models/User.js";
+
 const router = express.Router();
+const localUsersPath = new URL("../users.json", import.meta.url);
+
+const getLocalUsers = () => {
+  try {
+    return JSON.parse(readFileSync(localUsersPath, "utf8"));
+  } catch {
+    return [];
+  }
+};
+
+const sendLoginResponse = (res, user) => {
+  const authUser = {
+    email: user.email,
+    role: user.role || "user",
+    roleLevel: user.roleLevel || 1,
+  };
+
+  const token = jwt.sign(authUser, process.env.JWT_SECRET || "secret", {
+    expiresIn: "4h",
+  });
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 4 * 60 * 60 * 1000,
+  });
+
+  return res.json({
+    success: true,
+    ...authUser,
+  });
+};
 
 router.post("/register", async (req, res) => {
   const { firstName, middleName, lastName, email, password, confirmPassword } =
@@ -34,7 +70,7 @@ router.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Passwords mismatch" });
 
   try {
-    const exists = await User.findOne({ email });
+    const exists = await User.findOne({ email: email.trim().toLowerCase() });
     if (exists) {
       return res.json({ success: false, message: "Email already exists" });
     }
@@ -45,7 +81,7 @@ router.post("/register", async (req, res) => {
       firstName,
       middleName,
       lastName,
-      email,
+      email: email.trim().toLowerCase(),
       password: hashedPassword,
       role: "user",
       roleLevel: 1,
@@ -57,52 +93,39 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// ================= LOGIN =================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  const normalizedEmail = email?.trim().toLowerCase();
+  const localUser = getLocalUsers().find(
+    (u) => u.email?.toLowerCase() === normalizedEmail,
+  );
+
+  if (localUser && localUser.password === password) {
+    return sendLoginResponse(res, localUser);
+  }
+
+  if (mongoose.connection.readyState !== 1) {
+    return res.json({ success: false, message: "Invalid credentials" });
+  }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
 
-    if (!user) {
-      return res.json({ success: false, message: "Invalid credentials" });
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        return res.json({ success: false, message: "Invalid credentials" });
+      }
+
+      return sendLoginResponse(res, user);
     }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.json({ success: false, message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign(
-      {
-        email: user.email,
-        role: user.role,
-        roleLevel: user.roleLevel,
-      },
-      process.env.JWT_SECRET || "secret",
-      { expiresIn: "4h" } // ✅ FIXED
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 4 * 60 * 60 * 1000, // ✅ FIXED
-    });
-
-    res.json({
-      success: true,
-      email: user.email, // ✅ FIXED
-      role: user.role,
-      roleLevel: user.roleLevel,
-    });
-  } catch (err) {
+    return res.json({ success: false, message: "Invalid credentials" });
+  } catch {
     res.status(500).json({ success: false });
   }
 });
 
-// ================= VALIDATE =================
 router.get("/validate", (req, res) => {
   try {
     const token = req.cookies?.token;
@@ -117,7 +140,7 @@ router.get("/validate", (req, res) => {
       success: true,
       user: decoded,
     });
-  } catch (err) {
+  } catch {
     return res.status(401).json({
       success: false,
       message: "Invalid or expired token",
@@ -125,7 +148,6 @@ router.get("/validate", (req, res) => {
   }
 });
 
-// ================= LOGOUT =================
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,

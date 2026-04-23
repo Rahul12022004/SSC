@@ -6,7 +6,7 @@ import "../styles/home.css";
 import mathImg from "../assets/images/Math.jpg";
 import reasoningImg from "../assets/images/Reasoning.jpg";
 import englishImg from "../assets/images/English.jpg";
-import gkImg from "../assets/images/General-Awareness.jpg";
+import generalAwarenessImg from "../assets/images/General-Awareness.jpg";
 
 import hero1 from "../assets/images/home3.jpeg";
 import hero2 from "../assets/images/home4.jpeg";
@@ -84,8 +84,8 @@ function Home() {
             </h1>
 
             <p>
-              Join Pathnirman and master Math, Reasoning, English & GK with
-              expert guidance.
+              Join Pathnirman and master Math, Reasoning, English & General
+              Awareness with expert guidance.
             </p>
 
             <div className="heroButtons">
@@ -130,9 +130,9 @@ function Home() {
             delay={0.3}
           />
           <ImageCard
-            src={gkImg}
+            src={generalAwarenessImg}
             title="General Awareness"
-            desc="Stay updated with Core GS subjects, Current Affairs & Static Gk"
+            desc="Stay updated with core GS subjects, current affairs and static general awareness."
             delay={0.4}
           />
         </div>

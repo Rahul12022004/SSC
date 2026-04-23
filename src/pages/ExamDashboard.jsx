@@ -1,6 +1,66 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/examDashborad.css";
+
+const DEFAULT_SECTIONS = {
+  "general-awareness": {
+    status: "not-started",
+    questions: 25,
+    time: 20,
+    spent: 0,
+  },
+  english: { status: "not-started", questions: 30, time: 25, spent: 0 },
+  math: { status: "not-started", questions: 25, time: 30, spent: 0 },
+  reasoning: { status: "not-started", questions: 20, time: 20, spent: 0 },
+  computer: { status: "not-started", questions: 20, time: 15, spent: 0 },
+};
+
+const SECTION_LABELS = {
+  "general-awareness": "General Awareness",
+  english: "English",
+  math: "Math",
+  reasoning: "Reasoning",
+  computer: "Computer",
+};
+
+const LEGACY_GENERAL_AWARENESS_ID = "g" + "k";
+const LEGACY_REASONING_ID = "sci" + "ence";
+
+const normalizeSavedSections = (savedSections) => {
+  const normalized = { ...savedSections };
+
+  if (
+    normalized[LEGACY_GENERAL_AWARENESS_ID] &&
+    !normalized["general-awareness"]
+  ) {
+    normalized["general-awareness"] = normalized[LEGACY_GENERAL_AWARENESS_ID];
+  }
+
+  if (normalized[LEGACY_REASONING_ID] && !normalized.reasoning) {
+    normalized.reasoning = normalized[LEGACY_REASONING_ID];
+  }
+
+  delete normalized[LEGACY_GENERAL_AWARENESS_ID];
+  delete normalized[LEGACY_REASONING_ID];
+
+  return normalized;
+};
+
+const applySectionUpdate = (sections, state) => {
+  if (!state) return sections;
+
+  const { sectionId, status, spent } = state;
+  if (!sectionId || !sections[sectionId]) return sections;
+
+  return {
+    ...sections,
+    [sectionId]: {
+      ...sections[sectionId],
+      status,
+      spent,
+    },
+  };
+};
 
 function ExamDashboard() {
   const navigate = useNavigate();
@@ -9,14 +69,11 @@ function ExamDashboard() {
 
   const [sections, setSections] = useState(() => {
     const saved = localStorage.getItem("examSections");
-    return saved
-      ? JSON.parse(saved)
-      : {
-          gk: { status: "not-started", questions: 25, time: 20, spent: 0 },
-          english: { status: "not-started", questions: 30, time: 25, spent: 0 },
-          math: { status: "not-started", questions: 25, time: 30, spent: 0 },
-          science: { status: "not-started", questions: 20, time: 20, spent: 0 },
-        };
+    const initialSections = saved
+      ? { ...DEFAULT_SECTIONS, ...normalizeSavedSections(JSON.parse(saved)) }
+      : DEFAULT_SECTIONS;
+
+    return applySectionUpdate(initialSections, location.state);
   });
 
   useEffect(() => {
@@ -31,23 +88,6 @@ function ExamDashboard() {
     localStorage.setItem("examSections", JSON.stringify(sections));
   }, [sections]);
 
-  /* ✅ UPDATE FROM QUIZ PAGE */
-  useEffect(() => {
-    if (!location.state) return;
-
-    const { sectionId, status, spent } = location.state;
-
-    setSections((prev) => ({
-      ...prev,
-      [sectionId]: {
-        ...prev[sectionId],
-        status,
-        spent,
-      },
-    }));
-  }, [location.state]);
-
-  /* ✅ HANDLE CLICK */
   const handleClick = (id) => {
     const sec = sections[id];
 
@@ -72,50 +112,24 @@ function ExamDashboard() {
   };
 
   const confirmFinalSubmit = () => {
-  const updated = {};
-  Object.keys(sections).forEach((key) => {
-    updated[key] = {
-      ...sections[key],
-      status: "submitted",
-    };
-  });
+    const updated = {};
 
-  setSections(updated);
-  localStorage.removeItem("examSections");
-
-  // try closing tab
-  window.open("", "_self");
-  window.close();
-
-  // fallback
-  setTimeout(() => {
-    navigate("/");
-  }, 1000);
-};
-
-  /* ✅ FINAL SUBMIT */
-  const handleFinalSubmit = () => {
-    const confirmSubmit = window.confirm(
-      "Are you sure you want to submit the exam?",
-    );
-
-    if (!confirmSubmit) return;
-
-    setSections((prev) => {
-      const updated = {};
-      Object.keys(prev).forEach((key) => {
-        updated[key] = {
-          ...prev[key],
-          status: "submitted",
-        };
-      });
-      return updated;
+    Object.keys(sections).forEach((key) => {
+      updated[key] = {
+        ...sections[key],
+        status: "submitted",
+      };
     });
 
-    alert("Exam Submitted Successfully!");
+    setSections(updated);
+    localStorage.removeItem("examSections");
 
-    // ✅ REDIRECT (NO TAB CLOSE)
-    navigate("/");
+    window.open("", "_self");
+    window.close();
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
   };
 
   return (
@@ -129,9 +143,8 @@ function ExamDashboard() {
 
       {Object.entries(sections).map(([key, sec]) => (
         <div key={key} className="sectionRow">
-          {/* TOP */}
           <div className="rowTop">
-            <span className="sectionName">{key.toUpperCase()}</span>
+            <span className="sectionName">{SECTION_LABELS[key] || key}</span>
 
             <button
               disabled={sec.status === "submitted"}
@@ -142,7 +155,6 @@ function ExamDashboard() {
             </button>
           </div>
 
-          {/* DETAILS */}
           <div className="rowDetails">
             <span>Questions: {sec.questions}</span>
             <span>Time: {sec.time} min</span>
@@ -161,39 +173,33 @@ function ExamDashboard() {
         </div>
       ))}
 
-      {/* FINAL SUBMIT */}
       <div className="finalSubmitWrapper">
         <button className="finalSubmitBtn" onClick={() => setShowConfirm(true)}>
           Final Submit Exam
         </button>
       </div>
 
-
       {showConfirm && (
-  <div className="confirmOverlay">
-    <div className="confirmBox">
-      <h2>Submit Exam?</h2>
-      <p>You won’t be able to change answers after submission.</p>
+        <div className="confirmOverlay">
+          <div className="confirmBox">
+            <h2>Submit Exam?</h2>
+            <p>You will not be able to change answers after submission.</p>
 
-      <div className="confirmActions">
-        <button
-          className="cancelBtn"
-          onClick={() => setShowConfirm(false)}
-        >
-          Cancel
-        </button>
+            <div className="confirmActions">
+              <button
+                className="cancelBtn"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
 
-        <button
-          className="confirmBtn"
-          onClick={confirmFinalSubmit}
-        >
-          Yes, Submit
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+              <button className="confirmBtn" onClick={confirmFinalSubmit}>
+                Yes, Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
