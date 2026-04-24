@@ -12,7 +12,7 @@ const submissionSchema = new mongoose.Schema(
       required: true,
     },
     answers: {
-      type: [Number], // selected options index
+      type: [mongoose.Schema.Types.Mixed],
       required: true,
     },
     score: {

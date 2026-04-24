@@ -33,6 +33,7 @@ function AppLayout() {
     location.pathname.startsWith("/quiz") ||
     location.pathname.startsWith("/exam") ||
     location.pathname.startsWith("/testQuiz");
+  const hideFooter = hideLayout || location.pathname === "/tests";
 
   return (
     <div className="appLayout">
@@ -65,7 +66,7 @@ function AppLayout() {
           <Route
             path="/create-quiz"
             element={
-              <ProtectedRoute minRole={3}>
+              <ProtectedRoute minRole={1}>
                 <CreateQuiz />
               </ProtectedRoute>
             }
@@ -74,7 +75,7 @@ function AppLayout() {
           <Route
             path="/schedule/:id"
             element={
-              <ProtectedRoute minRole={3}>
+              <ProtectedRoute minRole={1}>
                 <ScheduleQuiz />
               </ProtectedRoute>
             }
@@ -123,7 +124,7 @@ function AppLayout() {
         </Routes>
       </main>
 
-      {!hideLayout && <Footer />}
+      {!hideFooter && <Footer />}
     </div>
   );
 }

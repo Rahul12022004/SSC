@@ -103,9 +103,21 @@ function TestQuiz() {
     }
   };
 
-  const handleAnswer = (i) => {
+  const handleAnswer = (value) => {
+    const answerType = quiz.questions[current]?.answerType || "single";
     const updated = [...answers];
-    updated[current] = i;
+
+    if (answerType === "multiple") {
+      const currentAnswers = Array.isArray(updated[current])
+        ? updated[current]
+        : [];
+      updated[current] = currentAnswers.includes(value)
+        ? currentAnswers.filter((answer) => answer !== value)
+        : [...currentAnswers, value];
+    } else {
+      updated[current] = value;
+    }
+
     setAnswers(updated);
 
     const stat = [...status];
@@ -181,7 +193,9 @@ function TestQuiz() {
 
   // 🔥 SUBMIT SCREEN
   if (showSubmit) {
-    const attempted = answers.filter((a) => a !== undefined).length;
+    const attempted = answers.filter((a) =>
+      Array.isArray(a) ? a.length > 0 : a !== undefined && a !== "",
+    ).length;
 
     return (
       <div className="testQuiz centerScreen">
@@ -349,22 +363,57 @@ function TestQuiz() {
         {/* MAIN */}
         <div className="quizContent">
           <div className="questionCard">
-            <h2>
-              Q{current + 1}. {q.question}
-            </h2>
+            {(q.type === "text" || q.type === "mixed") && (
+              <h2>
+                Q{current + 1}. {q.question}
+              </h2>
+            )}
 
-            <div className="optionsGrid">
-              {q.options.map((opt, i) => (
-                <label key={i} className="optionItem">
-                  <input
-                    type="radio"
-                    checked={answers[current] === i}
-                    onChange={() => handleAnswer(i)}
-                  />
-                  {opt.text || opt}
-                </label>
-              ))}
-            </div>
+            {(q.type === "image" || q.type === "mixed") && q.questionImage && (
+              <img
+                className="questionImage"
+                src={q.questionImage}
+                alt={`Question ${current + 1}`}
+              />
+            )}
+
+            {q.answerType === "descriptive" ? (
+              <textarea
+                className="descriptiveResponse"
+                placeholder="Type your answer here"
+                value={answers[current] || ""}
+                onChange={(e) => handleAnswer(e.target.value)}
+              />
+            ) : (
+              <div className="optionsGrid">
+                {q.options.map((opt, i) => {
+                  const value = String(i);
+                  const isMultiple = q.answerType === "multiple";
+                  const checked = isMultiple
+                    ? Array.isArray(answers[current]) &&
+                      answers[current].includes(value)
+                    : String(answers[current]) === value;
+
+                  return (
+                    <label key={i} className="optionItem">
+                      <input
+                        type={isMultiple ? "checkbox" : "radio"}
+                        checked={checked}
+                        onChange={() => handleAnswer(value)}
+                      />
+                      <span>{opt.text || `Option ${i + 1}`}</span>
+                      {opt.image && (
+                        <img
+                          className="optionImage"
+                          src={opt.image}
+                          alt={`Option ${i + 1}`}
+                        />
+                      )}
+                    </label>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* NAV */}

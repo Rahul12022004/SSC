@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   FiPlus,
   FiUpload,
@@ -11,6 +12,10 @@ import "../styles/createQuiz.css";
 import { BASE_URL } from "../context/AuthContext.jsx";
 
 function CreateQuiz() {
+  const [searchParams] = useSearchParams();
+  const editQuizId = searchParams.get("edit");
+  const isEditMode = Boolean(editQuizId);
+
   const titleRef = useRef(null);
   const questionRefs = useRef([]);
 
@@ -115,11 +120,60 @@ function CreateQuiz() {
   const hasInitialized = useRef(false);
 
   useEffect(() => {
-    if (!hasInitialized.current) {
+    if (!hasInitialized.current && !isEditMode) {
       hasInitialized.current = true;
       addQuestion(false);
     }
-  }, []);
+  }, [isEditMode]);
+
+  useEffect(() => {
+    if (!editQuizId) return;
+
+    const fetchQuizForEdit = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/quiz/${editQuizId}/admin`);
+        const data = await res.json();
+
+        if (!data.success) {
+          alert(data.message || "Failed to load quiz");
+          return;
+        }
+
+        setQuiz({
+          title: data.quiz.title || "",
+          duration: data.quiz.duration || 5,
+          questions: (data.quiz.questions || []).map((question) => ({
+            ...question,
+            type: question.type || "text",
+            answerType: question.answerType || "single",
+            options: question.options?.length
+              ? question.options
+              : [
+                  { text: "", image: "" },
+                  { text: "", image: "" },
+                  { text: "", image: "" },
+                  { text: "", image: "" },
+                ],
+            correctAnswer:
+              question.answerType === "multiple" && !Array.isArray(question.correctAnswer)
+                ? question.correctAnswer
+                  ? [question.correctAnswer]
+                  : []
+                : question.correctAnswer ?? "",
+          })),
+        });
+        setNegativeMarking(Boolean(data.quiz.negativeMarking));
+        setNegativeValue(data.quiz.negativeValue ?? -0.5);
+        setEachMarks(data.quiz.eachMarks || 1);
+        hasInitialized.current = true;
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load quiz");
+      }
+    };
+
+    fetchQuizForEdit();
+  }, [editQuizId]);
 
   const addQuestion = (shouldScroll = true) => {
     setQuiz((prev) => {
@@ -127,6 +181,7 @@ function CreateQuiz() {
         ...prev.questions,
         {
           type: "text",
+          answerType: "single",
           question: "",
           questionImage: "",
           options: [
@@ -158,15 +213,12 @@ function CreateQuiz() {
       updated[qIndex] = {
         ...updated[qIndex],
         type: value,
-        question: "",
-        questionImage: "",
-        options: [
-          { text: "", image: "" },
-          { text: "", image: "" },
-          { text: "", image: "" },
-          { text: "", image: "" },
-        ],
-        correctAnswer: "",
+      };
+    } else if (field === "answerType") {
+      updated[qIndex] = {
+        ...updated[qIndex],
+        answerType: value,
+        correctAnswer: value === "multiple" ? [] : "",
       };
     } else {
       updated[qIndex][field] = value;
@@ -185,8 +237,10 @@ function CreateQuiz() {
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    callback(url);
+    const reader = new FileReader();
+    reader.onload = () => callback(reader.result);
+    reader.onerror = () => alert("Failed to read image");
+    reader.readAsDataURL(file);
   };
 
   const updateOption = (qIndex, oIndex, field, value) => {
@@ -283,7 +337,7 @@ function CreateQuiz() {
         correct: "",
       };
 
-      const hasQuestion = q.question.trim() !== "" || q.questionImage !== "";
+      const hasQuestion = (q.question || "").trim() !== "" || q.questionImage !== "";
 
       if (!hasQuestion) {
         qError.question = "Enter question or upload image";
@@ -291,20 +345,26 @@ function CreateQuiz() {
         if (firstErrorIndex === null) firstErrorIndex = i;
       }
 
-      const hasEmptyOption = q.options.some(
-        (opt) => opt.text.trim() === "" && opt.image === "",
-      );
+      if (q.answerType !== "descriptive") {
+        const hasEmptyOption = q.options.some(
+          (opt) => (opt.text || "").trim() === "" && opt.image === "",
+        );
 
-      if (hasEmptyOption) {
-        qError.options = "All options are required";
-        hasError = true;
-        if (firstErrorIndex === null) firstErrorIndex = i;
-      }
+        if (hasEmptyOption) {
+          qError.options = "All options are required";
+          hasError = true;
+          if (firstErrorIndex === null) firstErrorIndex = i;
+        }
 
-      if (q.correctAnswer === "") {
-        qError.correct = "Select correct answer";
-        hasError = true;
-        if (firstErrorIndex === null) firstErrorIndex = i;
+        if (
+          q.answerType === "multiple"
+            ? !Array.isArray(q.correctAnswer) || q.correctAnswer.length === 0
+            : q.correctAnswer === ""
+        ) {
+          qError.correct = "Select correct answer";
+          hasError = true;
+          if (firstErrorIndex === null) firstErrorIndex = i;
+        }
       }
 
       newErrors.questions[i] = qError;
@@ -336,8 +396,8 @@ function CreateQuiz() {
     }
 
     try {
-      const res = await fetch(`${BASE_URL}/quiz/create-quiz`, {
-        method: "POST", // 🔥 VERY IMPORTANT
+      const res = await fetch(isEditMode ? `${BASE_URL}/quiz/${editQuizId}` : `${BASE_URL}/quiz/create-quiz`, {
+        method: isEditMode ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -357,22 +417,22 @@ function CreateQuiz() {
       if (data.success) {
         window.location.href = `/schedule/${data.fileName}`;
       } else {
-        alert(data.message || "Failed to create quiz");
+        alert(data.message || "Failed to save quiz");
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to create quiz");
+      alert("Failed to save quiz");
     }
   };
 
   return (
     <div className="createQuiz">
       <div className="header">
-        <h1>Create Quiz</h1>
+        <h1>{isEditMode ? "Edit Quiz" : "Create Quiz"}</h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
           <button className="saveBtn" onClick={handleSave}>
-            Save Quiz
+            {isEditMode ? "Update Quiz" : "Save Quiz"}
           </button>
 
           {/* 🔥 ADD THIS */}
@@ -546,36 +606,21 @@ function CreateQuiz() {
               <div className="rightControls">
                 <div className="typeSelector">
                   {["text", "image", "mixed"].map((type) => (
-                    // <label
-                    //   key={type}
-                    //   className={q.type === type ? "active" : ""}
-                    // >
-                    //   <input
-                    //     type="radio"
-                    //     name={`type-${qIndex}`}
-                    //     value={type}
-                    //     checked={q.type === type}
-                    //     onChange={(e) =>
-                    //       updateQuestion(qIndex, "type", e.target.value)
-                    //     }
-                    //   />
-                    //   {type}
-                    // </label>
                     <label
                       key={type}
-                      className={`tooltipWrapper ${q.type === type ? "active" : ""}`}
+                      className={q.type === type ? "active" : ""}
                     >
                       <input
                         type="radio"
                         name={`type-${qIndex}`}
                         value={type}
                         checked={q.type === type}
-                        disabled
+                        onChange={(e) =>
+                          updateQuestion(qIndex, "type", e.target.value)
+                        }
                       />
 
                       {type}
-
-                      <span className="tooltipText">Work is in progress</span>
                     </label>
                   ))}
                 </div>
@@ -585,6 +630,25 @@ function CreateQuiz() {
                   <FiArrowUp onClick={() => moveQuestion(qIndex, -1)} />
                   <FiArrowDown onClick={() => moveQuestion(qIndex, 1)} />
                 </div>
+              </div>
+            </div>
+            <div className="answerTypeSelector">
+              <label>Answer Type</label>
+              <div>
+                {[
+                  ["single", "Single Choice"],
+                  ["multiple", "Multiple Choice"],
+                  ["descriptive", "Descriptive"],
+                ].map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={(q.answerType || "single") === value ? "active" : ""}
+                    onClick={() => updateQuestion(qIndex, "answerType", value)}
+                  >
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
             {/* QUESTION */}
@@ -629,64 +693,101 @@ function CreateQuiz() {
               </p>
             )}
             {/* OPTIONS */}
-            <div className="optionsGrid">
-              {q.options.map((opt, i) => (
-                <div key={i} className="optionBox">
-                  {(q.type === "text" || q.type === "mixed") && (
-                    <input
-                      placeholder={`Option ${i + 1}`}
-                      value={opt.text}
-                      onChange={(e) =>
-                        updateOption(qIndex, i, "text", e.target.value)
-                      }
-                    />
-                  )}
-
-                  {(q.type === "image" || q.type === "mixed") && (
-                    <div className="optionUpload">
-                      <label>
-                        <FiUpload />
+            {q.answerType !== "descriptive" && (
+              <>
+                <div className="optionsGrid">
+                  {q.options.map((opt, i) => (
+                    <div key={i} className="optionBox">
+                      {(q.type === "text" || q.type === "mixed") && (
                         <input
-                          type="file"
-                          accept="image/png, image/jpeg"
-                          hidden
+                          placeholder={`Option ${i + 1}`}
+                          value={opt.text}
                           onChange={(e) =>
-                            handleImageUpload(e.target.files[0], (url) =>
-                              updateOption(qIndex, i, "image", url),
-                            )
+                            updateOption(qIndex, i, "text", e.target.value)
                           }
                         />
-                      </label>
+                      )}
 
-                      {opt.image && (
-                        <img src={opt.image} className="optionPreview" />
+                      {(q.type === "image" || q.type === "mixed") && (
+                        <div className="optionUpload">
+                          <label>
+                            <FiUpload />
+                            <input
+                              type="file"
+                              accept="image/png, image/jpeg"
+                              hidden
+                              onChange={(e) =>
+                                handleImageUpload(e.target.files[0], (url) =>
+                                  updateOption(qIndex, i, "image", url),
+                                )
+                              }
+                            />
+                          </label>
+
+                          {opt.image && (
+                            <img src={opt.image} className="optionPreview" />
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-            {errors.questions[qIndex]?.options && (
-              <p className="errorText questionError">
-                {errors.questions[qIndex].options}
-              </p>
+                {errors.questions[qIndex]?.options && (
+                  <p className="errorText questionError">
+                    {errors.questions[qIndex].options}
+                  </p>
+                )}
+              </>
             )}
-            {/* CORRECT SELECT */}
-            <select
-              className="correctSelect"
-              value={q.correctAnswer}
-              onChange={(e) =>
-                updateQuestion(qIndex, "correctAnswer", e.target.value)
-              }
-            >
-              <option value="" disabled>
-                Select Correct Option
-              </option>
-              <option value="0">Option 1</option>
-              <option value="1">Option 2</option>
-              <option value="2">Option 3</option>
-              <option value="3">Option 4</option>
-            </select>
+            {/* CORRECT ANSWER */}
+            {q.answerType === "multiple" ? (
+              <div className="correctMulti">
+                <span>Select correct options</span>
+                {[0, 1, 2, 3].map((optionIndex) => (
+                  <label key={optionIndex}>
+                    <input
+                      type="checkbox"
+                      checked={Array.isArray(q.correctAnswer) && q.correctAnswer.includes(String(optionIndex))}
+                      onChange={(e) => {
+                        const currentAnswers = Array.isArray(q.correctAnswer)
+                          ? q.correctAnswer
+                          : [];
+                        const nextAnswers = e.target.checked
+                          ? [...currentAnswers, String(optionIndex)]
+                          : currentAnswers.filter((value) => value !== String(optionIndex));
+                        updateQuestion(qIndex, "correctAnswer", nextAnswers);
+                      }}
+                    />
+                    Option {optionIndex + 1}
+                  </label>
+                ))}
+              </div>
+            ) : q.answerType === "descriptive" ? (
+              <textarea
+                className="descriptiveAnswer"
+                placeholder="Expected answer for auto-checking (optional)"
+                value={q.correctAnswer || ""}
+                onChange={(e) =>
+                  updateQuestion(qIndex, "correctAnswer", e.target.value)
+                }
+              />
+            ) : (
+              <select
+                className="correctSelect"
+                value={q.correctAnswer}
+                onChange={(e) =>
+                  updateQuestion(qIndex, "correctAnswer", e.target.value)
+                }
+              >
+                <option value="" disabled>
+                  Select Correct Option
+                </option>
+                <option value="0">Option 1</option>
+                <option value="1">Option 2</option>
+                <option value="2">Option 3</option>
+                <option value="3">Option 4</option>
+              </select>
+            )}
             <div className="deleteBtn">
               <FiTrash2 onClick={() => setDeleteIndex(qIndex)} />
             </div>
@@ -795,3 +896,4 @@ function CreateQuiz() {
 }
 
 export default CreateQuiz;
+

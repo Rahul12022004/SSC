@@ -7,10 +7,15 @@ const optionSchema = new mongoose.Schema({
 
 const questionSchema = new mongoose.Schema({
   type: String,
+  answerType: {
+    type: String,
+    enum: ["single", "multiple", "descriptive"],
+    default: "single",
+  },
   question: String,
   questionImage: String,
   options: [optionSchema],
-  correctAnswer: String,
+  correctAnswer: mongoose.Schema.Types.Mixed,
 });
 
 const quizSchema = new mongoose.Schema(

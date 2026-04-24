@@ -102,6 +102,40 @@
   color: white;
 }
 
+.createQuiz .answerTypeSelector {
+  margin: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.createQuiz .answerTypeSelector > label {
+  color: #0b2545;
+  font-weight: 700;
+}
+
+.createQuiz .answerTypeSelector > div {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.createQuiz .answerTypeSelector button {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 7px;
+  background: #eef2ff;
+  color: #334155;
+  font-weight: 700;
+}
+
+.createQuiz .answerTypeSelector button.active {
+  background: #f77f00;
+  color: #ffffff;
+}
+
 /* HIDE RADIO */
 .createQuiz .typeSelector input {
   display: none;
@@ -175,6 +209,44 @@
   width: 250px;
   background: #0b2545;
   color: white;
+}
+
+.createQuiz .correctMulti {
+  margin: 20px auto 0;
+  max-width: 520px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #0b2545;
+  font-weight: 700;
+}
+
+.createQuiz .correctMulti span {
+  width: 100%;
+  text-align: center;
+}
+
+.createQuiz .correctMulti label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eef2ff;
+  padding: 8px 10px;
+  border-radius: 7px;
+}
+
+.createQuiz .descriptiveAnswer {
+  display: block;
+  width: min(620px, 100%);
+  min-height: 96px;
+  margin: 20px auto 0;
+  border: 1px solid #d7dfec;
+  border-radius: 8px;
+  padding: 12px;
+  color: #0b2545;
+  background: #ffffff;
+  resize: vertical;
 }
 
 /* ADD BUTTON */
@@ -833,14 +905,6 @@
 .createQuiz .confirmBtn:hover {
   background: #b91c1c;
 }
-
-.createQuiz .typeSelector label {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-
-
 
 
 

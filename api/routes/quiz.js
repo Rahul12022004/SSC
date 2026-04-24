@@ -144,6 +144,143 @@ router.get("/all", async (req, res) => {
   }
 });
 
+router.get("/:id/admin", async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id);
+
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      quiz,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const {
+      title,
+      duration,
+      negativeMarking,
+      negativeValue,
+      eachMarks,
+      questions,
+    } = req.body;
+
+    if (!title || !questions || questions.length === 0) {
+      return res.json({
+        success: false,
+        message: "Invalid data",
+      });
+    }
+
+    const updatedQuiz = await Quiz.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        duration,
+        negativeMarking,
+        negativeValue,
+        eachMarks,
+        questions,
+      },
+      { new: true },
+    );
+
+    if (!updatedQuiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      fileName: updatedQuiz._id,
+      message: "Quiz updated successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedQuiz = await Quiz.findByIdAndDelete(req.params.id);
+
+    if (!deletedQuiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    await QuizSubmission.deleteMany({ quizId: req.params.id });
+
+    res.json({
+      success: true,
+      message: "Quiz deleted successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+router.get("/:id/submissions", async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id).select(
+      "title questions eachMarks",
+    );
+
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found",
+      });
+    }
+
+    const submissions = await QuizSubmission.find({
+      quizId: req.params.id,
+    }).sort({ submittedAt: -1 });
+
+    res.json({
+      success: true,
+      quiz: {
+        _id: quiz._id,
+        title: quiz.title,
+        totalMarks: (quiz.questions?.length || 0) * (quiz.eachMarks || 1),
+      },
+      submissions,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -167,6 +304,7 @@ router.get("/:id", async (req, res) => {
     // 🔥 OPTIONAL: REMOVE CORRECT ANSWERS (anti-cheat)
     const safeQuestions = quiz.questions.map((q) => ({
       type: q.type,
+      answerType: q.answerType || "single",
       question: q.question,
       questionImage: q.questionImage,
       options: q.options,
@@ -218,15 +356,39 @@ router.post("/submit", async (req, res) => {
     let score = 0;
 
     answers.forEach((ans, i) => {
-      const correct = quiz.questions[i]?.correctAnswer;
+      const question = quiz.questions[i];
+      const answerType = question?.answerType || "single";
+      const correct = question?.correctAnswer;
+      let hasAnswer = ans !== undefined && ans !== null && ans !== "";
+      let isCorrect = false;
 
-      if (ans === correct) {
+      if (answerType === "multiple") {
+        const selected = Array.isArray(ans) ? ans.map(String).sort() : [];
+        const correctAnswers = Array.isArray(correct)
+          ? correct.map(String).sort()
+          : correct !== undefined && correct !== null && correct !== ""
+            ? [String(correct)]
+            : [];
+
+        hasAnswer = selected.length > 0;
+        isCorrect =
+          hasAnswer &&
+          selected.length === correctAnswers.length &&
+          selected.every((value, index) => value === correctAnswers[index]);
+      } else if (answerType === "descriptive") {
+        const expected = String(correct || "").trim().toLowerCase();
+        const written = String(ans || "").trim().toLowerCase();
+
+        hasAnswer = written.length > 0;
+        isCorrect = Boolean(expected) && written === expected;
+      } else {
+        isCorrect = String(ans) === String(correct);
+      }
+
+      if (isCorrect) {
         score += quiz.eachMarks;
-      } else if (
-        ans !== undefined &&
-        quiz.negativeMarking
-      ) {
-        score -= quiz.negativeValue;
+      } else if (hasAnswer && quiz.negativeMarking) {
+        score += quiz.negativeValue;
       }
     });
 

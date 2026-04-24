@@ -9,6 +9,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, validateUser, logoutUser } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const userLabel = user?.email || user?.id || "";
 
   // Scroll effect
   useEffect(() => {
@@ -50,7 +51,12 @@ function Navbar() {
                 </NavLink>
               </>
             ) : (
-              <button className="logoutBtn">Logout</button>
+              <>
+                <div className="userBadge" title={userLabel}>{userLabel}</div>
+                <button onClick={logoutUser} className="logoutBtn">
+                  Logout
+                </button>
+              </>
             )}
           </div>
 
@@ -98,9 +104,12 @@ function Navbar() {
                 </NavLink>
               </>
             ) : (
-              <button onClick={logoutUser} className="logoutBtn">
-                Logout
-              </button>
+              <>
+                <div className="userBadge" title={userLabel}>{userLabel}</div>
+                <button onClick={logoutUser} className="logoutBtn">
+                  Logout
+                </button>
+              </>
             )}
           </div>
 

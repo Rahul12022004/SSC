@@ -173,6 +173,17 @@
   margin-bottom: 15px;
 }
 
+.testQuiz .questionImage {
+  display: block;
+  max-width: min(720px, 100%);
+  max-height: 360px;
+  object-fit: contain;
+  margin: 14px 0 20px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
 /* ================= OPTIONS ================= */
 .testQuiz .optionsGrid {
   display: grid;
@@ -189,9 +200,10 @@
   border: 1px solid #e2e8f0;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 /* HOVER EFFECT */
@@ -203,6 +215,29 @@
 /* RADIO */
 .testQuiz .optionItem input {
   cursor: pointer;
+}
+
+.testQuiz .optionImage {
+  grid-column: 1 / -1;
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.testQuiz .descriptiveResponse {
+  width: 100%;
+  min-height: 180px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #d7dfec;
+  border-radius: 10px;
+  color: #0b2545;
+  background: #ffffff;
+  resize: vertical;
+  font: inherit;
 }
 
 /* ================= NAVIGATION ================= */
