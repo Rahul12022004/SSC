@@ -11,8 +11,14 @@ function ScheduleQuiz() {
   const [time, setTime] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // safer local date (avoids UTC date shift bug)
+  const todayStr = new Date(
+    Date.now() - new Date().getTimezoneOffset() * 60000
+  )
+    .toISOString()
+    .split("T")[0];
+
   const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
   const isToday = date === todayStr;
 
   const handleSchedule = async () => {
@@ -24,6 +30,16 @@ function ScheduleQuiz() {
     setLoading(true);
 
     try {
+      // Force Mumbai/IST scheduling
+      const localDate = new Date(`${date}T${time}:00`);
+
+      // Convert IST selection to UTC for Mongo/Vercel consistency
+      const scheduledAt = new Date(
+        localDate.toLocaleString("en-US", {
+          timeZone: "Asia/Kolkata",
+        })
+      ).toISOString();
+
       const res = await fetch(`${BASE_URL}/quiz/schedule-quiz`, {
         method: "POST",
         headers: {
@@ -32,7 +48,7 @@ function ScheduleQuiz() {
         credentials: "include",
         body: JSON.stringify({
           fileName: id,
-          scheduledAt: `${date}T${time}`, // ✅ FUTURE READY
+          scheduledAt,
         }),
       });
 
@@ -44,6 +60,7 @@ function ScheduleQuiz() {
       } else {
         alert(data.message || "Failed to schedule");
       }
+
     } catch (err) {
       console.error(err);
       alert("Server error");
@@ -77,7 +94,10 @@ function ScheduleQuiz() {
           />
         </div>
 
-        <button onClick={handleSchedule} disabled={loading}>
+        <button
+          onClick={handleSchedule}
+          disabled={loading}
+        >
           {loading ? "Scheduling..." : "Schedule Quiz"}
         </button>
       </div>

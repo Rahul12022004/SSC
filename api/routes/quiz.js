@@ -131,7 +131,7 @@ router.get("/all", async (req, res) => {
       });
     }
 
-    // ✅ Data exists
+    // ✅ Data existsf
     res.json({
       success: true,
       quizzes,
