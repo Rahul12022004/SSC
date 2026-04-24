@@ -69,7 +69,7 @@ function AppLayout() {
           <Route
             path="/create-quiz"
             element={
-              <ProtectedRoute minRole={1}>
+              <ProtectedRoute minRole={10}>
                 <CreateQuiz />
               </ProtectedRoute>
             }

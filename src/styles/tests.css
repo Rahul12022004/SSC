@@ -231,6 +231,7 @@ body:has(.pc-page),
   gap: 16px;
   padding: 18px 20px;
   box-shadow: 0 10px 24px rgba(18, 40, 74, 0.06);
+  margin-bottom:24px; 
 }
 
 .pc-badge-live {
