@@ -24,6 +24,7 @@ import ScheduleQuiz from "./pages/ScheduleQuiz";
 // ✅ NEW
 import ExamDashboard from "./pages/ExamDashboard";
 import TestQuiz from "./pages/TestQuiz";
+import Result from "./pages/Result";   // ✅ ADDED
 
 function AppLayout() {
   const location = useLocation();
@@ -32,7 +33,9 @@ function AppLayout() {
   const hideLayout =
     location.pathname.startsWith("/quiz") ||
     location.pathname.startsWith("/exam") ||
-    location.pathname.startsWith("/testQuiz");
+    location.pathname.startsWith("/testQuiz") ||
+    location.pathname.startsWith("/result");   // ✅ FIXED (was on separate line with ; before)
+
   const hideFooter = hideLayout || location.pathname === "/tests";
 
   return (
@@ -81,7 +84,7 @@ function AppLayout() {
             }
           />
 
-          {/* ✅ NEW: EXAM DASHBOARD */}
+          {/* ✅ EXAM DASHBOARD */}
           <Route
             path="/exam"
             element={
@@ -110,12 +113,22 @@ function AppLayout() {
             }
           />
 
-          {/* ❗ OPTIONAL: keep old route (if needed) */}
+          {/* ❗ OPTIONAL: keep old route */}
           <Route
             path="/quiz/:id"
             element={
               <ProtectedRoute minRole={1}>
                 <QuizPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ✅ RESULT PAGE - ADDED */}
+          <Route
+            path="/result"
+            element={
+              <ProtectedRoute minRole={1}>
+                <Result />
               </ProtectedRoute>
             }
           />

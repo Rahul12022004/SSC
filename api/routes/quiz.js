@@ -352,43 +352,74 @@ router.post("/submit", async (req, res) => {
       });
     }
 
-    // 🔥 CALCULATE SCORE
+    // 🔥 CALCULATE SCORE + ANALYTICS
     let score = 0;
+    const totalMarks = quiz.questions.length * quiz.eachMarks;
+
+    let correct = 0;
+    let wrong = 0;
+    let skipped = 0;
+    let negativeTotal = 0;
 
     answers.forEach((ans, i) => {
       const question = quiz.questions[i];
+      const correctAns = question?.correctAnswer;
       const answerType = question?.answerType || "single";
-      const correct = question?.correctAnswer;
-      let hasAnswer = ans !== undefined && ans !== null && ans !== "";
+
+      let hasAnswer =
+        ans !== undefined &&
+        ans !== null &&
+        ans !== "";
+
       let isCorrect = false;
 
+      // skipped
+      if (!hasAnswer) {
+        skipped++;
+        return;
+      }
+
+      // Multiple correct
       if (answerType === "multiple") {
-        const selected = Array.isArray(ans) ? ans.map(String).sort() : [];
-        const correctAnswers = Array.isArray(correct)
-          ? correct.map(String).sort()
-          : correct !== undefined && correct !== null && correct !== ""
-            ? [String(correct)]
-            : [];
+        const selected = Array.isArray(ans)
+          ? ans.map(String).sort()
+          : [];
 
-        hasAnswer = selected.length > 0;
+        const correctAnswers = Array.isArray(correctAns)
+          ? correctAns.map(String).sort()
+          : [String(correctAns)];
+
         isCorrect =
-          hasAnswer &&
           selected.length === correctAnswers.length &&
-          selected.every((value, index) => value === correctAnswers[index]);
-      } else if (answerType === "descriptive") {
-        const expected = String(correct || "").trim().toLowerCase();
-        const written = String(ans || "").trim().toLowerCase();
+          selected.every(
+            (value, index) => value === correctAnswers[index]
+          );
+      }
 
-        hasAnswer = written.length > 0;
-        isCorrect = Boolean(expected) && written === expected;
-      } else {
-        isCorrect = String(ans) === String(correct);
+      // Descriptive
+      else if (answerType === "descriptive") {
+        isCorrect =
+          String(ans).trim().toLowerCase() ===
+          String(correctAns || "")
+            .trim()
+            .toLowerCase();
+      }
+
+      // Single correct
+      else {
+        isCorrect = String(ans) === String(correctAns);
       }
 
       if (isCorrect) {
+        correct++;
         score += quiz.eachMarks;
-      } else if (hasAnswer && quiz.negativeMarking) {
-        score += quiz.negativeValue;
+      } else {
+        wrong++;
+
+        if (quiz.negativeMarking) {
+          score += quiz.negativeValue; // negative deduction
+          negativeTotal += Math.abs(quiz.negativeValue);
+        }
       }
     });
 
@@ -405,8 +436,16 @@ router.post("/submit", async (req, res) => {
     res.json({
       success: true,
       message: "Quiz submitted successfully",
-      score,
+      score: {
+        obtained: score,
+        total: totalMarks,
+        correct,
+        wrong,
+        skipped,
+        negative: negativeTotal,
+      },
     });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({
