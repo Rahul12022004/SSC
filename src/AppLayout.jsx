@@ -24,7 +24,8 @@ import ScheduleQuiz from "./pages/ScheduleQuiz";
 // ✅ NEW
 import ExamDashboard from "./pages/ExamDashboard";
 import TestQuiz from "./pages/TestQuiz";
-import Result from "./pages/Result";   // ✅ ADDED
+import Result from "./pages/Result";
+import MockTest from "./pages/MockTest";
 
 function AppLayout() {
   const location = useLocation();
@@ -34,7 +35,8 @@ function AppLayout() {
     location.pathname.startsWith("/quiz") ||
     location.pathname.startsWith("/exam") ||
     location.pathname.startsWith("/testQuiz") ||
-    location.pathname.startsWith("/result");   // ✅ FIXED (was on separate line with ; before)
+    location.pathname.startsWith("/result") ||
+    location.pathname.startsWith("/mock-test");
 
   const hideFooter = hideLayout || location.pathname === "/tests";
 
@@ -127,8 +129,16 @@ function AppLayout() {
           <Route
             path="/result"
             element={
+              <Result />
+            }
+          />
+
+          {/* CBT Mock Test */}
+          <Route
+            path="/mock-test/:id"
+            element={
               <ProtectedRoute minRole={1}>
-                <Result />
+                <MockTest />
               </ProtectedRoute>
             }
           />

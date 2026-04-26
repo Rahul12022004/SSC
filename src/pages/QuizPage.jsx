@@ -142,18 +142,68 @@ function QuizPage() {
     try {
       await new Promise((res) => setTimeout(res, 1000));
 
-      navigate("/exam", {
+      let correct = 0;
+      let wrong = 0;
+      let skipped = 0;
+
+      section.questions.forEach((q, index) => {
+        const answer = answers[index];
+        if (answer === undefined || answer === null || answer === "") {
+          skipped++;
+        } else if (q.correct !== undefined) {
+          if (answer === q.correct) {
+            correct++;
+          } else {
+            wrong++;
+          }
+        } else {
+          if (answer === 0) {
+            correct++;
+          } else {
+            wrong++;
+          }
+        }
+      });
+
+      const totalQuestions = section.questions.length;
+      const totalMarks = totalQuestions * 1;
+      const obtainedMarks = correct;
+      const negativeMarks = wrong * (section.negative || 0);
+      const finalScore = obtainedMarks - negativeMarks;
+
+      const breakdown = section.questions.map((q, index) => ({
+        question: q.question,
+        options: q.options.map((opt) => ({ text: opt })),
+        correctAnswer: q.correct,
+        userAnswer: answers[index] ?? null,
+        answerType: "single",
+      }));
+
+      navigate("/result", {
         state: {
-          sectionId,
-          status: "submitted",
-          spent: getTimeSpent(),
+          score: {
+            obtained: finalScore,
+            total: totalMarks,
+            correct: correct,
+            wrong: wrong,
+            skipped: skipped,
+            negative: negativeMarks.toFixed(2),
+          },
+          sectionTitle: section.title,
+          breakdown,
         },
       });
     } catch (err) {
-      console.error(err);
       setIsSubmitting(false);
     }
   };
+
+  // Add cleanup for isSubmitting if component unmounts
+  useEffect(() => {
+    return () => {
+      setIsSubmitting(false);
+    };
+  }, []);
 
   const handleSaveAndExit = () => {
     localStorage.setItem(
@@ -219,7 +269,11 @@ function QuizPage() {
             <button
               className="submitBtn"
               disabled={isSubmitting}
-              onClick={handleSubmitQuiz}
+              onClick={(e) => {
+                console.log("Submit button clicked!");
+                e.preventDefault();
+                handleSubmitQuiz();
+              }}
             >
               {isSubmitting ? (
                 <span className="loaderWrapper">

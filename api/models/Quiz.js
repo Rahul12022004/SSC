@@ -13,8 +13,10 @@ const questionSchema = new mongoose.Schema({
     default: "single",
   },
   question: String,
+  questionHi: String,
   questionImage: String,
   options: [optionSchema],
+  optionsHi: [optionSchema],
   correctAnswer: mongoose.Schema.Types.Mixed,
 });
 

@@ -89,6 +89,24 @@ function CreateQuiz() {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [errorIndex, setErrorIndex] = useState(null);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [hindiOpen, setHindiOpen] = useState([]);
+
+  const toggleHindi = (qIndex) => {
+    setHindiOpen((prev) => {
+      const updated = [...prev];
+      updated[qIndex] = !updated[qIndex];
+      return updated;
+    });
+  };
+
+  const updateOptionHi = (qIndex, oIndex, value) => {
+    const updated = [...quiz.questions];
+    if (!updated[qIndex].optionsHi) {
+      updated[qIndex].optionsHi = [{ text: "" }, { text: "" }, { text: "" }, { text: "" }];
+    }
+    updated[qIndex].optionsHi[oIndex] = { text: value };
+    setQuiz({ ...quiz, questions: updated });
+  };
 
   const [negativeMarking, setNegativeMarking] = useState(true);
   const [negativeValue, setNegativeValue] = useState(-0.5);
@@ -146,6 +164,7 @@ function CreateQuiz() {
             ...question,
             type: question.type || "text",
             answerType: question.answerType || "single",
+            questionHi: question.questionHi || "",
             options: question.options?.length
               ? question.options
               : [
@@ -154,6 +173,9 @@ function CreateQuiz() {
                   { text: "", image: "" },
                   { text: "", image: "" },
                 ],
+            optionsHi: question.optionsHi?.length
+              ? question.optionsHi
+              : [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
             correctAnswer:
               question.answerType === "multiple" && !Array.isArray(question.correctAnswer)
                 ? question.correctAnswer
@@ -175,6 +197,26 @@ function CreateQuiz() {
     fetchQuizForEdit();
   }, [editQuizId]);
 
+  const addSection = () => {
+    setQuiz((prev) => {
+      const newQuestions = [
+        ...prev.questions,
+        {
+          type: "section",
+          question: "",
+          questionHi: "",
+          questionImage: "",
+          options: [{ text: "", image: "" }, { text: "", image: "" }, { text: "", image: "" }, { text: "", image: "" }],
+          optionsHi: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
+          correctAnswer: "",
+          answerType: "single",
+        },
+      ];
+      setTimeout(() => scrollToQuestion(newQuestions.length - 1), 100);
+      return { ...prev, questions: newQuestions };
+    });
+  };
+
   const addQuestion = (shouldScroll = true) => {
     setQuiz((prev) => {
       const newQuestions = [
@@ -183,6 +225,7 @@ function CreateQuiz() {
           type: "text",
           answerType: "single",
           question: "",
+          questionHi: "",
           questionImage: "",
           options: [
             { text: "", image: "" },
@@ -190,6 +233,7 @@ function CreateQuiz() {
             { text: "", image: "" },
             { text: "", image: "" },
           ],
+          optionsHi: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
           correctAnswer: "",
         },
       ];
@@ -331,6 +375,8 @@ function CreateQuiz() {
 
     // ✅ Questions
     quiz.questions.forEach((q, i) => {
+      if (q.type === "section") return;
+
       const qError = {
         question: "",
         options: "",
@@ -586,7 +632,33 @@ function CreateQuiz() {
       </div>
       {/* QUESTIONS */}
       <div className="questionsSection">
-        {quiz.questions.map((q, qIndex) => (
+        {quiz.questions.map((q, qIndex) => {
+          if (q.type === "section") {
+            return (
+              <div key={qIndex} className="sectionCard" ref={(el) => (questionRefs.current[qIndex] = el)}>
+                <div className="sectionCardHeader">
+                  <span className="sectionLabel">SECTION</span>
+                  <div className="rightControls">
+                    <div className="moveBtns">
+                      <FiArrowUp onClick={() => moveQuestion(qIndex, -1)} />
+                      <FiArrowDown onClick={() => moveQuestion(qIndex, 1)} />
+                    </div>
+                    <FiTrash2 className="sectionDelete" onClick={() => setDeleteIndex(qIndex)} />
+                  </div>
+                </div>
+                <input
+                  className="sectionTitleInput"
+                  placeholder="Section name (e.g. General Awareness)"
+                  value={q.question}
+                  onChange={(e) => updateQuestion(qIndex, "question", e.target.value)}
+                />
+              </div>
+            );
+          }
+
+          const qNum = quiz.questions.slice(0, qIndex).filter((x) => x.type !== "section").length + 1;
+
+          return (
           <div
             key={qIndex}
             className={`questionCard ${
@@ -601,7 +673,7 @@ function CreateQuiz() {
             {" "}
             {/* HEADER */}
             <div className="questionHeader">
-              <h3>Question {qIndex + 1}</h3>
+              <h3>Question {qNum}</h3>
 
               <div className="rightControls">
                 <div className="typeSelector">
@@ -692,6 +764,32 @@ function CreateQuiz() {
                 {errors.questions[qIndex].question}
               </p>
             )}
+
+            {/* HINDI TOGGLE */}
+            <button
+              type="button"
+              className={`hindiToggleBtn ${hindiOpen[qIndex] ? "active" : ""}`}
+              onClick={() => toggleHindi(qIndex)}
+            >
+              {hindiOpen[qIndex] ? "▲ Hide Hindi" : "▼ Add Hindi Translation"}
+            </button>
+
+            {hindiOpen[qIndex] && (
+              <div className="hindiSection">
+                {(q.type === "text" || q.type === "mixed") && (
+                  <div className="questionInputWrapper">
+                    <span className="qPrefix hi">HI</span>
+                    <input
+                      className="questionInput"
+                      placeholder="प्रश्न हिंदी में लिखें"
+                      value={q.questionHi || ""}
+                      onChange={(e) => updateQuestion(qIndex, "questionHi", e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* OPTIONS */}
             {q.answerType !== "descriptive" && (
               <>
@@ -699,13 +797,23 @@ function CreateQuiz() {
                   {q.options.map((opt, i) => (
                     <div key={i} className="optionBox">
                       {(q.type === "text" || q.type === "mixed") && (
-                        <input
-                          placeholder={`Option ${i + 1}`}
-                          value={opt.text}
-                          onChange={(e) =>
-                            updateOption(qIndex, i, "text", e.target.value)
-                          }
-                        />
+                        <>
+                          <input
+                            placeholder={`Option ${i + 1}`}
+                            value={opt.text}
+                            onChange={(e) =>
+                              updateOption(qIndex, i, "text", e.target.value)
+                            }
+                          />
+                          {hindiOpen[qIndex] && (
+                            <input
+                              className="hindiOptionInput"
+                              placeholder={`विकल्प ${i + 1} (Hindi)`}
+                              value={q.optionsHi?.[i]?.text || ""}
+                              onChange={(e) => updateOptionHi(qIndex, i, e.target.value)}
+                            />
+                          )}
+                        </>
                       )}
 
                       {(q.type === "image" || q.type === "mixed") && (
@@ -797,12 +905,16 @@ function CreateQuiz() {
               </p>
             )}
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="addQuestionWrapper">
         <button className="addBtn" onClick={addQuestion}>
           <FiPlus /> Add Question
+        </button>
+        <button className="addSectionBtn" onClick={addSection}>
+          <FiPlus /> Add Section
         </button>
       </div>
 

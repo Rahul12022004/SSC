@@ -102,7 +102,7 @@ function ExamDashboard() {
       },
     }));
 
-    navigate(`/exam/${id}`);
+    navigate(`/quiz/${id}`);
   };
 
   const getButtonText = (status) => {
@@ -123,13 +123,7 @@ function ExamDashboard() {
 
     setSections(updated);
     localStorage.removeItem("examSections");
-
-    window.open("", "_self");
-    window.close();
-
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
+    navigate("/");
   };
 
   return (

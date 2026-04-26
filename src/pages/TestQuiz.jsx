@@ -171,8 +171,17 @@ function TestQuiz() {
         return;
       }
 
-      // optional: redirect instead of window.close
-      navigate("/result", { state: { score: data.score } });
+      const serverBreakdown = data.breakdown ?? [];
+      const finalBreakdown = (serverBreakdown.length > 0 ? serverBreakdown : quiz.questions.map((q, idx) => ({
+        question: q.question,
+        questionImage: q.questionImage || null,
+        options: q.options,
+        correctAnswer: q.correctAnswer ?? null,
+        userAnswer: answers[idx] ?? null,
+        answerType: q.answerType || "single",
+      }))).map((item, idx) => ({ ...item, flagged: flagged[idx] ?? false }));
+
+      navigate("/result", { state: { score: data.score, sectionTitle: quiz.title, breakdown: finalBreakdown } });
     } catch (err) {
       console.error(err);
       setIsSubmitting(false);
@@ -190,6 +199,8 @@ function TestQuiz() {
 
   const q = quiz.questions[current];
   const total = quiz.questions.length;
+  const qTotal = quiz.questions.filter((x) => x.type !== "section").length;
+  const qNum = quiz.questions.slice(0, current + 1).filter((x) => x.type !== "section").length;
 
   // 🔥 SUBMIT SCREEN
   if (showSubmit) {
@@ -344,28 +355,48 @@ function TestQuiz() {
       <div className="examLayout">
         {/* SIDE PANEL */}
         <div className="sidePanel">
-          {quiz.questions.map((_, i) => (
-            <div
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`qBox 
-                ${status[i] === "answered" ? "green" : ""}
-                ${status[i] === "skipped" ? "yellow" : ""}
-                ${flagged[i] ? "red" : ""}
-                ${i === current ? "active" : ""}
-              `}
-            >
-              {i + 1}
-            </div>
-          ))}
+          {quiz.questions.map((item, i) => {
+            if (item.type === "section") {
+              return (
+                <div key={i} className="qBoxSection" title={item.question}>
+                  {item.question || "Section"}
+                </div>
+              );
+            }
+            const num = quiz.questions.slice(0, i + 1).filter((x) => x.type !== "section").length;
+            return (
+              <div
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`qBox
+                  ${status[i] === "answered" ? "green" : ""}
+                  ${status[i] === "skipped" ? "yellow" : ""}
+                  ${flagged[i] ? "red" : ""}
+                  ${i === current ? "active" : ""}
+                `}
+              >
+                {num}
+              </div>
+            );
+          })}
         </div>
 
         {/* MAIN */}
         <div className="quizContent">
+          {q.type === "section" ? (
+            <div className="sectionDividerCard">
+              <div className="sectionDividerLabel">SECTION</div>
+              <h2 className="sectionDividerTitle">{q.question || "New Section"}</h2>
+              <button className="sectionNextBtn" onClick={() => setCurrent((c) => Math.min(c + 1, total - 1))}>
+                Continue →
+              </button>
+            </div>
+          ) : (
+          <>
           <div className="questionCard">
             {(q.type === "text" || q.type === "mixed") && (
               <h2>
-                Q{current + 1}. {q.question}
+                Q{qNum}. {q.question}
               </h2>
             )}
 
@@ -455,6 +486,8 @@ function TestQuiz() {
               )}
             </div>
           </div>
+          </>
+          )}
         </div>
       </div>
 

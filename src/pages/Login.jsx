@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { FaEye, FaEyeSlash, FaRedo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -20,6 +20,8 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [captcha, setCaptcha] = useState({ num1: 0, num2: 0 });
+  const [captchaInput, setCaptchaInput] = useState("");
   const location = useLocation();
 
   const redirectTo = location.state?.redirectTo;
@@ -27,10 +29,22 @@ function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
 
+  const generateCaptcha = useCallback(() => {
+    setCaptcha({
+      num1: Math.floor(Math.random() * 10) + 1,
+      num2: Math.floor(Math.random() * 10) + 1,
+    });
+    setCaptchaInput("");
+  }, []);
+
   const refs = {
     email: emailRef,
     password: passwordRef,
   };
+
+  useEffect(() => {
+    generateCaptcha();
+  }, [generateCaptcha]);
 
   useEffect(() => {
     if (Object.keys(errors).length === 0) return;
@@ -78,6 +92,14 @@ function Login() {
         newErrors.password =
           "6-15 chars, 1 capital, 1 number, 1 special (@ # $ % & * !)";
       }
+    }
+
+    // CAPTCHA
+    if (!captchaInput.trim()) {
+      newErrors.captcha = "Please solve the CAPTCHA";
+    } else if (parseInt(captchaInput) !== captcha.num1 + captcha.num2) {
+      newErrors.captcha = "Incorrect answer, try again";
+      generateCaptcha();
     }
 
     setErrors(newErrors);
@@ -134,9 +156,11 @@ function Login() {
         }
       } else {
         setErrors({ password: "Invalid email or password" });
+        generateCaptcha();
       }
     } catch {
       setErrors({ password: "Something went wrong" });
+      generateCaptcha();
     } finally {
       setLoading(false);
     }
@@ -192,6 +216,31 @@ function Login() {
           </div>
 
           {errors.password && <p className="error">{errors.password}</p>}
+
+          {/* CAPTCHA */}
+          <div className="captchaWrapper">
+            <div className="captchaQuestion">
+              <span>{captcha.num1} + {captcha.num2} = ?</span>
+              <button
+                type="button"
+                className="captchaRefresh"
+                onClick={generateCaptcha}
+                title="Refresh CAPTCHA"
+              >
+                <FaRedo />
+              </button>
+            </div>
+            <input
+              type="number"
+              placeholder="Enter answer"
+              value={captchaInput}
+              onChange={(e) => {
+                setCaptchaInput(e.target.value.slice(0, 3));
+                setErrors((prev) => ({ ...prev, captcha: "" }));
+              }}
+            />
+          </div>
+          {errors.captcha && <p className="error">{errors.captcha}</p>}
 
           {/* BUTTON */}
           <button type="submit" disabled={loading}>

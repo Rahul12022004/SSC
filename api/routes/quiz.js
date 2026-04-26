@@ -306,8 +306,10 @@ router.get("/:id", async (req, res) => {
       type: q.type,
       answerType: q.answerType || "single",
       question: q.question,
+      questionHi: q.questionHi || "",
       questionImage: q.questionImage,
       options: q.options,
+      optionsHi: q.optionsHi || [],
       // ❌ DO NOT SEND correctAnswer
     }));
 
@@ -354,7 +356,7 @@ router.post("/submit", async (req, res) => {
 
     // 🔥 CALCULATE SCORE + ANALYTICS
     let score = 0;
-    const totalMarks = quiz.questions.length * quiz.eachMarks;
+    const totalMarks = quiz.questions.filter((q) => q.type !== "section").length * quiz.eachMarks;
 
     let correct = 0;
     let wrong = 0;
@@ -363,6 +365,7 @@ router.post("/submit", async (req, res) => {
 
     answers.forEach((ans, i) => {
       const question = quiz.questions[i];
+      if (question?.type === "section") return;
       const correctAns = question?.correctAnswer;
       const answerType = question?.answerType || "single";
 
@@ -433,6 +436,20 @@ router.post("/submit", async (req, res) => {
 
     await submission.save();
 
+    const breakdown = quiz.questions
+      .map((q, origIdx) => ({ q, origIdx }))
+      .filter(({ q }) => q.type !== "section")
+      .map(({ q, origIdx }) => ({
+        question: q.question,
+        questionHi: q.questionHi || "",
+        questionImage: q.questionImage || null,
+        options: q.options,
+        optionsHi: q.optionsHi || [],
+        correctAnswer: q.correctAnswer,
+        userAnswer: answers[origIdx] ?? null,
+        answerType: q.answerType || "single",
+      }));
+
     res.json({
       success: true,
       message: "Quiz submitted successfully",
@@ -444,6 +461,7 @@ router.post("/submit", async (req, res) => {
         skipped,
         negative: negativeTotal,
       },
+      breakdown,
     });
 
   } catch (err) {

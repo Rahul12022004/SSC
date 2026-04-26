@@ -253,6 +253,7 @@
 .createQuiz .addQuestionWrapper {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
 }
 
 .createQuiz .addBtn {
@@ -260,6 +261,72 @@
   color: white;
   padding: 10px 18px;
   border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.createQuiz .addSectionBtn {
+  background: #0b2545;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+/* SECTION CARD */
+.createQuiz .sectionCard {
+  background: #eef2ff;
+  border: 2px dashed #6366f1;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+
+.createQuiz .sectionCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.createQuiz .sectionLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #6366f1;
+  text-transform: uppercase;
+}
+
+.createQuiz .sectionTitleInput {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #a5b4fc;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e1b4b;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.createQuiz .sectionTitleInput:focus {
+  border-color: #6366f1;
+}
+
+.createQuiz .sectionDelete {
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 18px;
 }
 
 .createQuiz .questionCard:target,
@@ -975,4 +1042,56 @@
     flex-direction: column;
     align-items: flex-end;
   }
+}
+
+/* HINDI TRANSLATION */
+.hindiToggleBtn {
+  margin-top: 8px;
+  background: none;
+  border: 1px dashed #b0bec5;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #546e7a;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.hindiToggleBtn:hover,
+.hindiToggleBtn.active {
+  border-color: #ff9800;
+  color: #ff9800;
+  background: #fff8f0;
+}
+
+.hindiSection {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #fffde7;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+}
+
+.qPrefix.hi {
+  background: #ff9800;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.hindiOptionInput {
+  margin-top: 6px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  background: #fffde7;
+  font-size: 13px;
+  color: #333;
+}
+
+.hindiOptionInput:focus {
+  outline: none;
+  border-color: #ff9800;
 }

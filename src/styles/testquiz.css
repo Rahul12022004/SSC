@@ -518,6 +518,65 @@
   transform: scale(1.05);
 }
 
+/* SECTION BOX in side panel */
+.qBoxSection {
+  width: 100%;
+  padding: 4px 8px;
+  background: #6366f1;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 4px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+/* SECTION DIVIDER CARD (main area) */
+.sectionDividerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: #eef2ff;
+  border: 2px dashed #6366f1;
+  border-radius: 14px;
+  text-align: center;
+  min-height: 200px;
+}
+
+.sectionDividerLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #6366f1;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.sectionDividerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 1.5rem;
+}
+
+.sectionNextBtn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 /* ====== RIGHT CONTENT ====== */
 .quizContent {
   flex: 1;

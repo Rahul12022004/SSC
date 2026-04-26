@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BASE_URL, useAuth } from "../context/AuthContext.jsx";
 import "../styles/tests.css";
 
@@ -50,10 +50,19 @@ function Tests(){
 
 const {user}=useAuth();
 const navigate=useNavigate();
+const location=useLocation();
 
 const [tests,setTests]=useState([]);
 const [loading,setLoading]=useState(true);
 const [message,setMessage]=useState("");
+const [submitToast,setSubmitToast]=useState(location.state?.submitted ? location.state : null);
+
+useEffect(()=>{
+if(submitToast){
+const t=setTimeout(()=>setSubmitToast(null),5000);
+return ()=>clearTimeout(t);
+}
+},[submitToast]);
 
 const [resultsData,setResultsData]=useState(null);
 const [resultsLoading,setResultsLoading]=useState(false);
@@ -134,7 +143,7 @@ return `${h}h ${m}m ${s}s`;
 const handleStartQuiz=(id=null)=>{
 
 const url=id
-? `/testQuiz/${id}`
+? `/mock-test/${id}`
 : "/exam";
 
 if(!user){
@@ -244,6 +253,13 @@ tests.filter(t=>getStatus(t)==="upcoming").length;
 return(
 
 <main className="pc-page">
+
+{submitToast && (
+<div className="pc-submit-toast">
+  ✓ <strong>{submitToast.quizTitle || "Exam"}</strong> submitted! Your score: <strong>{submitToast.score}</strong>
+  <button onClick={()=>setSubmitToast(null)}>×</button>
+</div>
+)}
 
 <section>
 
@@ -423,19 +439,31 @@ Results
 </span>
 </div>
 
-):(
-
-<button
-className="pc-exam-btn"
-onClick={()=>
-handleStartQuiz(test._id)
-}
->
-<IconPlay/>
-<span>Start Quiz</span>
-</button>
-
-)}
+) : (() => {
+  const subKey = `submitted_${user?.email}_${test._id}`;
+  const subData = localStorage.getItem(subKey);
+  if (!isAdmin && subData) {
+    const parsed = JSON.parse(subData);
+    return (
+      <button
+        className="pc-exam-btn pc-result-btn"
+        onClick={() => navigate("/result", { state: { score: parsed.score, sectionTitle: parsed.quizTitle, breakdown: parsed.breakdown ?? [], language: parsed.language ?? "en" } })}
+      >
+        <IconFile/>
+        <span>View Result</span>
+      </button>
+    );
+  }
+  return (
+    <button
+      className="pc-exam-btn"
+      onClick={() => handleStartQuiz(test._id)}
+    >
+      <IconPlay/>
+      <span>Start Quiz</span>
+    </button>
+  );
+})()}
 
 </div>
 
