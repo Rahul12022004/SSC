@@ -208,3 +208,61 @@
     padding: 30px 20px;
   }
 }
+
+/* ===== OTP STEP ===== */
+.otpSubtext {
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.otpBoxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.otpBox {
+  width: 48px;
+  height: 54px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+  color: #0b2545;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #f8fafc;
+}
+
+.otpBox:focus {
+  border-color: #f77f00;
+  box-shadow: 0 0 0 3px rgba(247, 127, 0, 0.15);
+  background: #fff;
+}
+
+.resendRow {
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 14px;
+}
+
+.resendBtn {
+  background: none;
+  border: none;
+  color: #f77f00;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.resendBtn:disabled {
+  color: #94a3b8;
+  cursor: default;
+}

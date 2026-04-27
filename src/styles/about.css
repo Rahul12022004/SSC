@@ -65,6 +65,7 @@
 /* FEATURES */
 .aboutPage .features {
   text-align: center;
+  padding-bottom: 30px;
 }
 
 .aboutPage .features h2 {
@@ -75,21 +76,24 @@
 /* GRID */
 .aboutPage .featureGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  max-width: 1100px;
+  max-width: 860px;
   margin: auto;
 }
 
 /* CARD */
 .aboutPage .featureCard {
   background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  min-height: 160px;
+  padding: 28px 24px;
+  border-radius: 14px;
+  text-align: center;
 
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
   transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .aboutPage .featureCard:hover {
@@ -97,29 +101,43 @@
   box-shadow: 0 12px 25px rgba(0,0,0,0.15);
 }
 
+.aboutPage .featureIcon {
+  font-size: 34px;
+  display: block;
+  margin-bottom: 14px;
+}
+
 .aboutPage .featureCard h3 {
   margin-bottom: 8px;
   color: #0b2545;
+  font-size: 17px;
 }
 
 .aboutPage .featureCard p {
   font-size: 14px;
   color: #555;
+  max-width: 280px;
+  line-height: 1.5;
 }
 
 /* MISSION VISION */
+.aboutPage .missionVision {
+  padding-top: 20px;
+}
+
 .aboutPage .mvGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  max-width: 1000px;
+  max-width: 860px;
   margin: auto;
 }
 
 .aboutPage .mvCard {
   background: #ffffff;
-  padding: 25px;
-  border-radius: 12px;
+  padding: 30px 24px;
+  border-radius: 14px;
+  text-align: center;
 
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
@@ -127,10 +145,13 @@
 .aboutPage .mvCard h3 {
   color: #0b2545;
   margin-bottom: 10px;
+  font-size: 18px;
 }
 
 .aboutPage .mvCard p {
   color: #555;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 /*  COUNTER FIX */
@@ -201,7 +222,6 @@
 
 /* RESPONSIVE */
 @media (max-width: 992px) {
-  .aboutPage .featureGrid,
   .aboutPage .statGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -213,7 +233,8 @@
 
 @media (max-width: 576px) {
   .aboutPage .featureGrid,
-  .aboutPage .statGrid {
+  .aboutPage .statGrid,
+  .aboutPage .mvGrid {
     grid-template-columns: 1fr;
   }
 

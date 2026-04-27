@@ -4,9 +4,10 @@ import "aos/dist/aos.css";
 import "../styles/about.css";
 
 /* FEATURE CARD */
-function FeatureCard({ title, desc }) {
+function FeatureCard({ icon, title, desc }) {
   return (
     <div className="featureCard" data-aos="fade-up">
+      <span className="featureIcon">{icon}</span>
       <h3>{title}</h3>
       <p>{desc}</p>
     </div>
@@ -130,13 +131,13 @@ function About() {
 
       {/* FEATURES */}
       <section className="features">
-        <h2>Why Choose Us</h2>
+        <h2>Why Students Trust Us</h2>
 
         <div className="featureGrid">
-          <FeatureCard title="Expert Guidance" desc="Learn from the selected aspirants." />
-          <FeatureCard title="Smart Practice" desc="Mock tests & quizzes." />
-          <FeatureCard title="Updated Content" desc="Latest syllabus." />
-          <FeatureCard title="Performance Tracking" desc="Track progress." />
+          <FeatureCard icon="🎯" title="Expert Guidance" desc="Learn from toppers, mentors & achievers." />
+          <FeatureCard icon="📘" title="Smart Practice" desc="Daily mock tests, quizzes & real exam practice." />
+          <FeatureCard icon="📅" title="Updated Content" desc="Latest syllabus, patterns & study updates." />
+          <FeatureCard icon="📈" title="Performance Tracking" desc="Track progress, ranks & weak topics smartly." />
         </div>
       </section>
 
@@ -144,13 +145,13 @@ function About() {
       <section className="missionVision">
         <div className="mvGrid">
           <div className="mvCard" data-aos="fade-right">
-            <h3>Our Mission</h3>
-            <p>Affordable quality education for all students.</p>
+            <h3>🎯 Our Mission</h3>
+            <p>Affordable quality SSC preparation for every aspirant.</p>
           </div>
 
           <div className="mvCard" data-aos="fade-left">
-            <h3>Our Vision</h3>
-            <p>Leading SSC platform across India.</p>
+            <h3>🚀 Our Vision</h3>
+            <p>To become India's most trusted SSC preparation platform.</p>
           </div>
         </div>
       </section>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import {
   FiPlus,
   FiUpload,
@@ -15,6 +15,11 @@ function CreateQuiz() {
   const [searchParams] = useSearchParams();
   const editQuizId = searchParams.get("edit");
   const isEditMode = Boolean(editQuizId);
+  const location = useLocation();
+  const stateData = location.state || {};
+  const [subjectId,  setSubjectId]  = useState(searchParams.get("subjectId")  || stateData.subjectId  || null);
+  const [categoryId, setCategoryId] = useState(searchParams.get("categoryId") || stateData.categoryId || null);
+  const [mockTab,    setMockTab]    = useState(searchParams.get("mockTab")    || stateData.mockTab    || "full");
 
   const titleRef = useRef(null);
   const questionRefs = useRef([]);
@@ -108,6 +113,42 @@ function CreateQuiz() {
     setQuiz({ ...quiz, questions: updated });
   };
 
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const pdfInputRef = useRef(null);
+
+  const handlePdfUpload = async (file) => {
+    if (!file) return;
+    const name = file.name?.toLowerCase() || "";
+    const isPdf = file.type === "application/pdf" || name.endsWith(".pdf");
+    const isDocx = name.endsWith(".docx");
+    if (!isPdf && !isDocx) {
+      alert("Please upload a PDF or DOCX file.");
+      return;
+    }
+    setPdfLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("pdf", file);
+      const res = await fetch(`${BASE_URL}/quiz/pdf-generate`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!data.success) {
+        alert(data.message || "Failed to generate questions");
+        return;
+      }
+      setQuiz((prev) => ({ ...prev, questions: [...prev.questions, ...data.questions] }));
+    } catch (err) {
+      alert("Error processing file");
+      console.error(err);
+    } finally {
+      setPdfLoading(false);
+      if (pdfInputRef.current) pdfInputRef.current.value = "";
+    }
+  };
+
   const [negativeMarking, setNegativeMarking] = useState(true);
   const [negativeValue, setNegativeValue] = useState(-0.5);
 
@@ -140,7 +181,6 @@ function CreateQuiz() {
   useEffect(() => {
     if (!hasInitialized.current && !isEditMode) {
       hasInitialized.current = true;
-      addQuestion(false);
     }
   }, [isEditMode]);
 
@@ -187,6 +227,9 @@ function CreateQuiz() {
         setNegativeMarking(Boolean(data.quiz.negativeMarking));
         setNegativeValue(data.quiz.negativeValue ?? -0.5);
         setEachMarks(data.quiz.eachMarks || 1);
+        if (data.quiz.subject    || searchParams.get("subjectId"))  setSubjectId(data.quiz.subject    || searchParams.get("subjectId"));
+        if (data.quiz.categoryId || searchParams.get("categoryId")) setCategoryId(data.quiz.categoryId || searchParams.get("categoryId"));
+        if (data.quiz.mockType   || searchParams.get("mockTab"))    setMockTab(data.quiz.mockType     || searchParams.get("mockTab"));
         hasInitialized.current = true;
       } catch (err) {
         console.error(err);
@@ -217,36 +260,31 @@ function CreateQuiz() {
     });
   };
 
+  const newBlankQuestion = () => ({
+    type: "text",
+    answerType: "single",
+    question: "",
+    questionHi: "",
+    questionImage: "",
+    options: [{ text: "", image: "" }, { text: "", image: "" }, { text: "", image: "" }, { text: "", image: "" }],
+    optionsHi: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
+    correctAnswer: "",
+  });
+
   const addQuestion = (shouldScroll = true) => {
     setQuiz((prev) => {
-      const newQuestions = [
-        ...prev.questions,
-        {
-          type: "text",
-          answerType: "single",
-          question: "",
-          questionHi: "",
-          questionImage: "",
-          options: [
-            { text: "", image: "" },
-            { text: "", image: "" },
-            { text: "", image: "" },
-            { text: "", image: "" },
-          ],
-          optionsHi: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
-          correctAnswer: "",
-        },
-      ];
-
-      if (shouldScroll) {
-        if (shouldScroll) {
-          setTimeout(() => {
-            scrollToQuestion(newQuestions.length - 1);
-          }, 100);
-        }
-      }
-
+      const newQuestions = [...prev.questions, newBlankQuestion()];
+      if (shouldScroll) setTimeout(() => scrollToQuestion(newQuestions.length - 1), 100);
       return { ...prev, questions: newQuestions };
+    });
+  };
+
+  const addQuestionAt = (insertIndex) => {
+    setQuiz((prev) => {
+      const updated = [...prev.questions];
+      updated.splice(insertIndex, 0, newBlankQuestion());
+      setTimeout(() => scrollToQuestion(insertIndex), 100);
+      return { ...prev, questions: updated };
     });
   };
 
@@ -455,6 +493,9 @@ function CreateQuiz() {
           negativeValue,
           eachMarks,
           questions: quiz.questions,
+          subject:    subjectId  || null,
+          categoryId: categoryId || null,
+          mockType:   mockTab    || "full",
         }),
       });
 
@@ -469,6 +510,226 @@ function CreateQuiz() {
       console.error(err);
       alert("Failed to save quiz");
     }
+  };
+
+  const renderQuestionCard = (qIndex) => {
+    const q = quiz.questions[qIndex];
+    let secNum = 0;
+    let qInSec = 0;
+    for (let i = 0; i <= qIndex; i++) {
+      if (quiz.questions[i].type === "section") { secNum++; qInSec = 0; }
+      else qInSec++;
+    }
+    const qLabel = secNum > 0 ? `${secNum}.${qInSec}` : `${qInSec}`;
+    return (
+      <div
+        key={qIndex}
+        className={`questionCard ${
+          errors.questions[qIndex]?.question ||
+          errors.questions[qIndex]?.options ||
+          errors.questions[qIndex]?.correct
+            ? "errorCard"
+            : ""
+        }`}
+        ref={(el) => (questionRefs.current[qIndex] = el)}
+      >
+        {/* HEADER */}
+        <div className="questionHeader">
+          <h3>Q {qLabel}</h3>
+          <div className="rightControls">
+            <div className="typeSelector">
+              {["text", "image", "mixed"].map((type) => (
+                <label key={type} className={q.type === type ? "active" : ""}>
+                  <input
+                    type="radio"
+                    name={`type-${qIndex}`}
+                    value={type}
+                    checked={q.type === type}
+                    onChange={(e) => updateQuestion(qIndex, "type", e.target.value)}
+                  />
+                  {type}
+                </label>
+              ))}
+            </div>
+            <div className="moveBtns">
+              <FiArrowUp onClick={() => moveQuestion(qIndex, -1)} />
+              <FiArrowDown onClick={() => moveQuestion(qIndex, 1)} />
+            </div>
+          </div>
+        </div>
+        <div className="answerTypeSelector">
+          <label>Answer Type</label>
+          <div>
+            {[
+              ["single", "Single Choice"],
+              ["multiple", "Multiple Choice"],
+              ["descriptive", "Descriptive"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={(q.answerType || "single") === value ? "active" : ""}
+                onClick={() => updateQuestion(qIndex, "answerType", value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* QUESTION */}
+        {(q.type === "text" || q.type === "mixed") && (
+          <div className="questionInputWrapper">
+            <span className="qPrefix">Q{qLabel}.</span>
+            <input
+              className="questionInput"
+              placeholder="Enter question"
+              value={q.question}
+              onChange={(e) => updateQuestion(qIndex, "question", e.target.value)}
+            />
+          </div>
+        )}
+        {(q.type === "image" || q.type === "mixed") && (
+          <div className="questionImageBox">
+            <label>
+              <FiUpload /> Upload Question Image
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                hidden
+                onChange={(e) =>
+                  handleImageUpload(e.target.files[0], (url) =>
+                    updateQuestion(qIndex, "questionImage", url)
+                  )
+                }
+              />
+            </label>
+            {q.questionImage && <img src={q.questionImage} className="previewImage" />}
+          </div>
+        )}
+        {errors.questions[qIndex]?.question && (
+          <p className="errorText questionError">{errors.questions[qIndex].question}</p>
+        )}
+        {/* HINDI TOGGLE */}
+        <button
+          type="button"
+          className={`hindiToggleBtn ${hindiOpen[qIndex] ? "active" : ""}`}
+          onClick={() => toggleHindi(qIndex)}
+        >
+          {hindiOpen[qIndex] ? "▲ Hide Hindi" : "▼ Add Hindi Translation"}
+        </button>
+        {hindiOpen[qIndex] && (
+          <div className="hindiSection">
+            {(q.type === "text" || q.type === "mixed") && (
+              <div className="questionInputWrapper">
+                <span className="qPrefix hi">HI</span>
+                <input
+                  className="questionInput"
+                  placeholder="प्रश्न हिंदी में लिखें"
+                  value={q.questionHi || ""}
+                  onChange={(e) => updateQuestion(qIndex, "questionHi", e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+        )}
+        {/* OPTIONS */}
+        {q.answerType !== "descriptive" && (
+          <>
+            <div className="optionsGrid">
+              {q.options.map((opt, i) => (
+                <div key={i} className="optionBox">
+                  {(q.type === "text" || q.type === "mixed") && (
+                    <>
+                      <input
+                        placeholder={`Option ${i + 1}`}
+                        value={opt.text}
+                        onChange={(e) => updateOption(qIndex, i, "text", e.target.value)}
+                      />
+                      {hindiOpen[qIndex] && (
+                        <input
+                          className="hindiOptionInput"
+                          placeholder={`विकल्प ${i + 1} (Hindi)`}
+                          value={q.optionsHi?.[i]?.text || ""}
+                          onChange={(e) => updateOptionHi(qIndex, i, e.target.value)}
+                        />
+                      )}
+                    </>
+                  )}
+                  {(q.type === "image" || q.type === "mixed") && (
+                    <div className="optionUpload">
+                      <label>
+                        <FiUpload />
+                        <input
+                          type="file"
+                          accept="image/png, image/jpeg"
+                          hidden
+                          onChange={(e) =>
+                            handleImageUpload(e.target.files[0], (url) =>
+                              updateOption(qIndex, i, "image", url)
+                            )
+                          }
+                        />
+                      </label>
+                      {opt.image && <img src={opt.image} className="optionPreview" />}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            {errors.questions[qIndex]?.options && (
+              <p className="errorText questionError">{errors.questions[qIndex].options}</p>
+            )}
+          </>
+        )}
+        {/* CORRECT ANSWER */}
+        {q.answerType === "multiple" ? (
+          <div className="correctMulti">
+            <span>Select correct options</span>
+            {[0, 1, 2, 3].map((optionIndex) => (
+              <label key={optionIndex}>
+                <input
+                  type="checkbox"
+                  checked={Array.isArray(q.correctAnswer) && q.correctAnswer.includes(String(optionIndex))}
+                  onChange={(e) => {
+                    const currentAnswers = Array.isArray(q.correctAnswer) ? q.correctAnswer : [];
+                    const nextAnswers = e.target.checked
+                      ? [...currentAnswers, String(optionIndex)]
+                      : currentAnswers.filter((value) => value !== String(optionIndex));
+                    updateQuestion(qIndex, "correctAnswer", nextAnswers);
+                  }}
+                />
+                Option {optionIndex + 1}
+              </label>
+            ))}
+          </div>
+        ) : q.answerType === "descriptive" ? (
+          <textarea
+            className="descriptiveAnswer"
+            placeholder="Expected answer for auto-checking (optional)"
+            value={q.correctAnswer || ""}
+            onChange={(e) => updateQuestion(qIndex, "correctAnswer", e.target.value)}
+          />
+        ) : (
+          <select
+            className="correctSelect"
+            value={q.correctAnswer}
+            onChange={(e) => updateQuestion(qIndex, "correctAnswer", e.target.value)}
+          >
+            <option value="" disabled>Select Correct Option</option>
+            <option value="0">Option 1</option>
+            <option value="1">Option 2</option>
+            <option value="2">Option 3</option>
+            <option value="3">Option 4</option>
+          </select>
+        )}
+        <div className="deleteBtn">
+          <FiTrash2 onClick={() => setDeleteIndex(qIndex)} />
+        </div>
+        {errors.questions[qIndex]?.correct && (
+          <p className="errorText questionError">{errors.questions[qIndex].correct}</p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -632,281 +893,66 @@ function CreateQuiz() {
       </div>
       {/* QUESTIONS */}
       <div className="questionsSection">
-        {quiz.questions.map((q, qIndex) => {
-          if (q.type === "section") {
+        {(() => {
+          const groups = [];
+          let current = null;
+          quiz.questions.forEach((q, i) => {
+            if (q.type === "section") {
+              if (current) groups.push(current);
+              current = { sectionIdx: i, questionIndices: [] };
+            } else {
+              if (!current) current = { sectionIdx: null, questionIndices: [] };
+              current.questionIndices.push(i);
+            }
+          });
+          if (current) groups.push(current);
+
+          return groups.map((group, gIdx) => {
+            if (group.sectionIdx === null) {
+              return (
+                <div key={`ug-${gIdx}`} className="ungroupedQuestions">
+                  {group.questionIndices.map((qIndex) => renderQuestionCard(qIndex))}
+                </div>
+              );
+            }
+            const secQ = quiz.questions[group.sectionIdx];
+            const lastIdx = group.questionIndices.length > 0
+              ? group.questionIndices[group.questionIndices.length - 1]
+              : group.sectionIdx;
+            const insertAt = lastIdx + 1;
             return (
-              <div key={qIndex} className="sectionCard" ref={(el) => (questionRefs.current[qIndex] = el)}>
-                <div className="sectionCardHeader">
-                  <span className="sectionLabel">SECTION</span>
-                  <div className="rightControls">
-                    <div className="moveBtns">
-                      <FiArrowUp onClick={() => moveQuestion(qIndex, -1)} />
-                      <FiArrowDown onClick={() => moveQuestion(qIndex, 1)} />
-                    </div>
-                    <FiTrash2 className="sectionDelete" onClick={() => setDeleteIndex(qIndex)} />
+              <div key={`sg-${gIdx}`} className="sectionGroup">
+                <div className="sectionGroupHeader" ref={(el) => (questionRefs.current[group.sectionIdx] = el)}>
+                  <div className="sectionGroupLeft">
+                    <span className="sectionPill">SECTION</span>
+                    <input
+                      className="sectionNameInput"
+                      placeholder="Section name (e.g. General Awareness)"
+                      value={secQ.question}
+                      onChange={(e) => updateQuestion(group.sectionIdx, "question", e.target.value)}
+                    />
+                  </div>
+                  <div className="sectionGroupActions">
+                    <button type="button" className="secMoveBtn" onClick={() => moveQuestion(group.sectionIdx, -1)}><FiArrowUp /></button>
+                    <button type="button" className="secMoveBtn" onClick={() => moveQuestion(group.sectionIdx, 1)}><FiArrowDown /></button>
+                    <button type="button" className="secDeleteBtn" onClick={() => setDeleteIndex(group.sectionIdx)}><FiTrash2 /></button>
                   </div>
                 </div>
-                <input
-                  className="sectionTitleInput"
-                  placeholder="Section name (e.g. General Awareness)"
-                  value={q.question}
-                  onChange={(e) => updateQuestion(qIndex, "question", e.target.value)}
-                />
+                <div className="sectionQuestions">
+                  {group.questionIndices.length === 0 && (
+                    <p className="sectionEmpty">No questions yet. Add one below.</p>
+                  )}
+                  {group.questionIndices.map((qIndex) => renderQuestionCard(qIndex))}
+                </div>
+                <div className="addQInSectionRow">
+                  <button type="button" className="addQInSectionBtn" onClick={() => addQuestionAt(insertAt)}>
+                    <FiPlus /> Add Question to this Section
+                  </button>
+                </div>
               </div>
             );
-          }
-
-          const qNum = quiz.questions.slice(0, qIndex).filter((x) => x.type !== "section").length + 1;
-
-          return (
-          <div
-            key={qIndex}
-            className={`questionCard ${
-              errors.questions[qIndex]?.question ||
-              errors.questions[qIndex]?.options ||
-              errors.questions[qIndex]?.correct
-                ? "errorCard"
-                : ""
-            }`}
-            ref={(el) => (questionRefs.current[qIndex] = el)}
-          >
-            {" "}
-            {/* HEADER */}
-            <div className="questionHeader">
-              <h3>Question {qNum}</h3>
-
-              <div className="rightControls">
-                <div className="typeSelector">
-                  {["text", "image", "mixed"].map((type) => (
-                    <label
-                      key={type}
-                      className={q.type === type ? "active" : ""}
-                    >
-                      <input
-                        type="radio"
-                        name={`type-${qIndex}`}
-                        value={type}
-                        checked={q.type === type}
-                        onChange={(e) =>
-                          updateQuestion(qIndex, "type", e.target.value)
-                        }
-                      />
-
-                      {type}
-                    </label>
-                  ))}
-                </div>
-
-                {/* MOVE BUTTONS */}
-                <div className="moveBtns">
-                  <FiArrowUp onClick={() => moveQuestion(qIndex, -1)} />
-                  <FiArrowDown onClick={() => moveQuestion(qIndex, 1)} />
-                </div>
-              </div>
-            </div>
-            <div className="answerTypeSelector">
-              <label>Answer Type</label>
-              <div>
-                {[
-                  ["single", "Single Choice"],
-                  ["multiple", "Multiple Choice"],
-                  ["descriptive", "Descriptive"],
-                ].map(([value, label]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={(q.answerType || "single") === value ? "active" : ""}
-                    onClick={() => updateQuestion(qIndex, "answerType", value)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            {/* QUESTION */}
-            {(q.type === "text" || q.type === "mixed") && (
-              <div className="questionInputWrapper">
-                <span className="qPrefix">Q{qIndex + 1}.</span>
-
-                <input
-                  className="questionInput"
-                  placeholder="Enter question"
-                  value={q.question}
-                  onChange={(e) =>
-                    updateQuestion(qIndex, "question", e.target.value)
-                  }
-                />
-              </div>
-            )}
-            {(q.type === "image" || q.type === "mixed") && (
-              <div className="questionImageBox">
-                <label>
-                  <FiUpload /> Upload Question Image
-                  <input
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    hidden
-                    onChange={(e) =>
-                      handleImageUpload(e.target.files[0], (url) =>
-                        updateQuestion(qIndex, "questionImage", url),
-                      )
-                    }
-                  />
-                </label>
-
-                {q.questionImage && (
-                  <img src={q.questionImage} className="previewImage" />
-                )}
-              </div>
-            )}
-            {errors.questions[qIndex]?.question && (
-              <p className="errorText questionError">
-                {errors.questions[qIndex].question}
-              </p>
-            )}
-
-            {/* HINDI TOGGLE */}
-            <button
-              type="button"
-              className={`hindiToggleBtn ${hindiOpen[qIndex] ? "active" : ""}`}
-              onClick={() => toggleHindi(qIndex)}
-            >
-              {hindiOpen[qIndex] ? "▲ Hide Hindi" : "▼ Add Hindi Translation"}
-            </button>
-
-            {hindiOpen[qIndex] && (
-              <div className="hindiSection">
-                {(q.type === "text" || q.type === "mixed") && (
-                  <div className="questionInputWrapper">
-                    <span className="qPrefix hi">HI</span>
-                    <input
-                      className="questionInput"
-                      placeholder="प्रश्न हिंदी में लिखें"
-                      value={q.questionHi || ""}
-                      onChange={(e) => updateQuestion(qIndex, "questionHi", e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* OPTIONS */}
-            {q.answerType !== "descriptive" && (
-              <>
-                <div className="optionsGrid">
-                  {q.options.map((opt, i) => (
-                    <div key={i} className="optionBox">
-                      {(q.type === "text" || q.type === "mixed") && (
-                        <>
-                          <input
-                            placeholder={`Option ${i + 1}`}
-                            value={opt.text}
-                            onChange={(e) =>
-                              updateOption(qIndex, i, "text", e.target.value)
-                            }
-                          />
-                          {hindiOpen[qIndex] && (
-                            <input
-                              className="hindiOptionInput"
-                              placeholder={`विकल्प ${i + 1} (Hindi)`}
-                              value={q.optionsHi?.[i]?.text || ""}
-                              onChange={(e) => updateOptionHi(qIndex, i, e.target.value)}
-                            />
-                          )}
-                        </>
-                      )}
-
-                      {(q.type === "image" || q.type === "mixed") && (
-                        <div className="optionUpload">
-                          <label>
-                            <FiUpload />
-                            <input
-                              type="file"
-                              accept="image/png, image/jpeg"
-                              hidden
-                              onChange={(e) =>
-                                handleImageUpload(e.target.files[0], (url) =>
-                                  updateOption(qIndex, i, "image", url),
-                                )
-                              }
-                            />
-                          </label>
-
-                          {opt.image && (
-                            <img src={opt.image} className="optionPreview" />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                {errors.questions[qIndex]?.options && (
-                  <p className="errorText questionError">
-                    {errors.questions[qIndex].options}
-                  </p>
-                )}
-              </>
-            )}
-            {/* CORRECT ANSWER */}
-            {q.answerType === "multiple" ? (
-              <div className="correctMulti">
-                <span>Select correct options</span>
-                {[0, 1, 2, 3].map((optionIndex) => (
-                  <label key={optionIndex}>
-                    <input
-                      type="checkbox"
-                      checked={Array.isArray(q.correctAnswer) && q.correctAnswer.includes(String(optionIndex))}
-                      onChange={(e) => {
-                        const currentAnswers = Array.isArray(q.correctAnswer)
-                          ? q.correctAnswer
-                          : [];
-                        const nextAnswers = e.target.checked
-                          ? [...currentAnswers, String(optionIndex)]
-                          : currentAnswers.filter((value) => value !== String(optionIndex));
-                        updateQuestion(qIndex, "correctAnswer", nextAnswers);
-                      }}
-                    />
-                    Option {optionIndex + 1}
-                  </label>
-                ))}
-              </div>
-            ) : q.answerType === "descriptive" ? (
-              <textarea
-                className="descriptiveAnswer"
-                placeholder="Expected answer for auto-checking (optional)"
-                value={q.correctAnswer || ""}
-                onChange={(e) =>
-                  updateQuestion(qIndex, "correctAnswer", e.target.value)
-                }
-              />
-            ) : (
-              <select
-                className="correctSelect"
-                value={q.correctAnswer}
-                onChange={(e) =>
-                  updateQuestion(qIndex, "correctAnswer", e.target.value)
-                }
-              >
-                <option value="" disabled>
-                  Select Correct Option
-                </option>
-                <option value="0">Option 1</option>
-                <option value="1">Option 2</option>
-                <option value="2">Option 3</option>
-                <option value="3">Option 4</option>
-              </select>
-            )}
-            <div className="deleteBtn">
-              <FiTrash2 onClick={() => setDeleteIndex(qIndex)} />
-            </div>
-            {errors.questions[qIndex]?.correct && (
-              <p className="errorText questionError">
-                {errors.questions[qIndex].correct}
-              </p>
-            )}
-          </div>
-          );
-        })}
+          });
+        })()}
       </div>
 
       <div className="addQuestionWrapper">
@@ -916,6 +962,18 @@ function CreateQuiz() {
         <button className="addSectionBtn" onClick={addSection}>
           <FiPlus /> Add Section
         </button>
+
+        <label className={`addPdfBtn ${pdfLoading ? "loading" : ""}`}>
+          {pdfLoading ? "Processing..." : <><FiUpload /> Upload PDF</>}
+          <input
+            ref={pdfInputRef}
+            type="file"
+            accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            hidden
+            disabled={pdfLoading}
+            onChange={(e) => handlePdfUpload(e.target.files[0])}
+          />
+        </label>
       </div>
 
       {deleteIndex !== null && (

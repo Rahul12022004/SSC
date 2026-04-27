@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: { type: String },
+    verificationTokenExpiry: { type: Date },
   },
   { timestamps: true }
 );

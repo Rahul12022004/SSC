@@ -56,6 +56,104 @@ const [tests,setTests]=useState([]);
 const [loading,setLoading]=useState(true);
 const [message,setMessage]=useState("");
 const [submitToast,setSubmitToast]=useState(location.state?.submitted ? location.state : null);
+const [selectedSubject, setSelectedSubject] = useState("all");
+const [selectedCategory, setSelectedCategory] = useState(null);
+const [subjectView, setSubjectView] = useState(null); // drill-in subject
+const [mockTab, setMockTab] = useState("full");
+const [searchQuery, setSearchQuery] = useState("");
+const [categories, setCategories] = useState([]);
+const [catLoading, setCatLoading] = useState(false);
+
+// inline add forms
+const [showAddCat, setShowAddCat] = useState(false);
+const [newCatName, setNewCatName] = useState("");
+const [newCatIcon, setNewCatIcon] = useState("📝");
+const [addCatLoading, setAddCatLoading] = useState(false);
+
+const [showAddSubj, setShowAddSubj] = useState(false);
+const [newSubjName, setNewSubjName] = useState("");
+const [newSubjIcon, setNewSubjIcon] = useState("📚");
+const [addSubjLoading, setAddSubjLoading] = useState(false);
+
+const fetchCategories = async () => {
+  setCatLoading(true);
+  try {
+    const res = await fetch(`${BASE_URL}/category`, { credentials: "include" });
+    const data = await res.json();
+    if (data.success) setCategories(data.categories || []);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setCatLoading(false);
+  }
+};
+
+const handleAddCategory = async () => {
+  if (!newCatName.trim()) return;
+  setAddCatLoading(true);
+  try {
+    const res = await fetch(`${BASE_URL}/category`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name: newCatName.trim(), icon: newCatIcon }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setCategories(prev => [...prev, data.category]);
+      setNewCatName(""); setNewCatIcon("📝"); setShowAddCat(false);
+    } else alert(data.message);
+  } catch (err) { console.error(err); }
+  finally { setAddCatLoading(false); }
+};
+
+const handleDeleteCategory = async (catId) => {
+  if (!window.confirm("Delete this category and all its subjects?")) return;
+  try {
+    await fetch(`${BASE_URL}/category/${catId}`, { method: "DELETE", credentials: "include" });
+    setCategories(prev => prev.filter(c => c._id !== catId));
+    if (selectedCategory?._id === catId) { setSelectedCategory(null); setSelectedSubject("all"); }
+  } catch (err) { console.error(err); }
+};
+
+const handleAddSubject = async () => {
+  if (!newSubjName.trim() || !selectedCategory) return;
+  setAddSubjLoading(true);
+  try {
+    const res = await fetch(`${BASE_URL}/category/${selectedCategory._id}/subjects`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name: newSubjName.trim(), icon: newSubjIcon }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setCategories(prev => prev.map(c => c._id === data.category._id ? data.category : c));
+      setSelectedCategory(data.category);
+      setNewSubjName(""); setNewSubjIcon("📚"); setShowAddSubj(false);
+    } else alert(data.message);
+  } catch (err) { console.error(err); }
+  finally { setAddSubjLoading(false); }
+};
+
+const handleDeleteSubject = async (subId) => {
+  if (!selectedCategory) return;
+  try {
+    const res = await fetch(`${BASE_URL}/category/${selectedCategory._id}/subjects/${subId}`, {
+      method: "DELETE", credentials: "include",
+    });
+    const data = await res.json();
+    if (data.success) {
+      setCategories(prev => prev.map(c => c._id === data.category._id ? data.category : c));
+      setSelectedCategory(data.category);
+      if (selectedSubject === subId) setSelectedSubject("all");
+    }
+  } catch (err) { console.error(err); }
+};
+
+// Filter tests by subject
+// Main list: only tests NOT linked to any subject
+const filteredTests = tests.filter(test => !test.subject);
 
 useEffect(()=>{
 if(submitToast){
@@ -100,6 +198,7 @@ setLoading(false);
 
 useEffect(()=>{
 fetchTests();
+fetchCategories();
 },[]);
 
 
@@ -242,13 +341,160 @@ user?.roleLevel===10;
 
 
 
-const liveCount=
-tests.filter(t=>getStatus(t)==="live").length;
+const liveCount =
+filteredTests.filter(t=>getStatus(t)==="live").length;
 
-const upcomingCount=
-tests.filter(t=>getStatus(t)==="upcoming").length;
+const upcomingCount =
+filteredTests.filter(t=>getStatus(t)==="upcoming").length;
 
+// ── Subject drill-in view ──────────────────────────────────────
+const MOCK_TABS = [
+  { id: "full",         label: "Full Mocks" },
+  { id: "sectional",    label: "Sectionals" },
+  { id: "subject_wise", label: "Subject Wise" },
+];
 
+if (subjectView) {
+  const subjectTests = tests.filter(t => t.subject?.toString() === subjectView._id?.toString());
+  const tabTests = subjectTests
+    .filter(t => t.mockType === mockTab)
+    .filter(t => !searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  return (
+    <main className="pc-page">
+      {/* Header */}
+      <div className="sv-header">
+        <button className="sv-back" onClick={() => setSubjectView(null)}>
+          ← {selectedCategory?.name || "Back"}
+        </button>
+        <h2 className="sv-title">{subjectView.icon} {subjectView.name}</h2>
+        {isAdmin && (
+          <button
+            className="pc-primary-btn sv-create-btn"
+            onClick={() => navigate(
+              `/create-quiz?subjectId=${subjectView._id}&categoryId=${selectedCategory?._id}&mockTab=${mockTab}`,
+              { state: { categoryId: selectedCategory?._id, subjectId: subjectView._id, mockTab } }
+            )}
+          >
+            <IconPlus/> <span>{{ full: "Full Mock", sectional: "Sectional", subject_wise: "Subject Wise" }[mockTab] || "Mock"}</span>
+          </button>
+        )}
+      </div>
+
+      {/* Search */}
+      <input
+        className="sv-search"
+        placeholder="Search by mock name..."
+        value={searchQuery}
+        onChange={e => setSearchQuery(e.target.value)}
+      />
+
+      {/* Mock type tabs */}
+      <div className="sv-tabs">
+        {MOCK_TABS.map(tab => (
+          <button
+            key={tab.id}
+            className={`sv-tab${mockTab === tab.id ? " active" : ""}`}
+            onClick={() => setMockTab(tab.id)}
+          >
+            {tab.label}
+            <span className="sv-tab-count">
+              ({subjectTests.filter(t => t.mockType === tab.id).length})
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div className="pc-divider"/>
+
+      {/* Test list */}
+      {tabTests.length === 0 && (
+        <div className="sv-empty">
+          <p>No {MOCK_TABS.find(t=>t.id===mockTab)?.label} found.</p>
+          {isAdmin && (
+            <button
+              className="pc-primary-btn sv-empty-create"
+              onClick={() => navigate(
+                `/create-quiz?subjectId=${subjectView._id}&categoryId=${selectedCategory?._id}&mockTab=${mockTab}`,
+                { state: { categoryId: selectedCategory?._id, subjectId: subjectView._id, mockTab } }
+              )}
+            >
+              <IconPlus/> Create {{ full: "Full Mock", sectional: "Sectional", subject_wise: "Subject Wise" }[mockTab] || "Mock"}
+            </button>
+          )}
+        </div>
+      )}
+
+      {tabTests.map(test => {
+        const status = getStatus(test);
+        return (
+          <article key={test._id} className="pc-test-card">
+            <div>
+              <div className={`pc-badge-live pc-badge-${status}`}>{status}</div>
+              <h2 className="pc-test-title">{test.title}</h2>
+              <p className="pc-test-desc">
+                {test.scheduledAt ? formatDateTime(test.scheduledAt) : "Practice anytime"}
+              </p>
+            </div>
+            <div className="pc-card-actions">
+              {isAdmin && (
+                <div className="pc-admin-actions">
+                  <button className="pc-admin-btn" onClick={() => navigate(`/create-quiz?edit=${test._id}&subjectId=${subjectView._id}&categoryId=${selectedCategory?._id}&mockTab=${mockTab}`)}>Edit</button>
+                  <button className="pc-admin-btn danger" onClick={() => handleDeleteQuiz(test._id)}>
+                    {deleteLoadingId === test._id ? "Deleting" : "Delete"}
+                  </button>
+                  <button className="pc-admin-btn" onClick={() => handleViewResults(test._id)}>Results</button>
+                </div>
+              )}
+              {status === "upcoming" ? (
+                <div className="pc-countdown"><IconClock/><span>{getRemainingTime(test.scheduledAt)}</span></div>
+              ) : (() => {
+                const subKey = `submitted_${user?.email}_${test._id}`;
+                const subData = localStorage.getItem(subKey);
+                if (!isAdmin && subData) {
+                  const parsed = JSON.parse(subData);
+                  return (
+                    <button className="pc-exam-btn pc-result-btn"
+                      onClick={() => navigate("/result", { state: { score: parsed.score, sectionTitle: parsed.quizTitle, breakdown: parsed.breakdown ?? [], language: parsed.language ?? "en" } })}>
+                      <IconFile/><span>View Result</span>
+                    </button>
+                  );
+                }
+                return (
+                  <button className="pc-exam-btn" onClick={() => handleStartQuiz(test._id)}>
+                    <IconPlay/><span>Start Quiz</span>
+                  </button>
+                );
+              })()}
+            </div>
+          </article>
+        );
+      })}
+
+      {/* Results modal */}
+      {resultsData && (
+        <div className="pc-modal-backdrop" onClick={() => setResultsData(null)}>
+          <div className="pc-results-modal" onClick={e => e.stopPropagation()}>
+            <h2>Student Results</h2>
+            {resultsData?.submissions?.length > 0 && (
+              <table className="pc-results-table">
+                <thead><tr><th>Student</th><th>Marks</th><th>Submitted</th></tr></thead>
+                <tbody>
+                  {resultsData.submissions.map(sub => (
+                    <tr key={sub._id}>
+                      <td>{sub.email}</td><td>{sub.score}</td><td>{formatDateTime(sub.submittedAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
+// ── end subject view ───────────────────────────────────────────
 
 return(
 
@@ -302,17 +548,6 @@ disabled={loading}
 <IconRefresh/>
 </button>
 
-
-{isAdmin && (
-<button
-className="pc-primary-btn"
-onClick={handleCreateQuiz}
->
-<IconPlus/>
-<span>Create Test</span>
-</button>
-)}
-
 </div>
 
 </div>
@@ -323,155 +558,123 @@ onClick={handleCreateQuiz}
 
 <div className="pc-divider"/>
 
-
-
-<article className="pc-test-card">
-
-<div>
-<div className="pc-badge-live">
-Live
+{/* CATEGORY LABEL */}
+<div className="cat-section">
+  <div className="cat-label">
+    {selectedCategory
+      ? <button className="cat-back-btn" onClick={() => { setSelectedCategory(null); setSelectedSubject("all"); }}>← Back to Categories</button>
+      : "Exam Categories"}
+  </div>
+  {isAdmin && showAddCat && (
+    <div className="cat-inline-form" style={{ marginTop: 8 }}>
+      <input className="cat-form-emoji" value={newCatIcon} onChange={e => setNewCatIcon(e.target.value)} maxLength={2} placeholder="📝" />
+      <input className="cat-form-input" placeholder="Category name" value={newCatName} onChange={e => setNewCatName(e.target.value)} onKeyDown={e => e.key === "Enter" && handleAddCategory()} autoFocus />
+      <button className="cat-form-save" onClick={handleAddCategory} disabled={addCatLoading}>{addCatLoading ? "..." : "Add"}</button>
+      <button className="cat-form-cancel" onClick={() => { setShowAddCat(false); setNewCatName(""); }}>✕</button>
+    </div>
+  )}
 </div>
 
-<h2 className="pc-test-title">
-Mock Test 1
-</h2>
-
-<p className="pc-test-desc">
-Practice anytime
-</p>
-</div>
-
-<button
-className="pc-exam-btn"
-onClick={()=>handleStartQuiz()}
->
-<IconPlay/>
-<span>Start Exam</span>
-</button>
-
-</article>
-
-
-
-{loading && (
-<p>Loading quizzes...</p>
-)}
-
-
-{!loading && tests.map(test=>{
-
-const status=getStatus(test);
-
-return(
-
-<article
-key={test._id}
-className="pc-test-card"
->
-
-<div>
-
-<div className={`pc-badge-live pc-badge-${status}`}>
-{status}
-</div>
-
-<h2 className="pc-test-title">
-{test.title}
-</h2>
-
-<p className="pc-test-desc">
-{test.scheduledAt
-? formatDateTime(test.scheduledAt)
-: "Practice anytime"}
-</p>
-
-</div>
-
-
-<div className="pc-card-actions">
-
-{isAdmin && (
-
-<div className="pc-admin-actions">
-
-<button
-className="pc-admin-btn"
-onClick={()=>
-navigate(`/create-quiz?edit=${test._id}`)
-}
->
-Edit
-</button>
-
-
-<button
-className="pc-admin-btn danger"
-onClick={()=>
-handleDeleteQuiz(test._id)
-}
->
-{deleteLoadingId===test._id
-? "Deleting"
-: "Delete"}
-</button>
-
-
-<button
-className="pc-admin-btn"
-onClick={()=>
-handleViewResults(test._id)
-}
->
-Results
-</button>
-
-</div>
-
-)}
-
-
-{status==="upcoming" ? (
-
-<div className="pc-countdown">
-<IconClock/>
-<span>
-{getRemainingTime(test.scheduledAt)}
-</span>
-</div>
-
-) : (() => {
-  const subKey = `submitted_${user?.email}_${test._id}`;
-  const subData = localStorage.getItem(subKey);
-  if (!isAdmin && subData) {
-    const parsed = JSON.parse(subData);
-    return (
-      <button
-        className="pc-exam-btn pc-result-btn"
-        onClick={() => navigate("/result", { state: { score: parsed.score, sectionTitle: parsed.quizTitle, breakdown: parsed.breakdown ?? [], language: parsed.language ?? "en" } })}
+{/* CATEGORY CARDS (shown when no category selected) */}
+{!selectedCategory && (
+  <div className="subject-cards-container cat-cards-grid">
+    {categories.map(cat => (
+      <div
+        key={cat._id}
+        className="subject-card"
+        style={{ "--subject-color": cat.color }}
+        onClick={() => { setSelectedCategory(cat); setSelectedSubject("all"); }}
       >
-        <IconFile/>
-        <span>View Result</span>
-      </button>
-    );
-  }
-  return (
-    <button
-      className="pc-exam-btn"
-      onClick={() => handleStartQuiz(test._id)}
-    >
-      <IconPlay/>
-      <span>Start Quiz</span>
-    </button>
-  );
-})()}
+        {isAdmin && (
+          <button
+            className="subj-del-btn"
+            onClick={e => { e.stopPropagation(); handleDeleteCategory(cat._id); }}
+            title="Delete category"
+          >×</button>
+        )}
+        <span className="subject-card-icon">{cat.icon}</span>
+        <span className="subject-card-name">{cat.name}</span>
+        <span className="subject-card-count">
+          {cat.subjects?.length ?? 0} subjects
+        </span>
+      </div>
+    ))}
+    {isAdmin && (
+      <div
+        className="subject-card subj-add-card"
+        onClick={() => setShowAddCat(true)}
+        style={{ "--subject-color": "#64748b" }}
+      >
+        <span className="subject-card-icon">➕</span>
+        <span className="subject-card-name">Add Category</span>
+      </div>
+    )}
+  </div>
+)}
 
-</div>
+{/* SUBJECT CARDS (shown when category selected) */}
+{selectedCategory && (
+  <div className="subject-cards-container">
+    {selectedCategory.subjects.map(subj => (
+      <div
+        key={subj._id}
+        className={`subject-card${selectedSubject === subj._id ? " active" : ""}`}
+        style={{ "--subject-color": subj.color }}
+        onClick={() => { setSubjectView(subj); setMockTab("full"); setSearchQuery(""); }}
+      >
+        {isAdmin && (
+          <button
+            className="subj-del-btn"
+            onClick={e => { e.stopPropagation(); handleDeleteSubject(subj._id); }}
+            title="Delete subject"
+          >×</button>
+        )}
+        <span className="subject-card-icon">{subj.icon}</span>
+        <span className="subject-card-name">{subj.name}</span>
+        <span className="subject-card-count">
+          {tests.filter(t => t.subject?.toString() === subj._id?.toString()).length}
+        </span>
+      </div>
+    ))}
 
-</article>
+    {isAdmin && !showAddSubj && (
+      <div
+        className="subject-card subj-add-card"
+        onClick={() => setShowAddSubj(true)}
+        style={{ "--subject-color": "#64748b" }}
+      >
+        <span className="subject-card-icon">➕</span>
+        <span className="subject-card-name">Add Subject</span>
+      </div>
+    )}
 
-);
+    {isAdmin && showAddSubj && (
+      <div className="subj-inline-form">
+        <input
+          className="cat-form-emoji"
+          value={newSubjIcon}
+          onChange={e => setNewSubjIcon(e.target.value)}
+          maxLength={2}
+          placeholder="📚"
+        />
+        <input
+          className="cat-form-input"
+          placeholder="Subject name"
+          value={newSubjName}
+          onChange={e => setNewSubjName(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && handleAddSubject()}
+          autoFocus
+        />
+        <button className="cat-form-save" onClick={handleAddSubject} disabled={addSubjLoading}>
+          {addSubjLoading ? "..." : "Add"}
+        </button>
+        <button className="cat-form-cancel" onClick={() => { setShowAddSubj(false); setNewSubjName(""); }}>✕</button>
+      </div>
+    )}
+  </div>
+)}
 
-})}
+<div className="pc-divider"/>
 
 
 

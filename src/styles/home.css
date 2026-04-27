@@ -272,6 +272,60 @@
   background: #13315c;
 }
 
+/* ================= TRUST SECTION ================= */
+.homePage .trustSection {
+  background: #0b2545;
+  text-align: center;
+}
+
+.homePage .trustSection h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 40px;
+}
+
+.homePage .trustGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.homePage .trustCard {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 28px 22px;
+  transition: transform 0.3s, background 0.3s;
+  text-align: left;
+}
+
+.homePage .trustCard:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.homePage .trustIcon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.homePage .trustCard h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #f77f00;
+  margin-bottom: 8px;
+}
+
+.homePage .trustCard p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.5;
+}
+
 /* ================= RESPONSIVE ================= */
 
 /* TABLET */
@@ -285,6 +339,10 @@
   }
 
   .homePage .subjectGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .homePage .trustGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -345,6 +403,14 @@
 
   .homePage .subjectGrid {
     grid-template-columns: 1fr;
+  }
+
+  .homePage .trustGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .homePage .trustSection h2 {
+    font-size: 24px;
   }
 }
 

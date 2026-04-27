@@ -1,0 +1,1358 @@
+[
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 1,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433068724",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": true
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 2,
+    "question": "If ‘+’ means ‘÷’, ‘ ̶ ’ means ‘+’, ‘×’ means ‘ ̶ ’ and ‘÷’ means ‘×’, what will be the value of\nthe following expression?\n[{(38 × 23) - (4 ÷ 3)} + (6 - 3)] ÷ 2",
+    "options": {
+      "1": "6",
+      "2": "3",
+      "3": "8",
+      "4": "12"
+    },
+    "q_id": "26433067864",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 3,
+    "question": "Select the option that is related to the fifth letter-cluster in the same way as the second\nletter-cluster is related to the first letter-cluster and the fourth letter-cluster is related\nto the third letter-cluster.\nGAVE : AGEV :: KEPT : EKTP :: ACID : ?",
+    "options": {
+      "1": "CIAD",
+      "2": "CAID",
+      "3": "ACDI",
+      "4": "CADI"
+    },
+    "q_id": "26433068508",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 4,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "4",
+      "2": "5",
+      "3": "1",
+      "4": "3"
+    },
+    "q_id": "26433079370",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": true
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 5,
+    "question": "Select the option that is related to the third number in the same way as the second\nnumber is related to the first number and the sixth number is related to the fifth\nnumber.\n12 : 16 :: 18 : ? :: 24 : 64",
+    "options": {
+      "1": "26",
+      "2": "32",
+      "3": "28",
+      "4": "36"
+    },
+    "q_id": "26433067904",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 6,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433080514",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": true
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 7,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433068711",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": true
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 8,
+    "question": "A series is given with one term missing. Select the correct alternative from the given\nones that will complete the series.\nNMQR, NQYD, NUGP, NYOB, ?",
+    "options": {
+      "1": "NQRC",
+      "2": "NMWN",
+      "3": "NCWN",
+      "4": "NWRQ"
+    },
+    "q_id": "264330104839",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 9,
+    "question": "Three of the following letter-clusters are alike in some manner and hence form a\ngroup. Which letter-cluster does not belong to that group?",
+    "options": {
+      "1": "TVR",
+      "2": "DFB",
+      "3": "QSO",
+      "4": "KGI"
+    },
+    "q_id": "26433081506",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 10,
+    "question": "Select the option that is related to the fifth letter-cluster in the same way as the second\nletter-cluster is related to the first letter-cluster and the fourth letter-cluster is related\nto the third letter-cluster.\nJUMPED : LWORGF :: QUICKS : SWKEMU :: FUZING : ?",
+    "options": {
+      "1": "HKWIPB",
+      "2": "IPKBWH",
+      "3": "HWBKPI",
+      "4": "HWKBPI"
+    },
+    "q_id": "26433056404",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 11,
+    "question": "Which of the following letter-clusters will replace the question mark (?) and complete\nthe following letter-cluster series?\nDW, FU, GT, IR, JQ, ?",
+    "options": {
+      "1": "LN",
+      "2": "LO",
+      "3": "MO",
+      "4": "LP"
+    },
+    "q_id": "26433067272",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 12,
+    "question": "In the following question below are given some statements followed by some\nconclusions based on those statements. Taking the given statements to be true even if\nthey seem to be at variance from commonly known facts. Read all the conclusions and\nthen decide which of the given conclusion logically follows the given statements.\nStatements:\nI. All K are H.\nII. No S is K.\nConclusion:\nI. No K is S.\nII. All H are K.",
+    "options": {
+      "1": "Only conclusion II follows",
+      "2": "Only conclusion I follows",
+      "3": "Neither conclusion follows",
+      "4": "Both conclusions I and II follows"
+    },
+    "q_id": "264330104921",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 13,
+    "question": "Select the set in which the numbers are related in the same way as are the numbers of\nthe following set.\n(NOTE : Operations should be performed on the whole numbers, without breaking\ndown the numbers into its constituent digits. E.g. 13 – Operations on 13 such as\nadding /subtracting /multiplying etc. to 13 can be performed. Breaking down 13 into 1\nand 3 and then performing mathematical operations on 1 and 3 is NOT allowed)\n(240, 55, 65)\n(320, 85, 75)",
+    "options": {
+      "1": "(140, 35, 25)",
+      "2": "(220, 90, 15)",
+      "3": "(160, 35, 45)",
+      "4": "(200, 5, 105)"
+    },
+    "q_id": "26433076472",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 14,
+    "question": "Read the given statements and conclusions carefully. Assuming that the information\ngiven in the statements is true, even if it appears to be at variance with commonly\nknown facts, decide which of the given conclusions logically follow(s) from the\nstatements.\nStatements:\nSome doctors are painters.\nSome doctors are labours.\nAll the labours are athletes.\nConclusions:\nI. Some labours are painters.\nII. Some athletes are doctors.\nIII. All the doctors are athletes.\nIV. Some athletes are painters.",
+    "options": {
+      "1": "Only conclusions II and III follow",
+      "2": "Only conclusion II follows",
+      "3": "Only conclusion III follows",
+      "4": "Only conclusions I and II follow"
+    },
+    "q_id": "26433068557",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 15,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433068616",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": true
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 16,
+    "question": "Select the odd group of numbers. (NOTE: Operations should be performed on the\nwhole numbers, without breaking down the numbers into its constituent digits. E.g.13\n– Operations on 13 such as adding /subtracting /multiplying etc. to 13 can be\nperformed. Breaking down 13 into 1 and 3 and then performing mathematical\noperations on 1 and 3 is not allowed)",
+    "options": {
+      "1": "9, 2, −, ×",
+      "2": "9, 2, ÷, ×",
+      "3": "150, 2, ÷, −",
+      "4": "15, 9, +, ÷"
+    },
+    "q_id": "264330102494",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 18,
+    "question": "In a certain code language, ‘CYTOSKELETON’ is written as ‘TYCKSOELENOT’,\n‘MALNUTRITION’ is written as ‘LAMTUNTIRNOI’. How will ‘ALLITERATION’ be written\nin that language?",
+    "options": {
+      "1": "LLAETITARNOI",
+      "2": "LLAETIATRNOI",
+      "3": "LLEATITARNOI",
+      "4": "LLAETITRANOI"
+    },
+    "q_id": "26433068240",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 19,
+    "question": "In a certain code language, ‘PSYCHIC’ is written as ‘YSPCCIH’ and ‘CITIZEN’ is written\nas ‘TICINEZ’. How will ‘MAHATMA’ be written in that language?",
+    "options": {
+      "1": "HAMAATM",
+      "2": "AHMAAMT",
+      "3": "HAMAAMT",
+      "4": "HAMAMAT"
+    },
+    "q_id": "26433059887",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 20,
+    "question": "After arranging the given words according to dictionary order, which word will come at\n‘Fourth’ position?\n1. Unseen\n2. Unseam\n3. Unsafe\n4. Unsound\n5. Unsay",
+    "options": {
+      "1": "Unseen",
+      "2": "Unsay",
+      "3": "Unseam",
+      "4": "Unsound"
+    },
+    "q_id": "264330104898",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 21,
+    "question": "If A × B means that A is the father of B, A + B means that A is the mother of B, A ÷ B\nmeans that A is the brother of B then which of the following expression shows that Q\nis the son of P?",
+    "options": {
+      "1": "Q + P × R",
+      "2": "P + Q × R",
+      "3": "R × Q + P",
+      "4": "P + Q ÷ R"
+    },
+    "q_id": "264330104983",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 22,
+    "question": "Which of the following interchange of numbers and mathematical signs would make\nthe given equation correct?\n30 ÷ 6 × 4 + 15−35 = 25",
+    "options": {
+      "1": "25 and 30, × and−",
+      "2": "4 and 6, + and−",
+      "3": "25 and 35, × and ÷",
+      "4": "30 and 35, −and ÷"
+    },
+    "q_id": "264330104005",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 23,
+    "question": "A @ B means ‘A is the sister of B’.\nA & B means ‘A is the brother of B’.\nA # B means ‘A is the wife of B’.\nA ^ B means ‘A is the mother of B’\nA + B means ‘A is the father of B’.\nIf A + G & I + R @ S @ T # U & V, then which of the following statements is NOT\ncorrect?",
+    "options": {
+      "1": "I is the father-in-law of U.",
+      "2": "A is the maternal grandfather of T.",
+      "3": "G is the brother of I.",
+      "4": "R is the paternal granddaughter of A."
+    },
+    "q_id": "26433067581",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 24,
+    "question": "Select the option that is related to the fourth term in the same way as the first term is\nrelated to the second term and the fifth term is related to the sixth term.\n35 : 21 :: ? : 36 :: 40 : 24",
+    "options": {
+      "1": "65",
+      "2": "50",
+      "3": "60",
+      "4": "55"
+    },
+    "q_id": "26433059935",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Intelligence and Reasoning",
+    "q_num": 25,
+    "question": "Which of the following numbers will replace the question mark (?) in the given series?\n4, 6, 12, 14, 28, 30, ?",
+    "options": {
+      "1": "62",
+      "2": "60",
+      "3": "54",
+      "4": "52"
+    },
+    "q_id": "26433067871",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 1,
+    "question": "Which of the given sectors is largely driven by considerations of social welfare?",
+    "options": {
+      "1": "Foreign",
+      "2": "Co-operative",
+      "3": "Public",
+      "4": "Private"
+    },
+    "q_id": "26433069841",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 2,
+    "question": "The Hindu college was established in 1791 at ______.",
+    "options": {
+      "1": "Calcutta",
+      "2": "Dacca",
+      "3": "Surat",
+      "4": "Banaras"
+    },
+    "q_id": "264330105578",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 3,
+    "question": "In which of the following languages did Jyotiba Phule write ‘Gulamgiri’ in 1873?",
+    "options": {
+      "1": "English",
+      "2": "Marathi",
+      "3": "Hindi",
+      "4": "Gujarati"
+    },
+    "q_id": "26433085299",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 4,
+    "question": "Which of the following are Rabi crops only?",
+    "options": {
+      "1": "Maize and peas",
+      "2": "Barley and gram",
+      "3": "Paddy and cotton",
+      "4": "Wheat and jowar"
+    },
+    "q_id": "26433092868",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 5,
+    "question": "Identify an example of organisms that are free-swimming and bottom-dwelling forms.",
+    "options": {
+      "1": "Phytoplankton",
+      "2": "Zooplankton",
+      "3": "Fungi",
+      "4": "Jellyfishes"
+    },
+    "q_id": "26433087872",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 6,
+    "question": "Which of the following cities hosted the 2019 Military World Games organised by the\nInternational Military Sports Council?",
+    "options": {
+      "1": "Tejaswi Prasad Yadav",
+      "2": "Pramod Sawant",
+      "3": "Anugrah Narayan",
+      "4": "Nitish Kumar"
+    },
+    "q_id": "264330105343",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 9,
+    "question": "Which of the following statements about cell cycle is FALSE?",
+    "options": {
+      "1": "Rajasthan",
+      "2": "Himachal Pradesh",
+      "3": "Maharashtra",
+      "4": "Uttar Pradesh",
+      "5": "Ans"
+    },
+    "q_id": "264330105273",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 12,
+    "question": "Choose the correct pair from the following options.",
+    "options": {
+      "1": "Narsimha Rao",
+      "2": "Charan Singh",
+      "3": "Indira Gandhi",
+      "4": "Lal Bahadur Shastri"
+    },
+    "q_id": "26433074890",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 14,
+    "question": "Which of the following festivals is celebrated in the month of August–September?",
+    "options": {
+      "1": "Makar Sankranti",
+      "2": "Kite Festival",
+      "3": "Bikaner Festival",
+      "4": "Onam"
+    },
+    "q_id": "26433071693",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 15,
+    "question": "‘Mission Kushal Karmi’ was launched to upgrade the skills of construction workers.\nThis programme was launched by the government of _______.",
+    "options": {
+      "1": "Gujarat",
+      "2": "Haryana",
+      "3": "Punjab",
+      "4": "Delhi"
+    },
+    "q_id": "264330105312",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 16,
+    "question": "first edition of the Youth Olympic Games was held at _______.",
+    "options": {
+      "1": "Garba",
+      "2": "Dandiya Raas",
+      "3": "Bidesiya",
+      "4": "Vinchhudo"
+    },
+    "q_id": "26433086718",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 19,
+    "question": "Who among the following classical dancers was rewarded with the Padma Vibhushan\nAward in 2003?",
+    "options": {
+      "1": "m2/s",
+      "2": "m2/s2",
+      "3": "m/s",
+      "4": "m/s2"
+    },
+    "q_id": "264330105463",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 21,
+    "question": "The Tamil word ‘muvendar’ mentioned in the Sangam poems means _______.",
+    "options": {
+      "1": "6",
+      "2": "5",
+      "3": "2",
+      "4": "3"
+    },
+    "q_id": "26433064839",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 23,
+    "question": "Which of the following is highest quality coal?",
+    "options": {
+      "1": "Lignite",
+      "2": "Bituminous",
+      "3": "Peat",
+      "4": "Anthracite"
+    },
+    "q_id": "264330105504",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 24,
+    "question": "What are the three parts of bacterial flagellum?",
+    "options": {
+      "1": "Head, tail and lower body",
+      "2": "Filament, tail and hook",
+      "3": "Basal body, tail and filament",
+      "4": "Filament, hook and basal body"
+    },
+    "q_id": "26433066672",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "General Awareness",
+    "q_num": 25,
+    "question": "Common name of the compound CaOCl is ______.\n2",
+    "options": {
+      "1": "bleaching powder",
+      "2": "washing soda",
+      "3": "baking soda",
+      "4": "gypsum"
+    },
+    "q_id": "264330105486",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 1,
+    "question": "x is a negative number such that k + k–1 = –2, then what is the value of\n?",
+    "options": {
+      "1": "7",
+      "2": "1",
+      "3": "–7",
+      "4": "–1"
+    },
+    "q_id": "264330105957",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 2,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "2542",
+      "2": "2650",
+      "3": "2452",
+      "4": "2302"
+    },
+    "q_id": "26433066340",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": true
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 3,
+    "question": "A man rows a boat a certain distance downstream in 9 hours, while it takes 18 hours to\nrow the same distance upstream. How many hours will it take him to row three-fifth of\nthe same distance in still water?",
+    "options": {
+      "1": "",
+      "9": "5",
+      "2": "",
+      "7": "2",
+      "3": "10",
+      "4": "12"
+    },
+    "q_id": "26433075770",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 4,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433082521",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": true
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 5,
+    "question": "A shopkeeper makes a net profit of 44% on selling an article at successive discounts\nof 10% and 20%. Find the net profit percentage, if the shopkeeper sells the same\narticle at a discount of 15%.",
+    "options": {
+      "1": "50%",
+      "2": "70%",
+      "3": "30%",
+      "4": "40%"
+    },
+    "q_id": "26433075945",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 6,
+    "question": "What will be the value of ?",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "1",
+      "4": ""
+    },
+    "q_id": "264330105904",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 7,
+    "question": "What is the ratio between the HCF and LCM of the numbers whose LCM is 48 and the\nproduct of the numbers is 384?",
+    "options": {
+      "1": "1 : 4",
+      "2": "1 : 6",
+      "3": "1 : 3",
+      "4": "2 : 5"
+    },
+    "q_id": "26433075048",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 8,
+    "question": "The price of a scooter increases successively by10%, 5% and 15%. What is the total\npercentage increase in price of scooter?",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433074455",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 9,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433079982",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": true
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 10,
+    "question": "The average of the marks of 25 students in a class, in an examination was calculated\nto be 19. Later, the teacher realized that the marks of two students were taken as 18\nand 19 respectively, instead of 14 and 15. Find the new actual average marks of the\nclass.",
+    "options": {
+      "1": "1",
+      "7": "65",
+      "2": "1",
+      "6": "56",
+      "3": "1",
+      "8": "68",
+      "4": "1"
+    },
+    "q_id": "26433063768",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 11,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433075784",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": true
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 12,
+    "question": "The value of (sin30° cos60° - cos30° sin60°) is equal to:",
+    "options": {
+      "1": "-cos30°",
+      "2": "-sin30°",
+      "3": "cos30°",
+      "4": "sin30°"
+    },
+    "q_id": "26433058441",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 13,
+    "question": "What is the ratio of the mean proportional between 1.6 and 3.6 and the third\nproportional of 5 and 8?",
+    "options": {
+      "1": "2 : 15",
+      "2": "5 : 16",
+      "3": "3 : 16",
+      "4": "4 : 15"
+    },
+    "q_id": "26433064985",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 14,
+    "question": "The difference between the cost price and selling price of a pair of shoes is Rs.1,200. If\nthe profit is 15%, the selling price is:",
+    "options": {
+      "1": "Rs.8,200",
+      "2": "Rs.9,200",
+      "3": "Rs.8,000",
+      "4": "Rs.9,000"
+    },
+    "q_id": "26433063697",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 15,
+    "question": "A person lent certain sum of money at the annual rate of 25 percent on simple interest.\nIn 6 years the interest amounted to Rs.360 more than the sum lent. What is the sum\nlent?",
+    "options": {
+      "1": "Rs.600",
+      "2": "Rs.360",
+      "3": "Rs.720",
+      "4": "Rs.540"
+    },
+    "q_id": "264330105669",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 16,
+    "question": "The side of an equilateral triangle is 12 cm. What is the radius of the circle\ncircumscribing this equilateral triangle?",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "264330105871",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 17,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433081613",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": true
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 18,
+    "question": "[IMAGE QUESTION - needs manual entry]",
+    "options": {
+      "1": "4",
+      "2": "5",
+      "3": "2",
+      "4": "3"
+    },
+    "q_id": "26433076406",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": true
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 19,
+    "question": "The table given below shows the number of persons participating in a survey from 6\ndifferent states.\nWhat is the ratio of number of person participating in a survey from state S3 to the\nnumber of person participating in a survey from state S4?",
+    "options": {
+      "1": "3 : 5",
+      "2": "5 : 4",
+      "3": "4 : 3",
+      "4": "4 : 5"
+    },
+    "q_id": "264330105727",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 20,
+    "question": "What is the remainder when 8127 is divided by 8?",
+    "options": {
+      "1": "5",
+      "2": "7",
+      "3": "4",
+      "4": "6"
+    },
+    "q_id": "26433075270",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 21,
+    "question": "A, B and C can complete a piece of work separately in 10, 20 and 40 days, respectively.\nIn how many days will the work be completed if A is assisted by both B and C every\nthird day?",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433076084",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 22,
+    "question": "What is sinα - sinβ?",
+    "options": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433074356",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 23,
+    "question": "A hemisphere of lead of radius 4 cm is cast into a right circular cone of height 72 cm.\nWhat is the radius of the base of the cone?",
+    "options": {
+      "1": "45 cm",
+      "2": "",
+      "3": "",
+      "4": ""
+    },
+    "q_id": "26433063812",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 24,
+    "question": "If the angles of a triangle are (x – 46) degrees, (x + 96) degrees and 8x degrees, then\nwhat is the value of 2x?",
+    "options": {
+      "1": "15 degrees",
+      "2": "24 degrees",
+      "3": "26 degrees",
+      "4": "13 degrees"
+    },
+    "q_id": "264330105828",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "Quantitative Aptitude",
+    "q_num": 25,
+    "question": "O is the centre of this circle. Tangent drawn from a point P, touches the circle at Q. If\nPQ = 24 cm and OQ = 10 cm, then what is the value of OP?",
+    "options": {
+      "1": "26 cm",
+      "2": "52 cm",
+      "3": "13 cm",
+      "4": "15 cm"
+    },
+    "q_id": "264330105836",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 1,
+    "question": "Select the option that expresses the given sentence in passive voice.\nPriya washes her clothes in the evening.",
+    "options": {
+      "1": "The clothes was washed by Priya in the evening.",
+      "2": "The clothes is washed by Priya in the evening.",
+      "3": "The clothes are washed by Priya in the evening.",
+      "4": "The clothes were washed by Priya in the evening."
+    },
+    "q_id": "26433093524",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 2,
+    "question": "Select the option that contains a grammatical error in the underlined portion.\nIt would be impossible for them to continue living in this world if each of them knew\nexactly what fate had it store for them.",
+    "options": {
+      "1": "It would be impossible for them to continue living in this world if each of them knew\nexactly what fate had it store for them.",
+      "2": "It would be impossible for them to continue living in this world if each of them knew\nexactly what fate had it store for them",
+      "3": "It would be impossible for them to continue living in this world if each of them knew\nexactly what fate had it store for them.",
+      "4": "It would be impossible for them to continue living in this world if each of them knew\nexactly what fate had it store for them."
+    },
+    "q_id": "26433088591",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 3,
+    "question": "Select the most appropriate option to fill in the blank.\nThe doctor directed the nurse to administer an __________ medicine to the patient.",
+    "options": {
+      "1": "official",
+      "2": "eminent",
+      "3": "alternative",
+      "4": "insightful"
+    },
+    "q_id": "26433073791",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 4,
+    "question": "Select the option that can be used as a one-word substitute for the given group of\nwords.\nA piece of a living tissue or plant that is transplanted surgically",
+    "options": {
+      "1": "Gratis",
+      "2": "Gourmet",
+      "3": "Gracious",
+      "4": "Graft"
+    },
+    "q_id": "26433070708",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 5,
+    "question": "Select the correct active form of the given sentence.\nThe clothes will be delivered by the shop on Monday.",
+    "options": {
+      "1": "The shop will be delivering the clothes on Monday.",
+      "2": "The shop will deliver the clothes on Monday.",
+      "3": "The shop would be delivering the clothes on Monday.",
+      "4": "The shop would deliver the clothes on Monday."
+    },
+    "q_id": "264330104574",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 6,
+    "question": "Select the most appropriate ANTONYM of the underlined word.\nFailure to carry hall ticket to the exam is considered as a trivial issue.",
+    "options": {
+      "1": "underrated",
+      "2": "kind",
+      "3": "problematic",
+      "4": "serious"
+    },
+    "q_id": "26433059732",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 7,
+    "question": "Sentences of a paragraph are given below in jumbled order. Arrange the sentences in\nthe correct order to form a meaningful and coherent paragraph.\nA. A panther is reported to have broken into a house yesterday in search of food and\nshelter.\nB. The villagers heard his cries and ran to the house but the scared animal had run\naway through the window by then.\nC. It secretly slouched into a room where a young man named Johnny was sleeping,\nwho suddenly woke up and realised that the beast was roaming around his bed.\nD. Just as the panther was about to leap on him, he swiftly shot out of bed and hid in a\ncloset.",
+    "options": {
+      "1": "ABDC",
+      "2": "BDCA",
+      "3": "ACDB",
+      "4": "DCAB"
+    },
+    "q_id": "26433093050",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 8,
+    "question": "Select the INCORRECTLY spelt word.",
+    "options": {
+      "1": "Peircing",
+      "2": "Sleek",
+      "3": "Pie",
+      "4": "Itch"
+    },
+    "q_id": "26433063140",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 9,
+    "question": "Select the most appropriate option to fill in the blank.\nIf you try to do something every day you will ________ progress.",
+    "options": {
+      "1": "hold",
+      "2": "get",
+      "3": "make",
+      "4": "catch"
+    },
+    "q_id": "26433089746",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 10,
+    "question": "Select the most appropriate synonym of the given word.\nCompetent",
+    "options": {
+      "1": "Complex",
+      "2": "Poor",
+      "3": "Capable",
+      "4": "Beginner"
+    },
+    "q_id": "26433071871",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 11,
+    "question": "Choose the correct meaning of the given idiom.\nIn weal and woe",
+    "options": {
+      "1": "In sad and gloomy days",
+      "2": "In happiness and good times",
+      "3": "In prosperity and adversity",
+      "4": "In despair and failure"
+    },
+    "q_id": "26433060919",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 12,
+    "question": "Select the most appropriate synonym of the given word.\nAnnounce",
+    "options": {
+      "1": "Denounce",
+      "2": "Secret",
+      "3": "Hide",
+      "4": "Advertise"
+    },
+    "q_id": "26433060886",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 13,
+    "question": "Rearrange the parts of the sentence in correct order.\nWhile physical movement\nP. activities may not require physical\nQ. is important for children, all learning\nR. the part of teachers and students\nS. movement and facial expressions on",
+    "options": {
+      "1": "PRQS",
+      "2": "RSPQ",
+      "3": "QSRP",
+      "4": "QPSR"
+    },
+    "q_id": "264330104690",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 14,
+    "question": "Select the most appropriate meaning of the given idiom.\nA green horn",
+    "options": {
+      "1": "Uneducated person",
+      "2": "Inexperienced person",
+      "3": "Clever person",
+      "4": "Skilled person"
+    },
+    "q_id": "26433072276",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 15,
+    "question": "Select the correct direct form of the given sentence.\nHe said that something might be missing in there.",
+    "options": {
+      "1": "He said, “Something may be missing in here.”",
+      "2": "He said, “Something had to be missing in there.”",
+      "3": "He said, “Something is been missing in here.”",
+      "4": "He said, “Something could be missing in here.”"
+    },
+    "q_id": "264330104629",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 16,
+    "question": "Select the sentences that contains no spelling errors.",
+    "options": {
+      "1": "Many communities in the world still feel that their voices and position has been\ndissenfranchised.",
+      "2": "Many communities in the world still feel that their voices and position has been\ndysenfranchised.",
+      "3": "Many communities in the world still feel that their voices and position has been\ndysenfrenchized.",
+      "4": "Many communities in the world still feel that their voices and position has been\ndisenfranchised."
+    },
+    "q_id": "26433070695",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 17,
+    "question": "Sentences of a paragraph are given below in jumbled order. Arrange the sentences in\nthe correct order to form a meaningful and coherent paragraph.\nA. They also wore felt caps to cover their ears.\nB. They wore trousers tucked into leather boots.\nC. This place was famous for its skilful archers and horsemen.\nD. In the 5th and 4th centuries BC, today’s south Ukraine was known as Scythia.",
+    "options": {
+      "1": "BCDA",
+      "2": "CBDA",
+      "3": "ABCD",
+      "4": "DCBA"
+    },
+    "q_id": "26433070702",
+    "status": "Answered",
+    "chosen_option": "4",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 18,
+    "question": "The following sentence has been split into four segments. Identify the segment that\ncontains a grammatical error.\nHe used to reply / that the only place / for which he went / was the town library.",
+    "options": {
+      "1": "was the town library",
+      "2": "for which he went",
+      "3": "He used to reply",
+      "4": "that the only place"
+    },
+    "q_id": "26433092268",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 19,
+    "question": "Select the most appropriate synonym of the underlined word in the given sentence.\nThe sporadic instructions of the invigilators distracted the examinee.",
+    "options": {
+      "1": "Continuous",
+      "2": "Indirect",
+      "3": "Repetitive",
+      "4": "Occasional"
+    },
+    "q_id": "26433071965",
+    "status": "Answered",
+    "chosen_option": "3",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 20,
+    "question": "Select the most appropriate option that can substitute the underlined segment in the\ngiven sentence.\nRajan is having three brothers and three sisters.",
+    "options": {
+      "1": "Rajan has been having",
+      "2": "Rajan has",
+      "3": "Rajan was having",
+      "4": "Rajan having"
+    },
+    "q_id": "26433088744",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 21,
+    "question": "Select the most appropriate option to fill in blank number 1.",
+    "options": {
+      "1": "hindered",
+      "2": "disconnected",
+      "3": "dreary",
+      "4": "savvy"
+    },
+    "q_id": "26433073962",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 22,
+    "question": "Select the most appropriate option to fill in blank number 2.",
+    "options": {
+      "1": "their",
+      "2": "they’re",
+      "3": "dare",
+      "4": "there"
+    },
+    "q_id": "26433073963",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 23,
+    "question": "Select the most appropriate option to fill in blank number 3.",
+    "options": {
+      "1": "thoroughly",
+      "2": "through",
+      "3": "holistically",
+      "4": "daily"
+    },
+    "q_id": "26433073964",
+    "status": "Answered",
+    "chosen_option": "1",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 24,
+    "question": "Select the most appropriate option to fill in blank number 4.",
+    "options": {
+      "1": "passive",
+      "2": "active",
+      "3": "distinctive",
+      "4": "demonstrative"
+    },
+    "q_id": "26433073965",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  },
+  {
+    "section": "English Comprehension",
+    "q_num": 25,
+    "question": "Select the most appropriate option to fill in blank number 5.",
+    "options": {
+      "1": "sympathisers",
+      "2": "empathisers",
+      "3": "donors",
+      "4": "characters"
+    },
+    "q_id": "26433073966",
+    "status": "Answered",
+    "chosen_option": "2",
+    "has_image": false
+  }
+]

@@ -137,6 +137,33 @@ function Home() {
           />
         </div>
       </section>
+
+      <section className="trustSection">
+        <h2>Why Students Trust Us</h2>
+        <div className="trustGrid">
+          {[
+            { icon: "🎯", title: "Expert Guidance", desc: "Learn from toppers, mentors & achievers." },
+            { icon: "📘", title: "Smart Practice", desc: "Daily mock tests, quizzes & real exam practice." },
+            { icon: "📅", title: "Updated Content", desc: "Latest syllabus, patterns & study updates." },
+            { icon: "📈", title: "Performance Tracking", desc: "Track progress, ranks & weak topics smartly." },
+            { icon: "🎯", title: "Our Mission", desc: "Affordable quality SSC preparation for every aspirant." },
+            { icon: "🚀", title: "Our Vision", desc: "To become India's most trusted SSC preparation platform." },
+          ].map(({ icon, title, desc }, i) => (
+            <motion.div
+              key={title}
+              className="trustCard"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <span className="trustIcon">{icon}</span>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

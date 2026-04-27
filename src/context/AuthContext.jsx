@@ -106,6 +106,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyOtp = async ({ email, otp }) => {
+    try {
+      const res = await fetch(`${BASE_URL}/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, otp }),
+      });
+      return await parseJsonResponse(res);
+    } catch {
+      return { success: false, message: "Network error. Please try again." };
+    }
+  };
+
+  const resendOtp = async ({ email }) => {
+    try {
+      const res = await fetch(`${BASE_URL}/auth/resend-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email }),
+      });
+      return await parseJsonResponse(res);
+    } catch {
+      return { success: false, message: "Network error. Please try again." };
+    }
+  };
+
   const logoutUser = async () => {
     try {
       await fetch(`${BASE_URL}/auth/logout`, {
@@ -138,6 +166,8 @@ export const AuthProvider = ({ children }) => {
         loginUser,
         validateUser,
         logoutUser,
+        verifyOtp,
+        resendOtp,
       }}
     >
       {!loading && children}

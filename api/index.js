@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import session from "express-session";
@@ -7,19 +8,9 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import couponRoutes from "./routes/coupon.js";
 import quizRoutes from "./routes/quiz.js";
+import categoryRoutes from "./routes/category.js";
 
 const app = express();
-
-// -----------------------------
-// ✅ CORS (FIXED PROPERLY)
-// -----------------------------
-
-// ✅ Load dotenv ONLY locally
-if (process.env.NODE_ENV !== "production") {
-  const dotenv = await import("dotenv");
-  dotenv.config();
-  console.log("✅ dotenv loaded (local)");
-}
 
 
 app.use(cors({
@@ -62,6 +53,7 @@ await connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/coupon", couponRoutes);
 app.use("/api/quiz", quizRoutes);
+app.use("/api/category", categoryRoutes);
 
 // -----------------------------
 // ✅ HEALTH CHECK

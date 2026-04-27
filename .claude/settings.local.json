@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "PowerShell(python -c \"import pdfplumber; print\\('pdfplumber ok'\\)\" 2>&1)",
+      "PowerShell(python -c \"import pypdf; print\\('pypdf ok'\\)\" 2>&1)",
+      "PowerShell(python -c \"import fitz; print\\('pymupdf ok'\\)\" 2>&1)",
+      "PowerShell(pip install *)",
+      "Bash(node *)",
+      "PowerShell(npm list *)",
+      "Bash(npx vite *)"
+    ]
+  }
+}

@@ -34,10 +34,16 @@ const quizSchema = new mongoose.Schema(
       default: null,
     },
 
-    // 🔥 ADD THIS
     quizCode: {
       type: String,
       unique: true,
+    },
+    subject:  { type: String, default: null },
+    categoryId: { type: String, default: null },
+    mockType: {
+      type: String,
+      enum: ["full", "sectional", "subject_wise"],
+      default: "full",
     },
   },
   { timestamps: true }

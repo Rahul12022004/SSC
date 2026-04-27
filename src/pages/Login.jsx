@@ -59,11 +59,7 @@ function Login() {
   useEffect(() => {
     if (location.state?.message) {
       setSuccessMsg(location.state.message);
-
-      const timer = setTimeout(() => {
-        setSuccessMsg("");
-      }, 3000);
-
+      const timer = setTimeout(() => setSuccessMsg(""), 3000);
       return () => clearTimeout(timer);
     }
   }, [location.state]);
@@ -155,7 +151,7 @@ function Login() {
           navigate("/");
         }
       } else {
-        setErrors({ password: "Invalid email or password" });
+        setErrors({ password: res?.message || "Invalid email or password" });
         generateCaptcha();
       }
     } catch {

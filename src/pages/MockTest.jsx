@@ -303,6 +303,33 @@ function MockTest() {
 
   // ── Instruction screen ──────────────────────────────────────────────────────
   if (!started) {
+    const durationMin = quiz.duration ?? 60;
+    const perQ = quiz.eachMarks ?? 2;
+    const negVal = quiz.negativeMarking ? Math.abs(quiz.negativeValue ?? 0.5) : 0;
+
+    // Derive sections from question list (type === "section" marks section headers)
+    const derivedSections = (() => {
+      const sections = [];
+      let current = null;
+      for (const qItem of quiz.questions) {
+        if (qItem.type === "section") {
+          if (current) sections.push(current);
+          current = { name: qItem.question || "Section", count: 0 };
+        } else {
+          if (!current) current = { name: "All Questions", count: 0 };
+          current.count++;
+        }
+      }
+      if (current) sections.push(current);
+      // Always show at least one row
+      if (sections.length === 0) return [{ name: "All Questions", count: total, time: durationMin }];
+      const totalQ = sections.reduce((s, sec) => s + sec.count, 0) || 1;
+      return sections.map(sec => ({
+        ...sec,
+        time: Math.round((sec.count / totalQ) * durationMin),
+      }));
+    })();
+
     return (
       <div className="cbt-instruction-page">
         <div className="cbt-instruction-header">
@@ -310,69 +337,160 @@ function MockTest() {
           <h2>{quiz.title}</h2>
         </div>
 
-        <div className="cbt-instruction-card">
-          <div className="cbt-instr-section">
-            <h3>General Instructions</h3>
-            <ul>
-              <li>The clock will be set at the server. The countdown timer at the top right corner of screen will display the remaining time.</li>
-              <li>This test contains <strong>{total}</strong> questions worth <strong>{quiz.eachMarks ?? 2} marks</strong> each.</li>
-              <li>
-                Negative marking:{" "}
-                <strong>
-                  {quiz.negativeMarking ? `−${quiz.negativeValue} per wrong answer` : "None"}
-                </strong>
-              </li>
-              <li>You can navigate to any question using the Question Palette on the right side.</li>
-              <li>Click <strong>Save &amp; Next</strong> to save your answer and move to the next question.</li>
-            </ul>
+        <div className="cbt-instr-body">
+          {/* ── Title block ── */}
+          <div className="cbt-instr-title-block">
+            <h1 className="cbt-instr-quiz-title">{quiz.title}</h1>
+            <p className="cbt-instr-quiz-id">Quiz ID: {quiz.quizCode || quiz._id}</p>
           </div>
 
-          <div className="cbt-instr-section warning">
-            <h3>Important Guidelines</h3>
-            <ul>
-              <li>Do not press <strong>ESC</strong> or exit fullscreen during the exam.</li>
-              <li>Switching tabs or minimizing the window may be counted as a violation.</li>
-              <li>After <strong>4 violations</strong>, the exam will auto-submit.</li>
-              <li>Ensure stable internet before starting.</li>
-            </ul>
-          </div>
-
-          <div className="cbt-instr-section legend">
-            <h3>Question Palette Legend</h3>
-            <div className="cbt-legend-row">
-              <div className="cbt-legend-item">
-                <span className="cbt-legend-dot cbt-pal-answered" />
-                Answered
-              </div>
-              <div className="cbt-legend-item">
-                <span className="cbt-legend-dot cbt-pal-visited" />
-                Not Answered
-              </div>
-              <div className="cbt-legend-item">
-                <span className="cbt-legend-dot" />
-                Not Visited
-              </div>
+          {/* ── Stats row ── */}
+          <div className="cbt-instr-stats">
+            <div className="cbt-instr-stat">
+              <span className="cbt-instr-stat-label">Total Questions</span>
+              <span className="cbt-instr-stat-value">{total}</span>
+            </div>
+            <div className="cbt-instr-stat">
+              <span className="cbt-instr-stat-label">Correct Marks</span>
+              <span className="cbt-instr-stat-value">+{perQ}</span>
+            </div>
+            <div className="cbt-instr-stat">
+              <span className="cbt-instr-stat-label">Negative Marks</span>
+              <span className="cbt-instr-stat-value">{quiz.negativeMarking ? `-${negVal}` : "None"}</span>
+            </div>
+            <div className="cbt-instr-stat">
+              <span className="cbt-instr-stat-label">Total Time</span>
+              <span className="cbt-instr-stat-value">{durationMin} Minutes</span>
             </div>
           </div>
 
-          <div className="cbt-agree-box">
-            <input
-              type="checkbox"
-              id="cbt-agree"
-              onChange={(e) => setAgree(e.target.checked)}
-            />
-            <label htmlFor="cbt-agree">
-              I have read all the instructions and agree to follow them.
-            </label>
-          </div>
+          {/* ── Test Summary ── */}
+          <div className="cbt-summary-block">
+              <h2 className="cbt-summary-title">
+                <span className="cbt-summary-bar" />
+                Test Summary
+              </h2>
+              <table className="cbt-summary-table">
+                <thead>
+                  <tr>
+                    <th>Section Name</th>
+                    <th>Questions</th>
+                    <th>Time (Min)</th>
+                    <th>Marks</th>
+                    <th>Negative</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {derivedSections.map((sec, i) => (
+                    <tr key={i}>
+                      <td className="cbt-sum-name">{sec.name.toUpperCase()}</td>
+                      <td>{sec.count}</td>
+                      <td>{sec.time}</td>
+                      <td className="cbt-sum-marks">+{perQ}</td>
+                      <td className="cbt-sum-neg">{quiz.negativeMarking ? negVal : "—"}</td>
+                    </tr>
+                  ))}
+                  <tr className="cbt-sum-total">
+                    <td><strong>Total</strong></td>
+                    <td><strong>{total}</strong></td>
+                    <td><strong>{durationMin}</strong></td>
+                    <td colSpan={2}><strong>Time: {durationMin} Mins</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <button
-            className="cbt-btn-start"
-            disabled={!agree}
-            onClick={handleStart}
-          >
-            ▶ Start Exam
-          </button>
+          {/* ── Instruction card ── */}
+          <div className="cbt-instruction-card">
+
+            {/* 1. Quiz Mode Symbols */}
+            <div className="cbt-instr-section">
+              <h3>1. Quiz Mode Symbols (During Test)</h3>
+              <div className="cbt-symbol-grid">
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-answered">1</span>
+                  <span>Answered</span>
+                </div>
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-review-answered">2 ★</span>
+                  <span>Answered &amp; Marked for Review</span>
+                </div>
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-review">3</span>
+                  <span>Marked for Review (Unanswered)</span>
+                </div>
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-current">4</span>
+                  <span>Current Question</span>
+                </div>
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-notvisited">5</span>
+                  <span>Not Visited</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Solution Mode Symbols */}
+            <div className="cbt-instr-section">
+              <h3>2. Solution Mode Symbols (Analysis)</h3>
+              <div className="cbt-symbol-grid">
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-correct">✓</span>
+                  <span>Correct Answer</span>
+                </div>
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-wrong">✗</span>
+                  <span>Wrong Answer</span>
+                </div>
+                <div className="cbt-symbol-item">
+                  <span className="cbt-sym-box cbt-sym-skipped">0</span>
+                  <span>Skipped</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. General Instructions */}
+            <div className="cbt-instr-section">
+              <h3>3. General Instructions / सामान्य निर्देश</h3>
+              <ul className="cbt-instr-list">
+                <li>
+                  <strong>Name Entry:</strong> You <u>MUST</u> enter your full name in the box provided inside the quiz to submit.
+                </li>
+                <li>
+                  <strong>Do not reload the page.</strong><br />
+                  <span className="cbt-instr-hi">कृपया पेज को रीलोड न करें।</span>
+                </li>
+                <li>
+                  <strong>Stable internet is required.</strong><br />
+                  <span className="cbt-instr-hi">स्थिर इंटरनेट सुनिश्चित करें।</span>
+                </li>
+                <li>
+                  <strong>Submit before time ends.</strong><br />
+                  <span className="cbt-instr-hi">समय समाप्त होने से पहले जमा करें।</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Agree checkbox */}
+            <div className="cbt-agree-box">
+              <input
+                type="checkbox"
+                id="cbt-agree"
+                onChange={(e) => setAgree(e.target.checked)}
+              />
+              <label htmlFor="cbt-agree">
+                I have read all the instructions carefully and have understood them. I agree not to cheat or use unfair means in this examination.
+              </label>
+            </div>
+
+            <button
+              className="cbt-btn-start"
+              disabled={!agree}
+              onClick={handleStart}
+            >
+              ▶ Start Exam
+            </button>
+          </div>
         </div>
       </div>
     );

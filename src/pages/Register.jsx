@@ -1,4 +1,3 @@
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,8 @@ import "../styles/register.css";
 function Register() {
   const navigate = useNavigate();
   const { registerUser } = useAuth();
+  const [otpStep, setOtpStep] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
   const [errors, setErrors] = useState({});
 
   const [showPassword, setShowPassword] = useState(false);
@@ -196,9 +197,8 @@ function Register() {
 
       const res = await registerUser(formData);
       if (res?.success) {
-        navigate("/login", {
-          state: { message: "Account created successfully" },
-        });
+        // Email verification disabled - go directly to login
+        navigate("/login", { state: { message: "Registration successful! Please log in." } });
       } else {
         setErrors({
           confirmPassword: res?.message || "Registration failed",
@@ -212,6 +212,17 @@ function Register() {
       setLoading(false);
     }
   };
+
+  if (otpStep) {
+    return (
+      <OtpStep
+        email={registeredEmail}
+        onSuccess={() =>
+          navigate("/login", { state: { message: "Email verified! You can now log in." } })
+        }
+      />
+    );
+  }
 
   return (
     <div className="registerPage">
