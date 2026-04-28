@@ -150,6 +150,13 @@ function Login() {
         } else {
           navigate("/");
         }
+      } else if (res?.code === "EMAIL_NOT_VERIFIED") {
+        navigate("/verify-otp", {
+          state: {
+            email: res.email || formData.email,
+            info: "Please verify your email to continue. Enter the OTP we sent you, or click 'Resend OTP'.",
+          },
+        });
       } else {
         setErrors({ password: res?.message || "Invalid email or password" });
         generateCaptcha();

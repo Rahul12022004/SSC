@@ -65,7 +65,9 @@ export const AuthProvider = ({ children }) => {
 
       if (!res.ok) {
         return {
+          ...result,
           success: false,
+          status: res.status,
           message: result.message || "Server error",
         };
       }

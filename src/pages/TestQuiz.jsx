@@ -40,7 +40,6 @@ function TestQuiz() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const { violationCount, showViolation } = useAntiCheat(
-    started,
     setShowSubmit,
   );
 
@@ -62,6 +61,7 @@ function TestQuiz() {
         setTimeLeft(data.quiz.duration * 60);
       } catch (err) {
         setError("Server error");
+
       } finally {
         setLoading(false);
       }
@@ -120,7 +120,6 @@ function TestQuiz() {
 
     setAnswers(updated);
 
-    const stat = [...status];
     stat[current] = "answered";
     setStatus(stat);
   };
@@ -156,6 +155,7 @@ function TestQuiz() {
       const res = await fetch(`${BASE_URL}/quiz/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           quizId: id,
           answers,

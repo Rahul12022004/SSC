@@ -7,6 +7,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import OtpVerify from "./pages/OtpVerify";
 import Courses from "./pages/Courses";
 import Batches from "./pages/Batches";
 import Tests from "./pages/Tests";
@@ -51,6 +52,7 @@ function AppLayout() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-otp" element={<OtpVerify />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/batches" element={<Batches />} />
           <Route path="/tests" element={<Tests />} />

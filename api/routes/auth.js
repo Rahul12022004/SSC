@@ -4,15 +4,16 @@ import { readFileSync } from "fs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import { Resend } from "resend";
 
 import User from "../models/User.js";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendOtpEmail } from "../utils/sendOtpEmail.js";
 
 const router = express.Router();
 const localUsersPath = new URL("../users.json", import.meta.url);
 
+// -----------------------------
+// Helpers
+// -----------------------------
 const getLocalUsers = () => {
   try {
     return JSON.parse(readFileSync(localUsersPath, "utf8"));
@@ -20,6 +21,11 @@ const getLocalUsers = () => {
     return [];
   }
 };
+
+const generateOtp = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
+
+const otpExpiryDate = () => new Date(Date.now() + 10 * 60 * 1000);
 
 const sendLoginResponse = (res, user) => {
   const authUser = {
@@ -45,6 +51,14 @@ const sendLoginResponse = (res, user) => {
   });
 };
 
+// -----------------------------
+// POST /api/auth/register
+//
+// Creates the user with emailVerified=false, generates a 6-digit OTP,
+// stores it on the user document with a 10-minute expiry, and dispatches
+// the email through Resend.  The frontend should redirect to an
+// OTP-entry screen on success.
+// -----------------------------
 router.post("/register", async (req, res) => {
   const { firstName, middleName, lastName, email, password, confirmPassword } =
     req.body;
@@ -80,9 +94,10 @@ router.post("/register", async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = generateOtp();
+    const otpExpiry = otpExpiryDate();
 
-    // Email verification disabled - auto-verify user
-    await User.create({
+    const user = await User.create({
       firstName,
       middleName,
       lastName,
@@ -90,73 +105,153 @@ router.post("/register", async (req, res) => {
       password: hashedPassword,
       role: "user",
       roleLevel: 1,
-      emailVerified: true,
+      emailVerified: false,
+      otp,
+      otpExpiry,
     });
 
-    res.json({ success: true });
+    try {
+      await sendOtpEmail({
+        to: user.email,
+        firstName: user.firstName,
+        otp,
+        context: "register",
+      });
+    } catch (mailErr) {
+      // The user record is already saved; surface a soft error so the UI
+      // can prompt for a resend instead of leaving the user stranded.
+      console.error("[auth] Failed to send register OTP:", mailErr.message);
+      return res.json({
+        success: true,
+        emailSent: false,
+        message:
+          "Account created but verification email failed to send. Please use Resend OTP.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      emailSent: true,
+      message: "Account created. Please verify the OTP sent to your email.",
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
+// -----------------------------
+// POST /api/auth/verify-otp
+//
+// Validates the OTP within its expiry window, flips emailVerified to true,
+// and clears the otp / otpExpiry fields so a stale code can never be reused.
+// -----------------------------
 router.post("/verify-otp", async (req, res) => {
   const { email, otp } = req.body;
-  if (!email || !otp) return res.json({ success: false, message: "Email and OTP required" });
+
+  if (!email || !otp) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email and OTP are required" });
+  }
 
   try {
-    const user = await User.findOne({
-      email: email.trim().toLowerCase(),
-      verificationToken: otp.trim(),
-      verificationTokenExpiry: { $gt: new Date() },
-    });
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
 
-    if (!user) return res.json({ success: false, message: "Invalid or expired OTP" });
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    if (user.emailVerified) {
+      return res.json({ success: true, message: "Email already verified" });
+    }
+
+    if (!user.otp || !user.otpExpiry) {
+      return res.json({
+        success: false,
+        message: "No OTP issued. Please request a new one.",
+      });
+    }
+
+    if (user.otpExpiry.getTime() < Date.now()) {
+      return res.json({
+        success: false,
+        message: "OTP expired. Please request a new one.",
+      });
+    }
+
+    if (user.otp !== otp.toString().trim()) {
+      return res.json({ success: false, message: "Invalid OTP" });
+    }
 
     user.emailVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpiry = undefined;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
     await user.save();
 
-    res.json({ success: true });
+    return res.json({ success: true, message: "Email verified successfully" });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
+// -----------------------------
+// POST /api/auth/resend-otp
+//
+// Generates a fresh OTP (always supersedes the previous one) and emails it.
+// Only available for accounts that have not yet been verified.
+// -----------------------------
 router.post("/resend-otp", async (req, res) => {
   const { email } = req.body;
-  if (!email) return res.json({ success: false, message: "Email required" });
+
+  if (!email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email is required" });
+  }
 
   try {
-    const user = await User.findOne({ email: email.trim().toLowerCase(), emailVerified: false });
-    if (!user) return res.json({ success: false, message: "No pending verification for this email" });
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.verificationToken = otp;
-    user.verificationTokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    if (user.emailVerified) {
+      return res.json({
+        success: false,
+        message: "Email already verified. Please log in.",
+      });
+    }
+
+    const otp = generateOtp();
+    user.otp = otp;
+    user.otpExpiry = otpExpiryDate();
     await user.save();
 
-    await resend.emails.send({
-      from: process.env.RESEND_FROM,
+    await sendOtpEmail({
       to: user.email,
-      subject: "Your new SSC Pathnirman OTP",
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;background:#f8fafc;border-radius:12px">
-          <h2 style="color:#0b2545;margin-bottom:8px">New OTP</h2>
-          <p style="color:#475569;margin-bottom:24px">Hi ${user.firstName}, here is your new OTP. Expires in <strong>10 minutes</strong>.</p>
-          <div style="font-size:36px;font-weight:700;letter-spacing:10px;color:#f77f00;text-align:center;padding:20px;background:#fff;border-radius:10px;border:2px dashed #f77f00;margin-bottom:20px">
-            ${otp}
-          </div>
-        </div>
-      `,
+      firstName: user.firstName,
+      otp,
+      context: "resend",
     });
 
-    res.json({ success: true });
+    return res.json({
+      success: true,
+      message: "A new OTP has been sent to your email.",
+    });
   } catch (err) {
+    console.error("[auth] resend-otp failed:", err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
+// -----------------------------
+// POST /api/auth/login
+//
+// Local users (users.json) keep their bypass for admin/seed access.
+// DB users must have emailVerified=true; otherwise a 403 is returned so
+// the frontend can surface the OTP-entry screen.
+// -----------------------------
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const normalizedEmail = email?.trim().toLowerCase();
@@ -172,12 +267,17 @@ router.post("/login", async (req, res) => {
   if (mongoose.connection.readyState !== 1) {
     await new Promise((resolve) => {
       const timeout = setTimeout(resolve, 5000);
-      mongoose.connection.once("connected", () => { clearTimeout(timeout); resolve(); });
+      mongoose.connection.once("connected", () => {
+        clearTimeout(timeout);
+        resolve();
+      });
     });
   }
 
   if (mongoose.connection.readyState !== 1) {
-    return res.status(503).json({ success: false, message: "Server busy, please try again" });
+    return res
+      .status(503)
+      .json({ success: false, message: "Server busy, please try again" });
   }
 
   try {
@@ -193,13 +293,27 @@ router.post("/login", async (req, res) => {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
+    if (!user.emailVerified) {
+      return res.status(403).json({
+        success: false,
+        code: "EMAIL_NOT_VERIFIED",
+        email: user.email,
+        message: "Email not verified",
+      });
+    }
+
     return sendLoginResponse(res, user);
   } catch (err) {
     console.error("Login error:", err.message);
-    res.status(500).json({ success: false, message: "Login failed, please try again" });
+    res
+      .status(500)
+      .json({ success: false, message: "Login failed, please try again" });
   }
 });
 
+// -----------------------------
+// GET /api/auth/validate
+// -----------------------------
 router.get("/validate", (req, res) => {
   try {
     const token = req.cookies?.token;
@@ -222,6 +336,9 @@ router.get("/validate", (req, res) => {
   }
 });
 
+// -----------------------------
+// POST /api/auth/logout
+// -----------------------------
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,

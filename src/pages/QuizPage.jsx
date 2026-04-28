@@ -140,7 +140,9 @@ function QuizPage() {
     setIsSubmitting(true);
 
     try {
-      await new Promise((res) => setTimeout(res, 1000));
+      // Example: If you have a backend endpoint for quiz submission, use credentials: 'include'
+      // If you only do local calculation, you can keep as is. If you POST to backend, add credentials: 'include'.
+      // await fetch(`${BASE_URL}/quiz/submit`, { method: 'POST', credentials: 'include', ... })
 
       let correct = 0;
       let wrong = 0;

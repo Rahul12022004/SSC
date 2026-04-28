@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+/**
+ * User schema
+ *
+ * Email-verification flow:
+ *   - `emailVerified` defaults to false on register.
+ *   - `otp` holds the 6-digit numeric code as a string (preserves leading zeros).
+ *   - `otpExpiry` is a Date set to (now + 10 minutes) at issue time.
+ *   - On successful /verify-otp, `otp` and `otpExpiry` are unset and
+ *     `emailVerified` flips to true.
+ */
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -17,6 +27,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
     },
     password: {
       type: String,
@@ -34,8 +47,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    verificationToken: { type: String },
-    verificationTokenExpiry: { type: Date },
+    otp: {
+      type: String,
+      default: undefined,
+    },
+    otpExpiry: {
+      type: Date,
+      default: undefined,
+    },
   },
   { timestamps: true }
 );

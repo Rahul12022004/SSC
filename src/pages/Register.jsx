@@ -1,15 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 import { BsCircle } from "react-icons/bs";
 import "../styles/register.css";
 
 function Register() {
   const navigate = useNavigate();
   const { registerUser } = useAuth();
-  const [otpStep, setOtpStep] = useState(false);
-  const [registeredEmail, setRegisteredEmail] = useState("");
   const [errors, setErrors] = useState({});
 
   const [showPassword, setShowPassword] = useState(false);
@@ -197,14 +195,20 @@ function Register() {
 
       const res = await registerUser(formData);
       if (res?.success) {
-        // Email verification disabled - go directly to login
-        navigate("/login", { state: { message: "Registration successful! Please log in." } });
+        const info =
+          res.emailSent === false
+            ? "Account created, but we couldn't send the verification email. Please use 'Resend OTP'."
+            : "We've sent a 6-digit verification code to your email.";
+
+        navigate("/verify-otp", {
+          state: { email: formData.email, info },
+        });
       } else {
         setErrors({
           confirmPassword: res?.message || "Registration failed",
         });
       }
-    } catch (err) {
+    } catch {
       setErrors({
         confirmPassword: "Something went wrong",
       });
@@ -212,17 +216,6 @@ function Register() {
       setLoading(false);
     }
   };
-
-  if (otpStep) {
-    return (
-      <OtpStep
-        email={registeredEmail}
-        onSuccess={() =>
-          navigate("/login", { state: { message: "Email verified! You can now log in." } })
-        }
-      />
-    );
-  }
 
   return (
     <div className="registerPage">
