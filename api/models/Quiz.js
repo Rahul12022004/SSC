@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 
+// -----------------------------------------------------------------------------
+// NOTE: `image` and `questionImage` store ONLY public URLs (e.g. Vercel Blob
+// URLs returned from /api/upload-image). They MUST NOT contain base64 data
+// URIs — the legacy base64-embedded flow was removed because it routinely
+// breached Vercel's 4.5 MB serverless body limit.
+// -----------------------------------------------------------------------------
+
 const optionSchema = new mongoose.Schema({
-  text: String,
-  image: String,
+  text: { type: String, default: "" },
+  image: { type: String, default: "" }, // public URL only — no base64
 });
 
 const questionSchema = new mongoose.Schema({
@@ -14,7 +21,7 @@ const questionSchema = new mongoose.Schema({
   },
   question: String,
   questionHi: String,
-  questionImage: String,
+  questionImage: { type: String, default: "" }, // public URL only — no base64
   options: [optionSchema],
   optionsHi: [optionSchema],
   correctAnswer: mongoose.Schema.Types.Mixed,

@@ -32,6 +32,11 @@ function CreateQuiz() {
     questions: [],
   });
 
+  // Tracks any in-flight image uploads keyed by a string id (e.g. "q-3" or
+  // "opt-3-1") so we can disable inputs and surface progress in the UI.
+  const [uploadingMap, setUploadingMap] = useState({});
+  const isUploading = Object.values(uploadingMap).some(Boolean);
+
   const confirmRefresh = () => {
     window.location.reload();
   };
@@ -309,20 +314,104 @@ function CreateQuiz() {
     setQuiz({ ...quiz, questions: updated });
   };
 
-  const handleImageUpload = (file, callback) => {
-    if (!file) return;
-
-    const validTypes = ["image/png", "image/jpeg"];
-
+  // ---------------------------------------------------------------------------
+  // Image upload helper
+  //
+  // Replaces the previous FileReader.readAsDataURL flow which embedded a
+  // base64 data URI directly into the question/option object. That approach
+  // pushed the eventual create-quiz JSON payload past Vercel's hard ~4.5 MB
+  // serverless body limit and triggered 413 errors.
+  //
+  // Now: we POST the raw file as multipart/form-data to /api/upload-image,
+  // which uploads to Vercel Blob and returns a public URL. We store ONLY the
+  // URL string. Quiz JSON stays tiny.
+  // ---------------------------------------------------------------------------
+  const uploadImageFile = async (file) => {
+    // Keep this list in sync with the backend allowlist in api/routes/upload.js
+    const validTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+      "image/gif",
+    ];
     if (!validTypes.includes(file.type)) {
-      alert("Only PNG and JPEG images are allowed.");
-      return;
+      throw new Error("Only PNG, JPEG, WEBP, and GIF images are allowed.");
     }
 
-    const reader = new FileReader();
-    reader.onload = () => callback(reader.result);
-    reader.onerror = () => alert("Failed to read image");
-    reader.readAsDataURL(file);
+    // Hard cap matches multer config on the server (10 MB).
+    const MAX_BYTES = 10 * 1024 * 1024;
+    if (file.size > MAX_BYTES) {
+      throw new Error("Image exceeds 10 MB limit.");
+    }
+
+    const formData = new FormData();
+    // Field name MUST stay "file" — multer.single("file") on the server.
+    formData.append("file", file);
+
+    // IMPORTANT: do NOT set Content-Type manually. The browser must set the
+    // multipart boundary itself — overriding it breaks parsing on the server.
+    const res = await fetch(`${BASE_URL}/upload-image`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    // Read as text first so we never crash on HTML error pages from the edge
+    // (Vercel/proxy 404/413/502 returns text/html, not JSON).
+    const raw = await res.text();
+    let data = null;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      // non-JSON (likely HTML error page)
+    }
+
+    if (!res.ok || !data?.success || !data?.url) {
+      const msg =
+        data?.message ||
+        `Upload failed (HTTP ${res.status}). ${raw?.slice(0, 200) || ""}`;
+      throw new Error(msg);
+    }
+
+    return data.url;
+  };
+
+  // Run an upload while tracking it under `key` so the UI can disable the
+  // associated input and surface progress. Errors bubble up to the caller.
+  const runTrackedUpload = async (key, file) => {
+    setUploadingMap((prev) => ({ ...prev, [key]: true }));
+    try {
+      return await uploadImageFile(file);
+    } finally {
+      setUploadingMap((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    }
+  };
+
+  const handleQuestionImageChange = async (qIndex, file) => {
+    if (!file) return;
+    try {
+      const url = await runTrackedUpload(`q-${qIndex}`, file);
+      updateQuestion(qIndex, "questionImage", url);
+    } catch (err) {
+      console.error(err);
+      alert(err?.message || "Failed to upload image");
+    }
+  };
+
+  const handleOptionImageChange = async (qIndex, oIndex, file) => {
+    if (!file) return;
+    try {
+      const url = await runTrackedUpload(`opt-${qIndex}-${oIndex}`, file);
+      updateOption(qIndex, oIndex, "image", url);
+    } catch (err) {
+      console.error(err);
+      alert(err?.message || "Failed to upload image");
+    }
   };
 
   const updateOption = (qIndex, oIndex, field, value) => {
@@ -380,6 +469,11 @@ function CreateQuiz() {
   };
 
   const handleSave = () => {
+    if (isUploading) {
+      alert("Please wait for image uploads to finish before saving.");
+      return;
+    }
+
     const newErrors = {
       title: "",
       duration: "",
@@ -468,6 +562,18 @@ function CreateQuiz() {
     setShowSaveModal(true);
   };
 
+  // Safely parse a fetch Response — never crash on HTML error pages
+  // (Vercel/proxy 413 / 502 returns text/html, not JSON, which causes
+  // "Unexpected token '<' is not valid JSON" if you call res.json() blindly).
+  const safeParseResponse = async (res) => {
+    const text = await res.text();
+    try {
+      return { data: JSON.parse(text), raw: text };
+    } catch {
+      return { data: null, raw: text };
+    }
+  };
+
   const handleSubmit = async () => {
     if (quiz.duration < 1) {
       alert("Duration must be at least 1 minute");
@@ -479,36 +585,65 @@ function CreateQuiz() {
       return;
     }
 
+    const payload = {
+      title: quiz.title,
+      duration: quiz.duration,
+      negativeMarking,
+      negativeValue,
+      eachMarks,
+      questions: quiz.questions,
+      subject:    subjectId  || null,
+      categoryId: categoryId || null,
+      mockType:   mockTab    || "full",
+    };
+
     try {
-      const res = await fetch(isEditMode ? `${BASE_URL}/quiz/${editQuizId}` : `${BASE_URL}/quiz/create-quiz`, {
-        method: isEditMode ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // 🔐 session support
-        body: JSON.stringify({
-          title: quiz.title,
-          duration: quiz.duration,
-          negativeMarking,
-          negativeValue,
-          eachMarks,
-          questions: quiz.questions,
-          subject:    subjectId  || null,
-          categoryId: categoryId || null,
-          mockType:   mockTab    || "full",
-        }),
-      });
+      const res = await fetch(
+        isEditMode
+          ? `${BASE_URL}/quiz/${editQuizId}`
+          : `${BASE_URL}/quiz/create-quiz`,
+        {
+          method: isEditMode ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // 🔐 session support
+          body: JSON.stringify(payload),
+        }
+      );
 
-      const data = await res.json(); // 🔥 FIX
+      // Read body as text first; only then attempt JSON parse, to survive
+      // HTML error pages returned by the edge layer.
+      const { data, raw } = await safeParseResponse(res);
 
-      if (data.success) {
+      if (!res.ok) {
+        if (res.status === 413) {
+          alert(
+            (data && data.message) ||
+              "Payload Too Large (413). The quiz exceeds the server upload limit.\n\n" +
+                "Images should be uploaded via the image picker (which stores them on Vercel Blob) — they should never be embedded inline."
+          );
+          return;
+        }
+        const msg =
+          (data && data.message) ||
+          `Failed to save quiz (HTTP ${res.status}). ${raw?.slice(0, 200) || ""}`;
+        alert(msg);
+        return;
+      }
+
+      if (data && data.success) {
         window.location.href = `/schedule/${data.fileName}`;
       } else {
-        alert(data.message || "Failed to save quiz");
+        alert((data && data.message) || "Failed to save quiz");
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to save quiz");
+      alert(
+        err?.message
+          ? `Failed to save quiz: ${err.message}`
+          : "Failed to save quiz"
+      );
     }
   };
 
@@ -521,6 +656,7 @@ function CreateQuiz() {
       else qInSec++;
     }
     const qLabel = secNum > 0 ? `${secNum}.${qInSec}` : `${qInSec}`;
+    const qImageUploading = Boolean(uploadingMap[`q-${qIndex}`]);
     return (
       <div
         key={qIndex}
@@ -591,15 +727,15 @@ function CreateQuiz() {
         {(q.type === "image" || q.type === "mixed") && (
           <div className="questionImageBox">
             <label>
-              <FiUpload /> Upload Question Image
+              <FiUpload />{" "}
+              {qImageUploading ? "Uploading..." : "Upload Question Image"}
               <input
                 type="file"
-                accept="image/png, image/jpeg"
+                accept="image/png, image/jpeg, image/webp"
                 hidden
+                disabled={qImageUploading}
                 onChange={(e) =>
-                  handleImageUpload(e.target.files[0], (url) =>
-                    updateQuestion(qIndex, "questionImage", url)
-                  )
+                  handleQuestionImageChange(qIndex, e.target.files[0])
                 }
               />
             </label>
@@ -636,45 +772,48 @@ function CreateQuiz() {
         {q.answerType !== "descriptive" && (
           <>
             <div className="optionsGrid">
-              {q.options.map((opt, i) => (
-                <div key={i} className="optionBox">
-                  {(q.type === "text" || q.type === "mixed") && (
-                    <>
-                      <input
-                        placeholder={`Option ${i + 1}`}
-                        value={opt.text}
-                        onChange={(e) => updateOption(qIndex, i, "text", e.target.value)}
-                      />
-                      {hindiOpen[qIndex] && (
+              {q.options.map((opt, i) => {
+                const optUploading = Boolean(uploadingMap[`opt-${qIndex}-${i}`]);
+                return (
+                  <div key={i} className="optionBox">
+                    {(q.type === "text" || q.type === "mixed") && (
+                      <>
                         <input
-                          className="hindiOptionInput"
-                          placeholder={`विकल्प ${i + 1} (Hindi)`}
-                          value={q.optionsHi?.[i]?.text || ""}
-                          onChange={(e) => updateOptionHi(qIndex, i, e.target.value)}
+                          placeholder={`Option ${i + 1}`}
+                          value={opt.text}
+                          onChange={(e) => updateOption(qIndex, i, "text", e.target.value)}
                         />
-                      )}
-                    </>
-                  )}
-                  {(q.type === "image" || q.type === "mixed") && (
-                    <div className="optionUpload">
-                      <label>
-                        <FiUpload />
-                        <input
-                          type="file"
-                          accept="image/png, image/jpeg"
-                          hidden
-                          onChange={(e) =>
-                            handleImageUpload(e.target.files[0], (url) =>
-                              updateOption(qIndex, i, "image", url)
-                            )
-                          }
-                        />
-                      </label>
-                      {opt.image && <img src={opt.image} className="optionPreview" />}
-                    </div>
-                  )}
-                </div>
-              ))}
+                        {hindiOpen[qIndex] && (
+                          <input
+                            className="hindiOptionInput"
+                            placeholder={`विकल्प ${i + 1} (Hindi)`}
+                            value={q.optionsHi?.[i]?.text || ""}
+                            onChange={(e) => updateOptionHi(qIndex, i, e.target.value)}
+                          />
+                        )}
+                      </>
+                    )}
+                    {(q.type === "image" || q.type === "mixed") && (
+                      <div className="optionUpload">
+                        <label>
+                          <FiUpload />
+                          {optUploading && <span> Uploading...</span>}
+                          <input
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp"
+                            hidden
+                            disabled={optUploading}
+                            onChange={(e) =>
+                              handleOptionImageChange(qIndex, i, e.target.files[0])
+                            }
+                          />
+                        </label>
+                        {opt.image && <img src={opt.image} className="optionPreview" />}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             {errors.questions[qIndex]?.options && (
               <p className="errorText questionError">{errors.questions[qIndex].options}</p>
@@ -738,8 +877,17 @@ function CreateQuiz() {
         <h1>{isEditMode ? "Edit Quiz" : "Create Quiz"}</h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button className="saveBtn" onClick={handleSave}>
-            {isEditMode ? "Update Quiz" : "Save Quiz"}
+          <button
+            className="saveBtn"
+            onClick={handleSave}
+            disabled={isUploading}
+            title={isUploading ? "Waiting for image upload to finish" : ""}
+          >
+            {isUploading
+              ? "Uploading..."
+              : isEditMode
+                ? "Update Quiz"
+                : "Save Quiz"}
           </button>
 
           {/* 🔥 ADD THIS */}

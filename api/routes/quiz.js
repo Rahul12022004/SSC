@@ -16,6 +16,35 @@ const generateQuizCode = () => {
 };
 
 
+// -----------------------------------------------------------------------------
+// Strip transient/UI-only fields before persisting to keep payload + DB lean.
+// Drops empty optionsHi entries and empty image strings.
+// -----------------------------------------------------------------------------
+const sanitizeQuestions = (questions = []) =>
+  questions.map((q) => {
+    const cleaned = {
+      type: q.type,
+      answerType: q.answerType || "single",
+      question: q.question || "",
+      questionHi: q.questionHi || "",
+      questionImage: q.questionImage || "",
+      options: Array.isArray(q.options)
+        ? q.options.map((opt) => ({
+            text: opt?.text || "",
+            image: opt?.image || "",
+          }))
+        : [],
+      correctAnswer: q.correctAnswer ?? "",
+    };
+
+    // Only keep optionsHi if at least one entry has text
+    if (Array.isArray(q.optionsHi) && q.optionsHi.some((o) => o?.text)) {
+      cleaned.optionsHi = q.optionsHi.map((o) => ({ text: o?.text || "" }));
+    }
+
+    return cleaned;
+  });
+
 router.post("/create-quiz", async (req, res) => {
   try {
     const {
@@ -37,6 +66,9 @@ router.post("/create-quiz", async (req, res) => {
       });
     }
 
+    // 🔥 Trim transient/empty fields to reduce payload + storage
+    const cleanQuestions = sanitizeQuestions(questions);
+
     let quizCode;
     let exists = true;
 
@@ -53,7 +85,7 @@ router.post("/create-quiz", async (req, res) => {
       negativeMarking,
       negativeValue,
       eachMarks,
-      questions,
+      questions: cleanQuestions,
       quizCode,
       subject:    subject    || null,
       categoryId: categoryId || null,
@@ -69,6 +101,14 @@ router.post("/create-quiz", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    // Express body-parser throws PayloadTooLargeError when limit is exceeded.
+    if (err?.type === "entity.too.large" || err?.status === 413) {
+      return res.status(413).json({
+        success: false,
+        message:
+          "Quiz payload too large. Please upload images via the image uploader (Cloudinary) instead of pasting/embedding them directly.",
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -102,7 +142,7 @@ router.post("/schedule-quiz", async (req, res) => {
     const updatedQuiz = await Quiz.findByIdAndUpdate(
       fileName,
       { scheduledAt: scheduleDate },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!updatedQuiz) {
@@ -203,7 +243,7 @@ router.put("/:id", async (req, res) => {
       negativeMarking,
       negativeValue,
       eachMarks,
-      questions,
+      questions: sanitizeQuestions(questions),
     };
     if (subject    !== undefined) updateData.subject    = subject;
     if (categoryId !== undefined) updateData.categoryId = categoryId;
@@ -212,7 +252,7 @@ router.put("/:id", async (req, res) => {
     const updatedQuiz = await Quiz.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true },
+      { returnDocument: 'after' },
     );
 
     if (!updatedQuiz) {
@@ -229,6 +269,13 @@ router.put("/:id", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    if (err?.type === "entity.too.large" || err?.status === 413) {
+      return res.status(413).json({
+        success: false,
+        message:
+          "Quiz payload too large. Please upload images via the image uploader (Cloudinary) instead of pasting/embedding them directly.",
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Server error",

@@ -9,28 +9,35 @@ import authRoutes from "./routes/auth.js";
 import couponRoutes from "./routes/coupon.js";
 import quizRoutes from "./routes/quiz.js";
 import categoryRoutes from "./routes/category.js";
+import uploadRoutes from "./routes/upload.js";
 
 const app = express();
 
 
 app.use(cors({
   origin: [
-    "http://localhost:5173", // or 3000 (your local frontend)
-    "https://sscpathnirman.com", 
-    "ssc-59f96g8me-nexavise-consultings-projects.vercel.app"
+    "http://localhost:5173", // local frontend (Vite default)
+    "http://localhost:3000",
+    "https://sscpathnirman.com",
+    "https://ssc-59f96g8me-nexavise-consultings-projects.vercel.app",
   ],
   credentials: true
 }));
 
 // -----------------------------
-// ✅ MIDDLEWARE
+// MIDDLEWARE
 // -----------------------------
-app.use(express.json());
+// Body-parser limits stay generous for non-image JSON, but images are no longer
+// embedded as base64 — they are uploaded separately to Vercel Blob via
+// /api/upload-image and only their URLs are stored on the quiz document. This
+// keeps quiz JSON well under Vercel's hard ~4.5 MB serverless body cap.
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 
 // -----------------------------
-// 🔐 SESSION (IMPROVED)
+// SESSION
 // -----------------------------
 app.use(session({
   name: "sessionId",
@@ -48,22 +55,45 @@ app.use(session({
 await connectDB();
 
 // -----------------------------
-// ✅ ROUTES
+// ROUTES
+//
+// Order matters: the upload route is mounted BEFORE the health-check and
+// before any future catch-all/404 handlers, so multipart POSTs to
+// /api/upload-image are never swallowed by a downstream wildcard.
 // -----------------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/coupon", couponRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/category", categoryRoutes);
+app.use("/api/upload-image", uploadRoutes);
+
+console.log(
+  "[api] route registered: POST /api/upload-image (multipart 'file', 10MB max, Vercel Blob)"
+);
 
 // -----------------------------
-// ✅ HEALTH CHECK
+// HEALTH CHECK
 // -----------------------------
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
 // -----------------------------
-// ✅ LOCAL SERVER
+// 404 FALLBACK (must be LAST)
+//
+// Express 5 no longer accepts the "*" path string, so we use a name-less
+// middleware to catch unmatched requests and respond with structured JSON
+// instead of HTML — easier for the frontend to surface a clean message.
+// -----------------------------
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
+  });
+});
+
+// -----------------------------
+// LOCAL SERVER
 // -----------------------------
 const PORT = process.env.PORT || 5000;
 
@@ -74,6 +104,6 @@ if (!process.env.VERCEL) {
 }
 
 // -----------------------------
-// 🚀 EXPORT FOR VERCEL
+// EXPORT FOR VERCEL
 // -----------------------------
 export default app;
