@@ -1,19 +1,19 @@
 {
   "name": "ssc-backend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch index.ts",
-    "dev:legacy": "node --watch index.js",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
     "backup": "tsx src/scripts/backup.ts"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.3",
@@ -39,9 +39,6 @@
     "resend": "^6.12.2",
     "tesseract.js": "^7.0.0",
     "zod": "^3.24.4"
-  },
-  "engines": {
-    "node": ">=20"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

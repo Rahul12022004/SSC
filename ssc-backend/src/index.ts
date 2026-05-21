@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { start } from "./src/server.js";
+import { start } from "./server.js";
 
 start().catch((err) => {
   console.error("[fatal]", err);
