@@ -1,0 +1,84 @@
+/* SSC Pathnirman brand palette
+   navy #0B2545 + sunburst orange #F77F00 + warm amber #fbbf24
+   The class names below (neon-cyan / neon-blue / neon-violet / neon-pink) are
+   kept stable so component code does not need rewriting — they're remapped
+   here to brand-aligned warm-sunset values on a deep-navy bg. */
+
+.ssc-home {
+  font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #050b18;
+  color: #f5f5f7;
+}
+
+.ssc-home .font-display { font-family: 'Outfit', system-ui, sans-serif; }
+.ssc-home .font-mono    { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+/* "ink" — deep navy page chrome */
+.ssc-home .bg-ink-900       { background-color: #050b18 !important; }
+.ssc-home .bg-ink-800       { background-color: #0b1a30 !important; }
+.ssc-home .bg-ink-900\/60   { background-color: rgba(5, 11, 24, 0.6) !important; }
+.ssc-home .bg-ink-900\/70   { background-color: rgba(5, 11, 24, 0.7) !important; }
+.ssc-home .bg-ink-900\/85   { background-color: rgba(5, 11, 24, 0.85) !important; }
+
+/* "neon" palette remapped to brand sunset
+   cyan   = sunburst orange   #F77F00  (primary)
+   blue   = mid orange        #ff9a3c
+   violet = warm amber/gold   #fbbf24  (secondary)
+   pink   = deep navy         #0B2545  (contrast pop) */
+.ssc-home .text-neon-cyan    { color: #F77F00 !important; }
+.ssc-home .text-neon-blue    { color: #ff9a3c !important; }
+.ssc-home .text-neon-violet  { color: #fbbf24 !important; }
+.ssc-home .text-neon-pink    { color: #5a8dc7 !important; }
+
+.ssc-home .bg-neon-cyan      { background-color: #F77F00 !important; }
+.ssc-home .bg-neon-blue      { background-color: #ff9a3c !important; }
+.ssc-home .bg-neon-violet    { background-color: #fbbf24 !important; }
+.ssc-home .bg-neon-pink      { background-color: #0B2545 !important; }
+
+.ssc-home .bg-neon-cyan\/20   { background-color: rgba(247, 127, 0, 0.20) !important; }
+.ssc-home .bg-neon-blue\/30   { background-color: rgba(255, 154, 60, 0.30) !important; }
+.ssc-home .bg-neon-violet\/30 { background-color: rgba(251, 191, 36, 0.30) !important; }
+
+.ssc-home .border-neon-cyan\/60   { border-color: rgba(247, 127, 0, 0.65) !important; }
+
+/* gradient color stops — brand sunset */
+.ssc-home .from-neon-cyan   { --tw-gradient-from: #F77F00 var(--tw-gradient-from-position); --tw-gradient-to: rgba(247,127,0,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.ssc-home .via-neon-cyan    { --tw-gradient-to: rgba(247,127,0,0); --tw-gradient-stops: var(--tw-gradient-from), #F77F00 var(--tw-gradient-via-position), var(--tw-gradient-to); }
+.ssc-home .to-neon-cyan     { --tw-gradient-to: #F77F00 var(--tw-gradient-to-position); }
+
+.ssc-home .from-neon-blue   { --tw-gradient-from: #ff9a3c var(--tw-gradient-from-position); --tw-gradient-to: rgba(255,154,60,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.ssc-home .via-neon-blue    { --tw-gradient-to: rgba(255,154,60,0); --tw-gradient-stops: var(--tw-gradient-from), #ff9a3c var(--tw-gradient-via-position), var(--tw-gradient-to); }
+.ssc-home .to-neon-blue     { --tw-gradient-to: #ff9a3c var(--tw-gradient-to-position); }
+
+.ssc-home .from-neon-violet { --tw-gradient-from: #fbbf24 var(--tw-gradient-from-position); --tw-gradient-to: rgba(251,191,36,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.ssc-home .via-neon-violet  { --tw-gradient-to: rgba(251,191,36,0); --tw-gradient-stops: var(--tw-gradient-from), #fbbf24 var(--tw-gradient-via-position), var(--tw-gradient-to); }
+.ssc-home .to-neon-violet   { --tw-gradient-to: #fbbf24 var(--tw-gradient-to-position); }
+
+.ssc-home .from-neon-pink   { --tw-gradient-from: #1a3a6e var(--tw-gradient-from-position); --tw-gradient-to: rgba(26,58,110,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.ssc-home .via-neon-pink    { --tw-gradient-to: rgba(26,58,110,0); --tw-gradient-stops: var(--tw-gradient-from), #1a3a6e var(--tw-gradient-via-position), var(--tw-gradient-to); }
+.ssc-home .to-neon-pink     { --tw-gradient-to: #1a3a6e var(--tw-gradient-to-position); }
+
+/* fallback keyframes */
+@keyframes ssc-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes ssc-scan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes ssc-float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-24px); }
+}
+
+.ssc-home .animate-gradient,
+.ssc-home .animate-gradient-fast {
+  background-size: 300% 300%;
+  animation: ssc-gradient 18s ease infinite;
+}
+.ssc-home .animate-gradient-fast { animation-duration: 8s; }
+.ssc-home .animate-scan  { animation: ssc-scan 4s linear infinite; }
+.ssc-home .animate-float { animation: ssc-float 6s ease-in-out infinite; }
+.ssc-home .bg-200 { background-size: 200% 200%; }
+.ssc-home .bg-300 { background-size: 300% 300%; }

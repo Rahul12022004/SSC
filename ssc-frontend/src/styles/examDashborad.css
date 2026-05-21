@@ -1,0 +1,263 @@
+/* ================= PAGE ================= */
+.examDash {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: clamp(70px, 10vw, 100px) 16px 40px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ================= TITLE ================= */
+.examDash h1 {
+  text-align: center;
+  color: #0b2545;
+  margin-bottom: 30px;
+  font-size: clamp(22px, 4vw, 32px);
+}
+
+/* ================= HEADER ================= */
+.examDash .tableHeader {
+  max-width: 900px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #0b2545;
+  padding: 10px 5px;
+  border-bottom: 2px solid #e5e7eb;
+  font-size: clamp(14px, 2vw, 16px);
+}
+
+/* ================= ROW ================= */
+.examDash .sectionRow {
+  max-width: 900px;
+  margin: 15px auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: clamp(12px, 2vw, 20px);
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: 0.3s;
+}
+
+.examDash .sectionRow:hover {
+  transform: translateY(-3px);
+}
+
+/* ================= TOP ROW ================= */
+.examDash .rowTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ================= SECTION NAME ================= */
+.examDash .sectionName {
+  font-size: clamp(16px, 2.5vw, 18px);
+  font-weight: 600;
+  color: #0b2545;
+}
+
+/* ================= BUTTON ================= */
+.examDash .actionBtn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #0b2545;
+  background: transparent;
+  color: #0b2545;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  white-space: nowrap;
+}
+
+.examDash .actionBtn:hover {
+  background: #0b2545;
+  color: white;
+}
+
+.examDash .actionBtn:disabled {
+  border-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+  background: #f1f1f1;
+}
+
+/* ================= DETAILS ================= */
+.examDash .rowDetails {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  font-size: clamp(12px, 2vw, 14px);
+  color: #555;
+}
+
+/* ================= STATUS ================= */
+.examDash .status {
+  font-weight: 600;
+}
+
+.examDash .submitted {
+  color: #16a34a;
+}
+
+.examDash .progress {
+  color: #f77f00;
+}
+
+/* ================= FINAL SUBMIT ================= */
+.examDash .finalSubmitWrapper {
+  max-width: 900px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+
+.examDash .finalSubmitBtn {
+  padding: 14px 28px;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+
+  background: #dc2626;
+  color: white;
+
+  transition: all 0.3s ease;
+}
+
+.examDash .finalSubmitBtn:hover {
+  background: #b91c1c;
+  transform: scale(1.05);
+}
+
+.examDash .finalSubmitBtn:active {
+  transform: scale(0.95);
+}
+
+/* ================= MODAL ================= */
+.examDash .confirmOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+  padding: 15px;
+}
+
+.examDash .confirmBox {
+  background: white;
+  padding: clamp(20px, 4vw, 30px);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.examDash .confirmBox h2 {
+  color: #0b2545;
+  margin-bottom: 10px;
+  font-size: clamp(18px, 3vw, 22px);
+}
+
+.examDash .confirmBox p {
+  color: #555;
+  font-size: clamp(13px, 2vw, 14px);
+}
+
+/* ================= MODAL ACTIONS ================= */
+.examDash .confirmActions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.examDash .cancelBtn {
+  background: #e5e7eb;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  width: 120px;
+}
+
+.examDash .confirmBtn {
+  background: #dc2626;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  width: 120px;
+}
+
+.examDash .confirmBtn:hover {
+  background: #b91c1c;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* 📱 Mobile (small) */
+@media (max-width: 480px) {
+  .examDash {
+    padding-top: 70px;
+  }
+
+  .examDash .rowTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .examDash .actionBtn {
+    width: 100%;
+  }
+
+  .examDash .rowDetails {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .examDash .tableHeader {
+    display: none;
+  }
+}
+
+/* 📱 Tablet */
+@media (max-width: 768px) {
+  .examDash .rowTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .examDash .actionBtn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+
+/* 💻 Small laptops */
+@media (min-width: 1024px) {
+  .examDash .sectionRow {
+    padding: 20px 25px;
+  }
+}
+
+/* 🖥 Large screens */
+@media (min-width: 1280px) {
+  .examDash {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}

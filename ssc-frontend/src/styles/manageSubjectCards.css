@@ -1,0 +1,300 @@
+.msc-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 28px 16px 60px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ── Page header ── */
+.msc-page-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.msc-page-header h1 { font-size: 22px; color: #1a237e; margin-bottom: 3px; }
+.msc-page-header p  { font-size: 13px; color: #666; }
+
+.msc-back-btn {
+  background: none;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.msc-back-btn:hover { background: #f5f5f5; }
+
+/* ── Toast ── */
+.msc-toast {
+  padding: 10px 18px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.msc-toast-info    { background: #e3f2fd; color: #1565c0; }
+.msc-toast-success { background: #e8f5e9; color: #2e7d32; }
+.msc-toast-error   { background: #fce4ec; color: #c62828; }
+
+/* ── Editor row: form + preview ── */
+.msc-editor {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 36px;
+}
+
+/* ── Form box ── */
+.msc-form-box {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #dce1ec;
+  border-radius: 10px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  min-width: 0;
+}
+
+.msc-form-box h2 { font-size: 16px; color: #1a237e; margin-bottom: 16px; }
+
+.msc-form-box label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #444;
+  margin: 14px 0 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.msc-hint { font-size: 11px; color: #999; font-weight: 400; text-transform: none; }
+
+.msc-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+  color: #333;
+}
+.msc-input:focus { border-color: #1565c0; }
+
+.msc-textarea { resize: vertical; min-height: 72px; }
+.msc-order    { width: 100px; }
+
+.msc-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.msc-or        { font-size: 12px; color: #aaa; }
+.msc-url-input { flex: 1; min-width: 140px; }
+
+.msc-remove-img {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 0;
+  margin-top: 4px;
+  display: block;
+}
+.msc-remove-img:hover { text-decoration: underline; }
+
+.msc-form-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+/* ── Buttons ── */
+.msc-btn {
+  padding: 9px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+}
+.msc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.msc-btn-save   { background: #1565c0; color: #fff; }
+.msc-btn-save:hover:not(:disabled) { background: #0d47a1; }
+
+.msc-btn-upload { background: #f5f7fa; color: #1565c0; border: 1.5px solid #1565c0; padding: 8px 14px; }
+.msc-btn-upload:hover:not(:disabled) { background: #e3f2fd; }
+
+.msc-btn-cancel { background: #f5f5f5; color: #555; border: 1.5px solid #ccc; }
+.msc-btn-cancel:hover { background: #eee; }
+
+.msc-btn-edit   { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; padding: 6px 14px; font-size: 13px; }
+.msc-btn-delete { background: #fce4ec; color: #c62828; border: 1px solid #f48fb1; padding: 6px 14px; font-size: 13px; }
+.msc-btn-edit:hover   { background: #bbdefb; }
+.msc-btn-delete:hover { background: #ffcdd2; }
+
+/* ── Live preview panel ── */
+.msc-preview-panel {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.msc-preview-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+/* Matches home page subjectCard exactly */
+.msc-live-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.10);
+  overflow: hidden;
+  text-align: center;
+}
+
+.msc-live-card-img-wrap {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+
+.msc-live-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.msc-live-card-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #ccc;
+}
+
+.msc-live-card-content {
+  padding: 16px 14px 18px;
+}
+
+.msc-live-card-content h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #37474f;
+  margin-bottom: 8px;
+}
+
+.msc-live-card-content p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.55;
+  margin-bottom: 14px;
+  min-height: 40px;
+}
+
+.msc-live-start-btn {
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: default;
+}
+
+/* ── Existing cards section ── */
+.msc-cards-section h2 {
+  font-size: 16px;
+  color: #1a237e;
+  margin-bottom: 16px;
+}
+
+.msc-count { font-size: 14px; color: #999; font-weight: 400; }
+
+.msc-loading, .msc-empty { font-size: 14px; color: #888; }
+
+.msc-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.msc-card {
+  background: #fff;
+  border: 1.5px solid #dce1ec;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  transition: box-shadow 0.15s;
+  text-align: center;
+}
+
+.msc-card-editing {
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21,101,192,.15);
+}
+
+.msc-card-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.msc-card-no-img {
+  width: 100%;
+  height: 90px;
+  background: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #ccc;
+}
+
+.msc-card-body {
+  padding: 12px 12px 8px;
+}
+
+.msc-card-body h3 { font-size: 14px; font-weight: 700; color: #37474f; margin-bottom: 4px; }
+.msc-card-body p  { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 4px; }
+
+.msc-card-order { font-size: 11px; color: #bbb; }
+
+.msc-card-quiz-count { 
+  display: block;
+  font-size: 11px; 
+  color: #0284c7; 
+  margin-top: 4px;
+}
+
+.msc-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid #f0f2f5;
+  justify-content: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 680px) {
+  .msc-editor { flex-direction: column; }
+  .msc-preview-panel { width: 100%; }
+  .msc-live-card { max-width: 260px; margin: 0 auto; }
+}

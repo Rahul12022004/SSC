@@ -1,0 +1,55 @@
+/* Keyframe animations for Loader — structural/layout styles live in Loader.jsx as Tailwind classes */
+
+/* BACKGROUND GLOW PULSE */
+@keyframes loadingPage-pulseBg {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.bg-overlay {
+  animation: loadingPage-pulseBg 6s ease-in-out infinite;
+}
+
+/* SUN GLOW PULSE */
+@keyframes loadingPage-glowPulse {
+  0%   { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+  50%  { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+}
+
+.sun-glow {
+  animation: loadingPage-glowPulse 2.5s ease-in-out infinite;
+}
+
+/* LOGO FADE-IN-UP */
+@keyframes loadingPage-fadeInUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.logo {
+  animation: loadingPage-fadeInUp 1s ease forwards;
+}
+
+/* TITLE & TAGLINE FADE IN */
+@keyframes loadingPage-fadeIn {
+  to { opacity: 1; }
+}
+
+.title {
+  animation: loadingPage-fadeIn 1s ease forwards 0.4s;
+}
+
+.tagline {
+  animation: loadingPage-fadeIn 1s ease forwards 0.7s;
+}
+
+/* SHIMMER LINE */
+@keyframes loadingPage-moveLine {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+
+.loader-line span {
+  animation: loadingPage-moveLine 1.6s ease-in-out infinite;
+}

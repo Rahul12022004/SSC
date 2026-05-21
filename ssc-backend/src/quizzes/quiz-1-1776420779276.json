@@ -1,0 +1,65 @@
+{
+  "title": "Quiz 1",
+  "duration": 5,
+  "eachMarks": 1,
+  "totalMarks": 2,
+  "totalQuestions": 2,
+  "negativeMarking": false,
+  "negativeValue": 0,
+  "createdAt": 1776420779276,
+  "scheduled": {
+    "date": "2026-04-17",
+    "time": "15:50",
+    "timestamp": 1776421236000
+  },
+  "questions": [
+    {
+      "type": "text",
+      "question": "what is 2 * 3",
+      "questionImage": "",
+      "options": [
+        {
+          "text": "4",
+          "image": ""
+        },
+        {
+          "text": "6",
+          "image": ""
+        },
+        {
+          "text": "8",
+          "image": ""
+        },
+        {
+          "text": "5",
+          "image": ""
+        }
+      ],
+      "correctAnswer": "1"
+    },
+    {
+      "type": "text",
+      "question": "what is 12 * 9",
+      "questionImage": "",
+      "options": [
+        {
+          "text": "105",
+          "image": ""
+        },
+        {
+          "text": "108",
+          "image": ""
+        },
+        {
+          "text": "106",
+          "image": ""
+        },
+        {
+          "text": "112",
+          "image": ""
+        }
+      ],
+      "correctAnswer": "1"
+    }
+  ]
+}
