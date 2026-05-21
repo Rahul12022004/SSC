@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { coursesService } from "../services/courses.service.js";
+import { coursesService } from '../services/courses.service';
 
 export const getCourses: RequestHandler = async (_req, res, next) => {
   try { res.json({ success: true, courses: await coursesService.findAll() }); }

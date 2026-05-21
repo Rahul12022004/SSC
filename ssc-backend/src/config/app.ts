@@ -5,12 +5,12 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import compression from "compression";
 import path from "path";
-import { env } from "./env.js";
-import { apiLimiter } from "../middleware/rateLimiter.js";
-import { sanitizeInput } from "../middleware/sanitize.js";
-import { errorHandler } from "../middleware/error.js";
-import { requestLogger, healthCheck } from "../middleware/monitoring.js";
-import { registerRoutes } from "../routes/index.js";
+import { env } from './env';
+import { apiLimiter } from '../middleware/rateLimiter';
+import { sanitizeInput } from '../middleware/sanitize';
+import { errorHandler } from '../middleware/error';
+import { requestLogger, healthCheck } from '../middleware/monitoring';
+import { registerRoutes } from '../routes/index';
 
 const ALLOWED_ORIGINS = new Set([
   "http://localhost:5173",

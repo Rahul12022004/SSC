@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import { authenticateToken, requireAdmin } from '../middleware/auth';
 import {
   getCourses, getCourseById, createCourse, updateCourse, deleteCourse,
   addBlock, updateBlock, deleteBlock,
-} from "../controllers/courses.controller.js";
-import { validate } from "../middleware/validate.js";
+} from '../controllers/courses.controller';
+import { validate } from '../middleware/validate';
 
 const blockSchema = z.object({
   title: z.string().min(1),

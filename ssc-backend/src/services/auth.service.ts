@@ -1,19 +1,15 @@
 import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
 import path from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { User } from "../models/user.model.js";
-import { sendOtpEmail } from "../utils/sendOtpEmail.js";
-import { AppError } from "../middleware/error.js";
-import { env } from "../config/env.js";
-import type { JwtPayload } from "../middleware/auth.js";
+import { User } from '../models/user.model';
+import { sendOtpEmail } from '../utils/sendOtpEmail';
+import { AppError } from '../middleware/error';
+import { env } from '../config/env';
+import type { JwtPayload } from '../middleware/auth';
 
-const localUsersPath = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../users.json"
-);
+const localUsersPath = path.join(__dirname, "../users.json");
 
 const getLocalUsers = (): Array<Record<string, unknown>> => {
   try {

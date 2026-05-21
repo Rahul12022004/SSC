@@ -1,16 +1,16 @@
 import type { Express } from "express";
-import healthRouter from "./health.routes.js";
-import authRouter from "./auth.routes.js";
-import quizRouter from "./quiz.routes.js";
-import coursesRouter from "./courses.routes.js";
-import categoryRouter from "./category.routes.js";
-import subjectCardsRouter from "./subjectCards.routes.js";
-import couponRouter from "./coupon.routes.js";
-import userRouter from "./user.routes.js";
-import mentorRouter from "./mentor.routes.js";
-import { imageRouter, fileRouter } from "./upload.routes.js";
-import visitorRouter from "./visitor.routes.js";
-import statsRouter from "./stats.routes.js";
+import healthRouter from './health.routes';
+import authRouter from './auth.routes';
+import quizRouter from './quiz.routes';
+import coursesRouter from './courses.routes';
+import categoryRouter from './category.routes';
+import subjectCardsRouter from './subjectCards.routes';
+import couponRouter from './coupon.routes';
+import userRouter from './user.routes';
+import mentorRouter from './mentor.routes';
+import { imageRouter, fileRouter } from './upload.routes';
+import visitorRouter from './visitor.routes';
+import statsRouter from './stats.routes';
 
 export function registerRoutes(app: Express): void {
   app.use("/api", healthRouter);

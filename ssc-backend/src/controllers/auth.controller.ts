@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
-import { authService } from "../services/auth.service.js";
-import { env } from "../config/env.js";
-import type { JwtPayload } from "../middleware/auth.js";
+import { authService } from '../services/auth.service';
+import { env } from '../config/env';
+import type { JwtPayload } from '../middleware/auth';
 
 const cookieOpts = (req: Parameters<RequestHandler>[0]) => ({
   httpOnly: true,

@@ -1,6 +1,6 @@
-import { SubjectCard, type ISubjectCard, type ICardBlock } from "../models/subjectCard.model.js";
-import { Quiz } from "../models/quiz.model.js";
-import { AppError } from "../middleware/error.js";
+import { SubjectCard, type ISubjectCard, type ICardBlock } from '../models/subjectCard.model';
+import { Quiz } from '../models/quiz.model';
+import { AppError } from '../middleware/error';
 
 export const subjectCardsService = {
   async findAll(): Promise<any[]> {

@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { categoryService } from "../services/category.service.js";
+import { categoryService } from '../services/category.service';
 
 export const getCategories: RequestHandler = async (_req, res, next) => {
   try { res.json({ success: true, categories: await categoryService.findAll() }); }

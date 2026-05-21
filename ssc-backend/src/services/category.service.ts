@@ -1,5 +1,5 @@
-import { Category, COLORS, type ICategory } from "../models/category.model.js";
-import { AppError } from "../middleware/error.js";
+import { Category, COLORS, type ICategory } from '../models/category.model';
+import { AppError } from '../middleware/error';
 
 export const categoryService = {
   async findAll(): Promise<ICategory[]> {

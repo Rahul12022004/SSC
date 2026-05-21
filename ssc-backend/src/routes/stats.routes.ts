@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { User } from "../models/user.model.js";
-import { Quiz } from "../models/quiz.model.js";
-import { QuizSubmission } from "../models/quizSubmission.model.js";
+import { User } from '../models/user.model';
+import { Quiz } from '../models/quiz.model';
+import { QuizSubmission } from '../models/quizSubmission.model';
 
 const router = Router();
 

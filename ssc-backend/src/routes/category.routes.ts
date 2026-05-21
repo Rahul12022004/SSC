@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import { authenticateToken, requireAdmin } from '../middleware/auth';
 import {
   getCategories, createCategory, deleteCategory,
   addSubject, deleteSubject,
   addSubSubject, deleteSubSubject,
   addMockGroup, deleteMockGroup,
-} from "../controllers/category.controller.js";
+} from '../controllers/category.controller';
 
 const router = Router();
 

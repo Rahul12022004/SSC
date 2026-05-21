@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
-import { env } from "../config/env.js";
+import { env } from '../config/env';
 
 const execAsync = promisify(exec);
 
@@ -40,7 +40,7 @@ async function cleanOldBackups(backupDir: string) {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   backupDatabase()
     .then(() => process.exit(0))
     .catch(() => process.exit(1));

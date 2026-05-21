@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { mentorService } from "../services/mentor.service.js";
+import { mentorService } from '../services/mentor.service';
 
 export const mentorController = {
   async getAllMentors(req: Request, res: Response) {

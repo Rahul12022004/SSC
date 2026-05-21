@@ -5,7 +5,7 @@ import fs from "fs";
 import { put } from "@vercel/blob";
 import { v2 as cloudinary } from "cloudinary";
 import type { RequestHandler } from "express";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import { authenticateToken, requireAdmin } from '../middleware/auth';
 
 const ALLOWED_IMAGE_MIME = new Set(["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"]);
 const ALLOWED_PDF_MIME   = new Set(["application/pdf"]);

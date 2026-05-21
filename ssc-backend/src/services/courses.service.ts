@@ -1,5 +1,5 @@
-import { Course, type ICourse, type IBlock } from "../models/course.model.js";
-import { AppError } from "../middleware/error.js";
+import { Course, type ICourse, type IBlock } from '../models/course.model';
+import { AppError } from '../middleware/error';
 
 export const coursesService = {
   async findAll(): Promise<ICourse[]> {

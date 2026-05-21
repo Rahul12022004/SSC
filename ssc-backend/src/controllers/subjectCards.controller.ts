@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { subjectCardsService } from "../services/subjectCards.service.js";
+import { subjectCardsService } from '../services/subjectCards.service';
 
 export const getCards: RequestHandler = async (_req, res, next) => {
   try { res.json({ success: true, cards: await subjectCardsService.findAll() }); }

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
-import { getCards, getCardById, createCard, updateCard, deleteCard, addBlock, updateBlock, deleteBlock } from "../controllers/subjectCards.controller.js";
+import { authenticateToken, requireAdmin } from '../middleware/auth';
+import { getCards, getCardById, createCard, updateCard, deleteCard, addBlock, updateBlock, deleteBlock } from '../controllers/subjectCards.controller';
 
 const router = Router();
 

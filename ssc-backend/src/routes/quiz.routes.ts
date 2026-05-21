@@ -1,13 +1,13 @@
 import { Router, type Request, type Response } from "express";
 import multer from "multer";
 import { z } from "zod";
-import { Quiz } from "../models/quiz.model.js";
-import { QuizSubmission } from "../models/quizSubmission.model.js";
-import { QuizFeedback } from "../models/quizFeedback.model.js";
-import { User } from "../models/user.model.js";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
-import { submissionLimiter } from "../middleware/rateLimiter.js";
-import { validate } from "../middleware/validate.js";
+import { Quiz } from '../models/quiz.model';
+import { QuizSubmission } from '../models/quizSubmission.model';
+import { QuizFeedback } from '../models/quizFeedback.model';
+import { User } from '../models/user.model';
+import { authenticateToken, requireAdmin } from '../middleware/auth';
+import { submissionLimiter } from '../middleware/rateLimiter';
+import { validate } from '../middleware/validate';
 
 const richBlockSchema = z.object({
   type: z.string(),

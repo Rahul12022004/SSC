@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { quizService } from "../services/quiz.service.js";
+import { quizService } from '../services/quiz.service';
 
 export const getQuizzes: RequestHandler = async (_req, res, next) => {
   try {

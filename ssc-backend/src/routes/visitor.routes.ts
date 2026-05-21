@@ -1,5 +1,5 @@
 import { Router, type RequestHandler } from "express";
-import { Visitor } from "../models/visitor.model.js";
+import { Visitor } from '../models/visitor.model';
 
 const router = Router();
 

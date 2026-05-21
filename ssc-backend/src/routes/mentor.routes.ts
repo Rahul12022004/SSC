@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { mentorController } from "../controllers/mentor.controller.js";
-import { authenticateToken } from "../middleware/auth.js";
+import { mentorController } from '../controllers/mentor.controller';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { createApp } from "../config/app.js";
-import { start } from "../server.js";
+import { createApp } from '../config/app';
+import { start } from '../server';
 import type { Server } from "http";
 
 let server: Server;

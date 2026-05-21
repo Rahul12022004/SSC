@@ -1,5 +1,5 @@
-import { Quiz, type IQuiz } from "../models/quiz.model.js";
-import { AppError } from "../middleware/error.js";
+import { Quiz, type IQuiz } from '../models/quiz.model';
+import { AppError } from '../middleware/error';
 
 export const quizService = {
   async findAll(filter: Record<string, unknown> = {}): Promise<IQuiz[]> {

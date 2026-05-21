@@ -1,4 +1,4 @@
-import { Mentor } from "../models/mentor.model.js";
+import { Mentor } from '../models/mentor.model';
 
 export const mentorService = {
   async getAllMentors() {
